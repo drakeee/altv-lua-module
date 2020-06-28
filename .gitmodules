@@ -1,6 +1,6 @@
-[submodule "vendors/cpp-sdk"]
-	path = vendors/cpp-sdk
+[submodule "src/vendors/cpp-sdk"]
+	path = src/vendors/cpp-sdk
 	url = https://github.com/altmp/cpp-sdk
-[submodule "vendors/luajit"]
-	path = vendors/luajit
+[submodule "src/vendors/luajit"]
+	path = src/vendors/luajit
 	url = https://github.com/luajit/luajit
