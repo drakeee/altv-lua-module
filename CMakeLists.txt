@@ -14,8 +14,8 @@ file(GLOB_RECURSE PROJECT_SOURCE_FILES "./src/*.h" "./src/*.hpp" "./src/*.cpp")
 
 include_directories(
 	"${PROJECT_SOURCE_DIR}/src"
-	"${PROJECT_SOURCE_DIR}/src/vendors/luajit/include"
-	"${PROJECT_SOURCE_DIR}/src/vendors/cpp-sdk"
+	"${PROJECT_SOURCE_DIR}/vendors/luajit/include"
+	"${PROJECT_SOURCE_DIR}/vendors/cpp-sdk"
 )
 
 add_library(
@@ -24,10 +24,10 @@ add_library(
 )
 
 if(UNIX)
-	target_link_libraries(${PROJECT_MODULE_NAME} ${PROJECT_SOURCE_DIR}/src/vendors/luajit/lib/linux64/libluajit.a)
+	target_link_libraries(${PROJECT_MODULE_NAME} ${PROJECT_SOURCE_DIR}/vendors/luajit/lib/linux64/libluajit.a)
 else()
 	target_link_libraries(${PROJECT_MODULE_NAME}
-	${PROJECT_SOURCE_DIR}/src/vendors/luajit/lib/win64/lua51.lib
-	${PROJECT_SOURCE_DIR}/src/vendors/luajit/lib/win64/luajit.lib
+	${PROJECT_SOURCE_DIR}/vendors/luajit/lib/win64/lua51.lib
+	${PROJECT_SOURCE_DIR}/vendors/luajit/lib/win64/luajit.lib
 	)
 endif()
