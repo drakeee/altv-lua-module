@@ -13,12 +13,12 @@ int CLuaDefs::Index(lua_State *L)
 	//lua_getfield(L, -1, luaL_checkstring(L, -3));
 	lua_getclassfield(L, className, { "__function", luaL_checkstring(L, -1) });
 
-	lua_stacktrace(L, "Indexhahaha1");
+	//lua_stacktrace(L, "Indexhahaha1");
 
 	if (lua_isfunction(L, -1))
 	{
 		//lua_pop(L, -1);
-		Core->LogInfo("Got function!");
+		//Core->LogInfo("Got function!");
 		return 1;
 	}
 
@@ -29,7 +29,7 @@ int CLuaDefs::Index(lua_State *L)
 	if (lua_isfunction(L, -1))
 	{
 		//lua_pop(L, -1);
-		Core->LogInfo("Got function!");
+		//Core->LogInfo("Got function!");
 
 		lua_pushvalue(L, 1);
 
@@ -38,7 +38,7 @@ int CLuaDefs::Index(lua_State *L)
 		lua_replace(L, 1);
 		lua_settop(L, 1);
 
-		lua_stacktrace(L, "Indexhahaha2");
+		//lua_stacktrace(L, "Indexhahaha2");
 
 		return 1;
 	}
@@ -60,14 +60,14 @@ int CLuaDefs::NewIndex(lua_State *L)
 	const char* setFunctionName = luaL_checkstring(L, -2);
 	lua_getclassfield(L, className, { "__set", setFunctionName });
 
-	lua_stacktrace(L, "CLuaDefs::NewIndex1");
+	//lua_stacktrace(L, "CLuaDefs::NewIndex1");
 
 	if(lua_iscfunction(L, -1))
 	{
 		lua_pushvalue(L, 1); //copy Vehicle pointer to top of the stack
 		lua_pushvalue(L, 3); //copy new poisitions to top of the stack
 
-		lua_stacktrace(L, "CLuaDefs::NewIndex3");
+		//lua_stacktrace(L, "CLuaDefs::NewIndex3");
 
 		lua_call(L, 2, 1); //call function from stack
 
@@ -80,7 +80,7 @@ int CLuaDefs::NewIndex(lua_State *L)
 	}
 
 	Core->LogInfo("Name: " + alt::String(className) + " | " + alt::String(setFunctionName));
-	lua_stacktrace(L, "CLuaDefs::NewIndex2");
+	//lua_stacktrace(L, "CLuaDefs::NewIndex2");
 
 	return 1;
 }
@@ -123,6 +123,15 @@ int CLuaDefs::Call(lua_State *L)
 	lua_settop(L, 0);
 
 	//lua_stacktrace(L, "CLuaDefs::Call");
+
+	return 0;
+}
+
+int CLuaDefs::GarbageCollect(lua_State* L)
+{
+	Core->LogInfo("GarbageCollect called");
+
+	lua_stacktrace(L, "CLuaDefs::GarbageCollect");
 
 	return 0;
 }

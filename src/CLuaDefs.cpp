@@ -44,7 +44,7 @@ void lua_stacktrace(lua_State* L, const char* stackName)
 
 			break;
 		default:
-			Core->LogInfo("\tAbsolute: " + std::to_string(i) + " ~~ Relative: " + std::to_string((i - stackTop) - 1) + " ~~\t Value type: " + lua_typename(L, valueType) + "");
+			Core->LogInfo("\tAbsolute: " + std::to_string(i) + " ~~ Relative: " + std::to_string(relativePosition) + " ~~\t Value type: " + lua_typename(L, valueType) + "");
 			break;
 		}
 	}
@@ -167,6 +167,10 @@ void lua_newclass(lua_State *L, const char* className)
 		//lua_pushnil(L);
 		lua_pushcfunction(L, CLuaDefs::NewIndex);
 		lua_rawset(L, -3);
+
+		/*lua_pushstring(L, "__gc");
+		lua_pushcfunction(L, CLuaDefs::GarbageCollect);
+		lua_rawset(L, -3);*/
 	}
 
 	//save the table under className in ge_mt table

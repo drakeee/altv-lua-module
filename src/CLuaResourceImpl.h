@@ -21,6 +21,16 @@ private:
 	lua_State* resourceState = nullptr;
 	alt::IResource* resource;
 
+	/*const std::list<std::string> entityTypes{
+		"Player",
+		"Vehicle",
+		"Blip",
+		"WebView",
+		"VoiceChannel",
+		"ColShape",
+		"Checkpoint"
+	};*/
+
 	const std::list<std::string> eventTypes{
 		"NONE",
 

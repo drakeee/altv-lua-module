@@ -19,9 +19,12 @@
 
 extern alt::ICore* Core;
 
+#include "CLuaDefs.h"
+#include "CArgReader.h"
 #include "CLuaScriptRuntime.h"
 #include "CLuaResourceImpl.h"
-#include "CLuaDefs.h"
 #include "CLuaFunctionDefs.h"
-#include "CArgReader.h"
 #include "CLuaAltFuncDefs.h"
+
+#include <Defs/CLuaVector3Defs.h>
+#include <Defs/Entity/CLuaVehicleDefs.h>

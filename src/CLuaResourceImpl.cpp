@@ -13,10 +13,16 @@ CLuaResourceImpl::CLuaResourceImpl(alt::IResource* resource) :
 
 	//Import default libraries into the state
 	luaL_openlibs(this->resourceState);
+	luaopen_jit(this->resourceState);
+
+	lua_pop(this->resourceState, 4);
+
 	lua_initclass(this->resourceState);
 
 	//Initialize alt functions in the state
+	CLuaVector3Defs::init(this->resourceState);
 	CLuaAltFuncDefs::init(this->resourceState);
+	CLuaVehicleDefs::init(this->resourceState);
 
 	//Add path separator to the end
 	alt::String workingDir = resource->GetPath() + std::filesystem::path::preferred_separator;

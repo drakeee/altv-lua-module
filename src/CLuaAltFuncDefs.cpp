@@ -26,6 +26,14 @@ void CLuaAltFuncDefs::init(lua_State* L)
 
 	lua_setglobal(L, "alt");
 
+	//Override default print function to behave as LogInfo
+	lua_getglobal(L, "_G");
+	lua_pushstring(L, "print");
+	lua_pushcfunction(L, &CLuaAltFuncDefs::logInfo);
+	lua_settable(L, -3);
+
+	lua_pop(L, 1);
+
 	lua_stacktrace(L, "CLuaAltFuncDefs::init");
 }
 
