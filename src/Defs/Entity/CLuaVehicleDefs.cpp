@@ -30,11 +30,6 @@ void CLuaVehicleDefs::initClass(lua_State* L)
 	lua_registerfunction(L, "getVehicleBodyHealth", CLuaVehicleDefs::GetVehicleBodyHealth);
 	lua_registerfunction(L, "getVehicleEngineHealth", CLuaVehicleDefs::GetVehicleEngineHealth);
 
-	lua_registeroop(L, "setBodyHealth", "setVehicleBodyHealth");
-	lua_registeroop(L, "setEngineHealth", "setVehicleEngineHealth");
-	lua_registeroop(L, "getBodyHealth", "getVehicleBodyHealth");
-	lua_registeroop(L, "getEngineHealth", "getVehicleEngineHealth");
-
 	lua_registervariable(L, "bodyhealth", "setVehicleBodyHealth", "getVehicleBodyHealth");
 	lua_registervariable(L, "enginehealth", "setVehicleEngineHealth", "getVehicleEngineHealth");
 
@@ -45,10 +40,6 @@ void CLuaVehicleDefs::initClass(lua_State* L)
 	lua_registerfunction(L, "getVehiclePrimaryColor", CLuaVehicleDefs::GetVehiclePrimaryColor);
 	lua_registerfunction(L, "getVehicleSecondaryColor", CLuaVehicleDefs::GetVehicleSecondaryColor);
 
-	lua_registeroop(L, "setPrimaryColor", "setVehiclePrimaryColor");
-	lua_registeroop(L, "setSecondaryColor", "setVehicleSecondaryColor");
-	lua_registeroop(L, "getPrimaryColor", "getVehiclePrimaryColor");
-	lua_registeroop(L, "getSecondaryColor", "getVehicleSecondaryColor");
 
 	lua_registervariable(L, "primarycolor", "setVehiclePrimaryColor", "getVehiclePrimaryColor");
 	lua_registervariable(L, "secondarycolor", "setVehicleSecondaryColor", "getVehicleSecondaryColor");
