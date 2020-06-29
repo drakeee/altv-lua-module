@@ -40,7 +40,6 @@ void CLuaVehicleDefs::initClass(lua_State* L)
 	lua_registerfunction(L, "getVehiclePrimaryColor", CLuaVehicleDefs::GetVehiclePrimaryColor);
 	lua_registerfunction(L, "getVehicleSecondaryColor", CLuaVehicleDefs::GetVehicleSecondaryColor);
 
-
 	lua_registervariable(L, "primarycolor", "setVehiclePrimaryColor", "getVehiclePrimaryColor");
 	lua_registervariable(L, "secondarycolor", "setVehicleSecondaryColor", "getVehicleSecondaryColor");
 
