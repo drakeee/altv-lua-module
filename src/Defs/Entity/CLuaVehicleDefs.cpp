@@ -9,16 +9,49 @@ void CLuaVehicleDefs::initClass(lua_State* L)
 {
 	lua_newclass(L, "Vehicle");
 
+	// CREATE VEHICLE
 	lua_registerfunction(L, "createVehicle", CLuaVehicleDefs::CreateVehicle);
+	lua_registeroop(L, "new", "createVehicle");
+
+	// VEHICLE POSITION
+
 	lua_registerfunction(L, "setVehiclePosition", CLuaVehicleDefs::SetVehiclePosition);
 	lua_registerfunction(L, "getVehiclePosition", CLuaVehicleDefs::GetVehiclePosition);
 
-
-	lua_registeroop(L, "new", "createVehicle");
 	lua_registeroop(L, "setPosition", "setVehiclePosition");
 	lua_registeroop(L, "getPosition", "getVehiclePosition");
 
 	lua_registervariable(L, "position", "setVehiclePosition", "getVehiclePosition");
+
+	// BODY AND ENGINE HELTH
+
+	lua_registerfunction(L, "setVehicleBodyHealth", CLuaVehicleDefs::SetVehicleBodyHealth);
+	lua_registerfunction(L, "setVehicleEngineHealth", CLuaVehicleDefs::SetVehicleEngineHealth);
+	lua_registerfunction(L, "getVehicleBodyHealth", CLuaVehicleDefs::GetVehicleBodyHealth);
+	lua_registerfunction(L, "getVehicleEngineHealth", CLuaVehicleDefs::GetVehicleEngineHealth);
+
+	lua_registeroop(L, "setBodyHealth", "setVehicleBodyHealth");
+	lua_registeroop(L, "setEngineHealth", "setVehicleEngineHealth");
+	lua_registeroop(L, "getBodyHealth", "getVehicleBodyHealth");
+	lua_registeroop(L, "getEngineHealth", "getVehicleEngineHealth");
+
+	lua_registervariable(L, "bodyhealth", "setVehicleBodyHealth", "getVehicleBodyHealth");
+	lua_registervariable(L, "enginehealth", "setVehicleEngineHealth", "getVehicleEngineHealth");
+
+	// VEHICLE COLORS
+
+	lua_registerfunction(L, "setVehiclePrimaryColor", CLuaVehicleDefs::SetVehiclePrimaryColor);
+	lua_registerfunction(L, "setVehicleSecondaryColor", CLuaVehicleDefs::SetVehicleSecondaryColor);
+	lua_registerfunction(L, "getVehiclePrimaryColor", CLuaVehicleDefs::GetVehiclePrimaryColor);
+	lua_registerfunction(L, "getVehicleSecondaryColor", CLuaVehicleDefs::GetVehicleSecondaryColor);
+
+	lua_registeroop(L, "setPrimaryColor", "setVehiclePrimaryColor");
+	lua_registeroop(L, "setSecondaryColor", "setVehicleSecondaryColor");
+	lua_registeroop(L, "getPrimaryColor", "getVehiclePrimaryColor");
+	lua_registeroop(L, "getSecondaryColor", "getVehicleSecondaryColor");
+
+	lua_registervariable(L, "primarycolor", "setVehiclePrimaryColor", "getVehiclePrimaryColor");
+	lua_registervariable(L, "secondarycolor", "setVehicleSecondaryColor", "getVehicleSecondaryColor");
 
 	lua_registerclass(L);
 }
@@ -113,6 +146,170 @@ int CLuaVehicleDefs::GetVehiclePosition(lua_State* L)
 	Vector3fp* t = new Vector3fp(position);
 
 	lua_userdata(L, "Vector3", t);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetVehicleBodyHealth(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	lua_Number health;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+	argReader.ReadNumber(health);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetBodyHealth(health);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetVehicleEngineHealth(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	lua_Number health;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+	argReader.ReadNumber(health);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetEngineHealth(health);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::GetVehicleBodyHealth(lua_State* L)
+{
+	alt::IVehicle* vehicle;	
+	lua_Number health;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	health = vehicle->GetBodyHealth();
+
+	lua_pushnumber(L, health);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::GetVehicleEngineHealth(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	lua_Number health;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	health = vehicle->GetEngineHealth();
+
+	lua_pushnumber(L, health);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetVehiclePrimaryColor(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	lua_Number id;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+	argReader.ReadNumber(id);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetPrimaryColor(id);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetVehicleSecondaryColor(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	lua_Number id;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+	argReader.ReadNumber(id);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetSecondaryColor(id);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::GetVehiclePrimaryColor(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	lua_Number color;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	color = vehicle->GetPrimaryColor();
+
+	lua_pushnumber(L, color);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::GetVehicleSecondaryColor(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	lua_Number color;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	color = vehicle->GetSecondaryColor();
+
+	lua_pushnumber(L, color);
 
 	return 1;
 }
