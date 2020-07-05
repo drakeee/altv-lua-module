@@ -1,3 +1,0 @@
-/mnt/d/Projects/C/altv-lua-module/CMakeFiles/rebuild_cache.dir
-/mnt/d/Projects/C/altv-lua-module/CMakeFiles/lua-module.dir
-/mnt/d/Projects/C/altv-lua-module/CMakeFiles/edit_cache.dir
