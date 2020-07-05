@@ -90,7 +90,7 @@ bool CLuaResourceImpl::Start()
 bool CLuaResourceImpl::Stop()
 {
 
-#ifdef _DEBUG2
+#ifdef _DEBUG
 	Core->LogInfo("CLuaResourceImpl::Stop");
 #endif
 
@@ -100,20 +100,7 @@ bool CLuaResourceImpl::Stop()
 bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 {
 
-	if (ev->GetType() == alt::CEvent::Type::RESOURCE_START)
-	{
-		auto vehicle = Core->CreateVehicle(3078201489, alt::Position(0, 1, 2), alt::Rotation(3, 4, 5));
-		if (vehicle.Get() != nullptr)
-		{
-			auto a = Core->GetVehicles();
-			for (auto b : a)
-			{
-				Core->LogInfo("Vehicle");
-			}
-		}
-	}
-
-#ifdef _DEBUG2
+#ifdef _DEBUG
 	std::list<std::string>::const_iterator it = this->eventTypes.begin();
 	std::advance(it, static_cast<int>(ev->GetType()));
 
@@ -126,7 +113,7 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 void CLuaResourceImpl::OnTick()
 {
 
-#ifdef _DEBUG2
+#ifdef _DEBUG
 	//this->_core->LogInfo("CLuaResourceImpl::OnTick");
 #endif
 
@@ -135,7 +122,7 @@ void CLuaResourceImpl::OnTick()
 void CLuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 {
 
-#ifdef _DEBUG2
+#ifdef _DEBUG
 	Core->LogInfo("CLuaResourceImpl::OnCreateBaseObject: " + std::to_string(static_cast<int>(object->GetType())));
 #endif
 
@@ -148,7 +135,7 @@ void CLuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 void CLuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
 {
 
-#ifdef _DEBUG2
+#ifdef _DEBUG
 	Core->LogInfo("CLuaResourceImpl::OnRemoveBaseObject");
 #endif
 
