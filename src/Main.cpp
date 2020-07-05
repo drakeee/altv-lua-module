@@ -6,19 +6,12 @@ EXPORT bool altMain(alt::ICore* _core)
 {
 	alt::ICore::SetInstance(_core);
 
+	auto& runtime = CLuaScriptRuntime::Instance();
+
 	_core->LogInfo(alt::String("Lua module has been loaded. Version: " MODULE_VERSION));
-	_core->RegisterScriptRuntime("lua", &CLuaScriptRuntime::Instance());
+	_core->RegisterScriptRuntime("lua", &runtime);
 
 	Core = _core;
-
-	//auto& apiCore = alt::ICore::Instance();
-	//auto& runtime = CNodeScriptRuntime::Instance();
-
-	
-	//_core->RegisterScriptRuntime("lua", )
-
-	//apiCore.RegisterScriptRuntime("js", &runtime);
-	//apiCore.SubscribeCommand("js-module", &CommandHandler);
 
 	return true;
 }

@@ -1,24 +1,25 @@
 #include "Main.h"
 
-void CLuaVector3Defs::init(lua_State *L)
+void CLuaVector3Defs::Init(lua_State *L)
 {
-	CLuaVector3Defs::initVariables(L);
-	CLuaVector3Defs::initClass(L);
+	CLuaVector3Defs::InitVariables(L);
+	CLuaVector3Defs::InitClass(L);
 }
 
-void CLuaVector3Defs::initClass(lua_State *L)
+void CLuaVector3Defs::InitClass(lua_State *L)
 {
-	lua_newclass(L, "Vector3");
+	lua_beginclass(L, "Vector3");
+	{
+		lua_classmeta(L, "__gc", CLuaVector3Defs::destroy);
+		lua_classmeta(L, "__tostring", CLuaVector3Defs::tostring);
+		lua_classmeta(L, "__add", CLuaVector3Defs::add);
 
-	lua_classmetatable(L, "__gc", CLuaVector3Defs::destroy);
-	lua_classmetatable(L, "__tostring", CLuaVector3Defs::tostring);
-
-	lua_registerfunction(L, "new", CLuaVector3Defs::create, false);
-
-	lua_registerclass(L);
+		lua_classfunction(L, "new", CLuaVector3Defs::create);
+	}
+	lua_endclass(L);
 }
 
-void CLuaVector3Defs::initVariables(lua_State *L)
+void CLuaVector3Defs::InitVariables(lua_State *L)
 {
 
 }
@@ -87,19 +88,23 @@ int CLuaVector3Defs::create(lua_State *L)
 		lua_pop(L, 1);
 	}else if(argReader.IsCurrentType(LUA_TNUMBER))
 	{
-		argReader.ReadVector<float, 3, alt::PointLayout>(vector);
+		argReader.ReadVector(vector);
 	}
 
 #ifdef _DEBUG
-	Core->LogInfo("Vector3: x = "+ std::to_string(vector.x) +", y = "+ std::to_string(vector.y) +", z = "+ std::to_string(vector.z) +"");
+	//Core->LogInfo("Vector3: x = "+ std::to_string(vector.x) +", y = "+ std::to_string(vector.y) +", z = "+ std::to_string(vector.z) +"");
 #endif
 
-	Vector3fp*tempVector = new Vector3fp(vector);
+	Vector3fp* tempVector = new Vector3fp(vector);
 
-	//sampgdk::logprintf("Vector3(2): x = %f, y = %f, z = %f", tempVector->x, tempVector->y, tempVector->z);
-	lua_userdata(L, "Vector3", tempVector);
+#ifdef _DEBUG
+	/*printf("Create vector: %d\n", tempVector);*/
+#endif
 
-	//lua_stacktrace(L, "Vector32");
+	// in this case we don't want to store any reference in the Lua registry
+	// TODO (?): maybe store reference because we might need it (?) 
+
+	lua_pushuserdata(L, "Vector3", tempVector, false);
 
 	return 1;
 }
@@ -151,9 +156,41 @@ int CLuaVector3Defs::tostring(lua_State *L)
 	}
 
 	char buffer[128];
-	sprintf(buffer, "Vector3(%.3f, %.3f, %.3f)", vector->x, vector->y, vector->z);
+	sprintf_s(buffer, "Vector3(%.3f, %.3f, %.3f)", vector->x, vector->y, vector->z);
 
 	lua_pushstring(L, buffer);
+
+	//lua_stacktrace(L, "tostring");
+
+	return 1;
+}
+
+int CLuaVector3Defs::add(lua_State* L)
+{
+	//lua_stacktrace(L, "CLuaVector3Defs::add");
+
+	Vector3fp *leftVector;
+	Vector3fp *rightVector;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(leftVector);
+	argReader.ReadUserData(rightVector);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+
+		lua_pushnil(L);
+
+		return 1;
+	}
+
+	Vector3fp *temp = new Vector3fp(*leftVector + *rightVector);
+
+	//lua_userdata(L, "Vector3", temp, false);
+
+	/*Core->LogInfo("LeftVector: " + std::to_string(leftVector->x));
+	Core->LogInfo("RightVector: " + std::to_string(rightVector->x));*/
 
 	return 1;
 }

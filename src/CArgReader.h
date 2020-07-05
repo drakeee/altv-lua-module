@@ -28,7 +28,7 @@ public:
 	}
 
 	template <typename T>
-	void ReadNumber(T &number, T defaultValue = 0, bool useDefaultValue = true)
+	void ReadNumber(T &number)
 	{
 		//check if argument is number
 		int argType = lua_type(m_luaVM, m_stackIndex);
@@ -47,10 +47,9 @@ public:
 			return;
 		}
 
-		if(!useDefaultValue)
-			AddErrorMessage("number");
+		AddErrorMessage("number");
 
-		number = defaultValue;
+		number = 0;
 		m_stackIndex++;
 	}
 
@@ -107,18 +106,18 @@ public:
 		return;
 	}
 
-	void ReadPosition(alt::Position& number, alt::Position defaultValue = alt::Position(), bool useDefaultValue = true)
+	void ReadPosition(alt::Position& number)
 	{
-		this->ReadVector<float, 3, alt::PointLayout>(number, defaultValue, useDefaultValue);
+		this->ReadVector<float, 3, alt::PointLayout>(number);
 	}
 
-	void ReadRotation(alt::Rotation& number, alt::Rotation defaultValue = alt::Rotation(), bool useDefaultValue = true)
+	void ReadRotation(alt::Rotation& number)
 	{
-		this->ReadVector<float, 3, alt::RotationLayout>(number, defaultValue, useDefaultValue);
+		this->ReadVector<float, 3, alt::RotationLayout>(number);
 	}
 
 	template<class type, std::size_t size, class _Layout = alt::VectorLayout<type, size>>
-	void ReadVector(alt::Vector<type, size, _Layout> &number, alt::Vector<type, size, _Layout> defaultValue = alt::Vector<type, size, _Layout>(), bool useDefaultValue = true)
+	void ReadVector(alt::Vector<type, size, _Layout> &number)
 	{
 		//check if argument is number
 		int argType = lua_type(m_luaVM, m_stackIndex);
@@ -159,10 +158,9 @@ public:
 
 		//TODO: Handle Vector3 object
 
-		if(!useDefaultValue)
-			AddErrorMessage("vector3");
+		AddErrorMessage("Vector3");
 
-		number = defaultValue;
+		number = alt::Vector<type, size, _Layout>();
 		m_stackIndex += 3; //Skip 3 values because of Vector
 	}
 
@@ -213,7 +211,7 @@ public:
 
 		int argType = lua_type(m_luaVM, m_stackIndex);
 
-		sprintf(buffer, "Bad Argument (%s:%d) Expected argument at index %d: '%s', got '%s' instead.", debugInfo.name, debugInfo.currentline, m_stackIndex, expectedType, lua_typename(m_luaVM, argType));
+		sprintf_s(buffer, "Bad Argument (%s:%d) Expected argument at index %d: '%s', got '%s' instead.", debugInfo.name, debugInfo.currentline, m_stackIndex, expectedType, lua_typename(m_luaVM, argType));
 
 		AddMessage(buffer);
 

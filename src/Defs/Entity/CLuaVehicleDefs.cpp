@@ -1,26 +1,93 @@
-#include "CLuaVehicleDefs.h"
+#include "Main.h"
 
-void CLuaVehicleDefs::init(lua_State* L)
+std::list<alt::IVehicle*> CLuaVehicleDefs::vehicles;
+
+void CLuaVehicleDefs::Init(lua_State* L)
 {
-	CLuaVehicleDefs::initClass(L);
+	CLuaVehicleDefs::InitClass(L);
 }
 
-void CLuaVehicleDefs::initClass(lua_State* L)
+void CLuaVehicleDefs::InitClass(lua_State* L)
 {
-	lua_newclass(L, "Vehicle");
+	lua_globalfunction(L, "createVehicle", CreateVehicle);
+	lua_globalfunction(L, "setVehiclePosition", SetVehiclePosition);
+	lua_globalfunction(L, "getVehiclePosition", GetVehiclePosition);
 
-	lua_registerfunction(L, "createVehicle", CLuaVehicleDefs::CreateVehicle);
-	lua_registerfunction(L, "setVehiclePosition", CLuaVehicleDefs::SetVehiclePosition);
-	lua_registerfunction(L, "getVehiclePosition", CLuaVehicleDefs::GetVehiclePosition);
+	lua_beginclass(L, "Vehicle", "Entity");
+	{
+		lua_classmeta(L, "__gc", CLuaVehicleDefs::destroy);
+		lua_classmeta(L, "__next", next);
+		lua_classmeta(L, "__pairs", pairs);
+		lua_classmeta(L, "__ipairs", ipairs);
+
+		lua_classfunction(L, "new", "createVehicle");
+		//lua_classfunction(L, "setPosition", "setVehiclePosition");
+		//lua_classfunction(L, "getPosition", "getVehiclePosition");
+
+		//lua_classvariable(L, "position", "setPosition", "getPosition");
+	}
+	lua_endclass(L);
+}
+
+/*
 
 
-	lua_registeroop(L, "new", "createVehicle");
-	lua_registeroop(L, "setPosition", "setVehiclePosition");
-	lua_registeroop(L, "getPosition", "getVehiclePosition");
+	auto allVehicle = vehicles;
 
-	lua_registervariable(L, "position", "setVehiclePosition", "getVehiclePosition");
+	lua_newtable(L);
+	int index = 1;
+	for(auto vehicle : allVehicle)
+	{
+		Core->LogInfo("for: " + std::to_string(vehicle->GetModel()));
+		lua_pushnumber(L, index);
+		lua_pushuserdata(L, "Vehicle", vehicle);
+		lua_rawset(L, -3);
 
-	lua_registerclass(L);
+		index++;
+	}
+
+	lua_stacktrace(L, "CLuaVehicleDefs::ipairs");
+*/
+
+int CLuaVehicleDefs::destroy(lua_State* L)
+{
+	Core->LogInfo("CLuaVehicleDefs::destroy");
+
+	return 0;
+}
+
+int CLuaVehicleDefs::next(lua_State* L)
+{
+	Core->LogInfo("CLuaVehicleDefs::next");
+
+	return 0;
+}
+
+int CLuaVehicleDefs::pairs(lua_State* L)
+{
+	
+
+	return 0;
+}
+
+int CLuaVehicleDefs::ipairs(lua_State* L)
+{
+	Core->LogInfo("CLuaVehicleDefs::ipairs");
+
+	//alt::ICore::Instance().GetVehicles();
+	/*for (size_t i = 0; i < allVehicle.GetSize(); i++)
+	{
+		Core->LogInfo("Index: " + std::to_string(allVehicle[i]->GetModel()));
+	}*/
+
+	lua_stacktrace(L, "CLuaVehicleDefs::ipairs");
+
+	return 1;
+}
+
+int CLuaVehicleDefs::tostring(lua_State* L)
+{
+	return 0;
 }
 
 int CLuaVehicleDefs::CreateVehicle(lua_State* L)
@@ -57,8 +124,16 @@ int CLuaVehicleDefs::CreateVehicle(lua_State* L)
 		rotation
 	);
 
+	alt::ICore::Instance().GetVehicles();
+
 	if (vehicle.Get() != nullptr)
-		lua_userdata(L, "Vehicle", vehicle.Get());
+	{
+		lua_pushuserdata(L, "Vehicle", vehicle.Get());
+
+		vehicles.push_back(vehicle.Get());
+
+		Core->LogInfo("SizeVehicle: " + std::to_string(vehicles.size()));
+	}
 	else
 		lua_pushnil(L);
 
@@ -112,7 +187,11 @@ int CLuaVehicleDefs::GetVehiclePosition(lua_State* L)
 	position = vehicle->GetPosition();
 	Vector3fp* t = new Vector3fp(position);
 
-	lua_userdata(L, "Vector3", t);
+#ifdef _DEBUG
+	printf("GetPosition: %p\n", t);
+#endif
+
+	//lua_userdata(L, "Vector3", t, false);
 
 	return 1;
 }

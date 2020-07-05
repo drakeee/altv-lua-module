@@ -12,5 +12,7 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 
 void CLuaScriptRuntime::DestroyImpl(alt::IResource::Impl* impl)
 {
-	
+#ifdef _DEBUG
+	Core->LogInfo("CLuaScriptRuntime::DestroyImpl");
+#endif
 }

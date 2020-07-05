@@ -1,6 +1,217 @@
 #include "Main.h"
 
-int CLuaDefs::Index(lua_State *L)
+int CLuaFunctionDefs::Index(lua_State* L)
+{
+	Core->LogInfo("CLuaFunctionDefs::Index");
+
+	lua_stacktrace(L, "CLuaFunctionDefs::Index");
+	//lua_stacktrace(L, "CLuaFunctionDefs::Index0.1");
+
+	//lua_getmetatable(L, -2);
+	lua_pushvalue(L, lua_upvalueindex(1));
+
+	/*lua_stacktrace(L, "CLuaFunctionDefs::Index0.2");*/
+	//Search for function or variable in own metatable
+	{
+		//Search for function
+		{
+			lua_pushstring(L, "__class");
+			lua_rawget(L, -2);
+
+			L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Index: \"__class\" table not found in metatable");
+			L_ASSERT(lua_isstring(L, -3), "CLuaFunctionDefs::Index: Property name not found at index -2");
+
+			lua_pushvalue(L, -3);
+			lua_rawget(L, -2);
+			//lua_getfield(L, -1, luaL_checkstring(L, -3));
+
+			if (lua_isfunction(L, -1))
+			{
+				return 1;
+			}
+		}
+
+		lua_pop(L, 2);
+
+		//lua_stacktrace(L, "CLuaFunctionDefs::Index (after own metatable function search)");
+
+		//Search for get variable
+		{
+			lua_pushstring(L, "__get");
+			lua_rawget(L, -2);
+
+			L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Index: \"__get\" table not found in metatable");
+			L_ASSERT(lua_isstring(L, -3), "CLuaFunctionDefs::Index: Property name not found at index -2");
+
+			lua_pushvalue(L, -3);
+			lua_rawget(L, -2);
+
+			if (lua_isfunction(L, -1))
+			{
+				lua_pushvalue(L, 1);
+
+				lua_call(L, 1, 1);
+
+				lua_remove(L, -2);
+
+				//Core->LogInfo("CLuaFunctionDefs::Index::lua_isfunction");
+				return 1;
+			}
+		}
+	}
+
+	lua_pop(L, 2);
+
+	//Search in base class
+	{
+		lua_pushstring(L, "__base");
+		lua_rawget(L, -2);
+
+		if (lua_istable(L, -1))
+		{
+			lua_pushstring(L, "__index");
+			lua_rawget(L, -2);
+
+			if (lua_isfunction(L, -1))
+			{
+				lua_pushvalue(L, 1);
+				lua_pushvalue(L, 2);
+
+				lua_call(L, 2, 1);
+
+				/*lua_stacktrace(L, "CLuaFunctionDefs::Index (after call)");*/
+
+				return 1;
+			}
+		}
+
+		//lua_stacktrace(L, "CLuaFunctionDefs::Index (base search)");
+		//Core->LogInfo("CLuaFunctionDefs::Index: Function not found. Search for variable");
+	}
+
+#ifdef _DEBUG
+	//lua_stacktrace(L, "CLuaFunctionDefs::Index2");
+#endif
+
+	lua_pop(L, 2);
+	lua_pushnil(L);
+
+	//lua_stacktrace(L, "CLuaFunctionDefs::Index::end");
+
+	return 1;
+}
+
+int CLuaFunctionDefs::StaticIndex(lua_State* L)
+{
+	Core->LogInfo("CLuaFunctionDefs::StaticIndex");
+
+	return 0;
+}
+
+int CLuaFunctionDefs::NewIndex(lua_State* L)
+{
+	//Core->LogInfo("CLuaFunctionDefs::NewIndex1");
+
+	lua_pushvalue(L, lua_upvalueindex(1)); //meta table, value, variable, userdata
+
+	//Search for __set variable in meta table
+	{
+		lua_pushstring(L, "__set"); //meta table, value, variable, userdata
+		lua_rawget(L, -2);
+
+		lua_pushvalue(L, 2);
+		lua_rawget(L, -2);
+
+		if (lua_isfunction(L, -1))
+		{
+			lua_pushvalue(L, 1);
+			//lua_pushvalue(L, 2); //dont need this
+			lua_pushvalue(L, 3);
+
+			lua_call(L, 2, 0);
+
+			lua_pop(L, 1);
+
+			return 0;
+		}
+
+		lua_pop(L, 2);
+	}
+
+	lua_pushstring(L, "__base");
+	lua_rawget(L, -2);
+
+	if (lua_istable(L, -1))
+	{
+		//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex2");
+
+		lua_pushstring(L, "__newindex");
+		lua_rawget(L, -2);
+
+		if (lua_isfunction(L, -1))
+		{
+			//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex3");
+
+			lua_pushvalue(L, 1);
+			lua_pushvalue(L, 2);
+			lua_pushvalue(L, 3);
+
+			//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex4");
+
+			//Core->LogInfo("Call base shit");
+			//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex5");
+
+			lua_call(L, 3, 0);
+
+			lua_pop(L, 2);
+
+			return 0;
+		}
+	}
+
+	//Core->LogInfo("CLuaFunctionDefs::NewIndex2");
+	
+	return 0;
+}
+
+int CLuaFunctionDefs::Call(lua_State* L)
+{
+	//Core->LogInfo("CLuaFunctionDefs::Call");
+
+	int tempStack = lua_gettop(L);
+	
+	lua_getmetatable(L, 1);
+	L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Call: Metatable not found");
+
+	lua_pushstring(L, "__class");
+	lua_rawget(L, -2);
+	//lua_getfield(L, -1, "__class");
+	L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Call: \"__class\" not found");
+
+	lua_pushstring(L, "new");
+	lua_rawget(L, -2);
+	//lua_getfield(L, -1, "new");
+
+	if (lua_isfunction(L, -1))
+	{
+		lua_replace(L, 1);
+
+		lua_settop(L, tempStack);
+		lua_call(L, tempStack - 1, 1);
+
+		//return tempStack;
+	}
+
+#ifdef _DEBUG
+	//lua_stacktrace(L, "CLuaFunctionDefs::Call");
+#endif
+	
+	//Core->LogInfo("Stack number: " + std::to_string(lua_gettop(L)));
+
+	return 1;
+}
+
+/*int CLuaDefs::Index(lua_State *L)
 {
 	//get the classname
 	lua_getmetatable(L, -2);
@@ -134,4 +345,4 @@ int CLuaDefs::GarbageCollect(lua_State* L)
 	lua_stacktrace(L, "CLuaDefs::GarbageCollect");
 
 	return 0;
-}
+}*/

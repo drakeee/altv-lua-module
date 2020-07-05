@@ -9,6 +9,14 @@ set(PROJECT_MODULE_NAME "lua-module")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(UNIX)
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/linux64/${CMAKE_BUILD_TYPE})
+else()
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/win64/${CMAKE_BUILD_TYPE})
+endif()
+# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+# set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+# set(CMAKE_CXX_FLAGS "-std=c++17 -lstdc++fs -fPIC")
 
 file(GLOB_RECURSE PROJECT_SOURCE_FILES "./src/*.h" "./src/*.hpp" "./src/*.cpp")
 
@@ -24,7 +32,12 @@ add_library(
 )
 
 if(UNIX)
-	target_link_libraries(${PROJECT_MODULE_NAME} ${PROJECT_SOURCE_DIR}/vendors/luajit/lib/linux64/libluajit.a)
+	target_link_libraries(${PROJECT_MODULE_NAME} ${PROJECT_SOURCE_DIR}/vendors/luajit/lib/linux64/libluajit.so)
+	target_compile_options(${PROJECT_MODULE_NAME} PRIVATE
+      -fuse-ld=lld
+      -std=c++17
+	  -lstdc++fs
+    )
 else()
 	target_link_libraries(${PROJECT_MODULE_NAME}
 	${PROJECT_SOURCE_DIR}/vendors/luajit/lib/win64/lua51.lib
