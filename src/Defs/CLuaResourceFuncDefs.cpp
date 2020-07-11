@@ -3,6 +3,13 @@
 const char* CLuaResourceFuncDefs::ClassName = "Resource";
 void CLuaResourceFuncDefs::Init(lua_State* L)
 {
+	lua_globalfunction(L, "isResourceStarted", IsStarted);
+
+	lua_globalfunction(L, "getResourceType", GetType);
+	lua_globalfunction(L, "getResourceName", GetName);
+	lua_globalfunction(L, "getResourcePath", GetPath);
+	lua_globalfunction(L, "getResourceMain", GetMain);
+
 	lua_beginclass(L, ClassName);
 	{
 		lua_classfunction(L, "isStarted", IsStarted);
