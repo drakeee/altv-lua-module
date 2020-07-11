@@ -1,10 +1,32 @@
 #include <Main.h>
 
-CLuaResourceImpl::CLuaResourceImpl(alt::IResource* resource) :
+CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource) :
+	runtime(runtime),
 	resource(resource)
 {
+	//Create new Lua state
+	this->resourceState = luaL_newstate();
 
-#ifdef _DEBUG
+	//Import default libraries into the state
+	luaL_openlibs(this->resourceState);
+	luaopen_jit(this->resourceState);
+
+	//Pop LuaJIT information
+	lua_pop(this->resourceState, 4);
+
+	//Init "es" and "e_mt" table
+	lua_initclass(this->resourceState);
+
+	//Init functions
+	CLuaVector3Defs::Init(this->resourceState);
+	CLuaAltFuncDefs::Init(this->resourceState);
+	CLuaResourceFuncDefs::Init(this->resourceState);
+	CLuaBaseObjectDefs::Init(this->resourceState);
+	CLuaWorldObjectDefs::Init(this->resourceState);
+	CLuaEntityDefs::Init(this->resourceState);
+	CLuaVehicleDefs::Init(this->resourceState);
+
+#ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl");
 #endif
 
@@ -13,7 +35,7 @@ CLuaResourceImpl::CLuaResourceImpl(alt::IResource* resource) :
 CLuaResourceImpl::~CLuaResourceImpl()
 {
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::~CLuaResourceImpl");
 #endif
 
@@ -25,31 +47,6 @@ bool CLuaResourceImpl::Start()
 #ifdef _DEBUG
 	Core->LogInfo("CLuaResourceImpl::Start");
 #endif
-
-	//Create new Lua state
-	this->resourceState = luaL_newstate();
-
-	//Import default libraries into the state
-	luaL_openlibs(this->resourceState);
-	luaopen_jit(this->resourceState);
-
-	lua_pop(this->resourceState, 4);
-
-	lua_initclass(this->resourceState);
-
-	/*lua_State* L = this->resourceState;
-
-	lua_beginclass(L, "Vehicle");
-
-	lua_globalfunction(L, "createVehicle", CLuaVehicleDefs::CreateVehicle);
-
-	lua_endclass(L);*/
-
-	CLuaVector3Defs::Init(this->resourceState);
-	CLuaAltFuncDefs::Init(this->resourceState);
-	CLuaBaseObjectDefs::Init(this->resourceState);
-	CLuaEntityDefs::Init(this->resourceState);
-	CLuaVehicleDefs::Init(this->resourceState);
 
 	//lua_initclass(this->resourceState);
 
@@ -73,15 +70,17 @@ bool CLuaResourceImpl::Start()
 	if (luaL_dofile(this->resourceState, mainFile.CStr()))
 	{
 		//Sadly far from perfect
-		Core->LogInfo(" Unable to load \"" + mainFile + "\"");
+		Core->LogError(" Unable to load \"" + mainFile + "\"");
 
 		//Get the error from the top of the stack
 		if (lua_isstring(this->resourceState, -1))
-			Core->LogInfo(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+			Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
 
 		//Close virtual machine and point to null pointer
 		lua_close(this->resourceState);
 		this->resourceState = nullptr;
+
+		return false;
 	}
 
 	return true;
@@ -100,12 +99,28 @@ bool CLuaResourceImpl::Stop()
 bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 {
 
-#ifdef _DEBUG
-	std::list<std::string>::const_iterator it = this->eventTypes.begin();
-	std::advance(it, static_cast<int>(ev->GetType()));
-
-	Core->LogInfo(alt::String("CLuaResourceImpl::OnEvent::") + (*it));
+#ifndef NDEBUG
+	Core->LogInfo(alt::String("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev));
 #endif
+
+	auto eventFunc = this->runtime->GetEventCallback(ev->GetType());
+	for (auto &functionReference : this->eventsReferences[this->runtime->GetEventType(ev).c_str()])
+	{
+		lua_rawgeti(this->resourceState, LUA_REGISTRYINDEX, functionReference);
+		auto arguments = eventFunc(this->resourceState, ev);
+
+		if (lua_pcall(this->resourceState, arguments, 0, 0) != 0)
+		{
+			//Sadly far from perfect
+			Core->LogError(" Unable to execute \"" + this->runtime->GetEventType(ev) + "\"");
+
+			//Get the error from the top of the stack
+			if (lua_isstring(this->resourceState, -1))
+				Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+
+			//Core->LogInfo("Error running function: %s" + alt::String(lua_tostring(this->resourceState, -1)));
+		}
+	}
 
 	return true;
 }
@@ -122,21 +137,52 @@ void CLuaResourceImpl::OnTick()
 void CLuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 {
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::OnCreateBaseObject: " + std::to_string(static_cast<int>(object->GetType())));
 #endif
 
 	//object->AddRef();
 
-	Core->LogInfo("Ref count: " + std::to_string(object->GetRefCount()));
+	//Core->LogInfo("Ref count: " + std::to_string(object->GetRefCount()));
 
 }
 
 void CLuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
 {
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::OnRemoveBaseObject");
 #endif
 
+}
+
+bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReference)
+{
+	auto& event = this->eventsReferences[eventName];
+	auto& it = std::find(event.begin(), event.end(), functionReference);
+
+	Core->LogInfo("RegisterEvent: " + eventName + " - " + std::to_string(functionReference));
+
+	if (it != event.end())
+	{
+		return false;
+	}
+
+	event.push_back(functionReference);
+	return true;
+}
+
+bool CLuaResourceImpl::RemoveEvent(std::string eventName, int functionReference)
+{
+	auto &event = this->eventsReferences[eventName];
+	auto &it = std::find(event.begin(), event.end(), functionReference);
+
+	if (it != event.end())
+	{
+		event.erase(it);
+
+		return true;
+	}
+
+	return false;
 }

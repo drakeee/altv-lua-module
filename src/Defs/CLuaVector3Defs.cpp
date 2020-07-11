@@ -1,14 +1,9 @@
 #include "Main.h"
 
+const char* CLuaVector3Defs::ClassName = "Vector3";
 void CLuaVector3Defs::Init(lua_State *L)
 {
-	CLuaVector3Defs::InitVariables(L);
-	CLuaVector3Defs::InitClass(L);
-}
-
-void CLuaVector3Defs::InitClass(lua_State *L)
-{
-	lua_beginclass(L, "Vector3");
+	lua_beginclass(L, ClassName);
 	{
 		lua_classmeta(L, "__gc", CLuaVector3Defs::destroy);
 		lua_classmeta(L, "__tostring", CLuaVector3Defs::tostring);
@@ -17,11 +12,6 @@ void CLuaVector3Defs::InitClass(lua_State *L)
 		lua_classfunction(L, "new", CLuaVector3Defs::create);
 	}
 	lua_endclass(L);
-}
-
-void CLuaVector3Defs::InitVariables(lua_State *L)
-{
-
 }
 
 int CLuaVector3Defs::create(lua_State *L)
@@ -113,7 +103,7 @@ int CLuaVector3Defs::destroy(lua_State *L)
 {
 	Vector3fp *vector = nullptr;
 
-	lua_stacktrace(L, "destroy");
+	//lua_stacktrace(L, "destroy");
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(vector);

@@ -9,6 +9,11 @@ void lua_initclass(lua_State* L)
 	lua_setfield(L, LUA_REGISTRYINDEX, "e_mt"); //entity metatable -> this will store all entities functions, metaevents, etc
 }
 
+void lua_globalfunction(lua_State* L, const char* functionName, lua_CFunction func)
+{
+	lua_register(L, functionName, func);
+}
+
 void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 {
 	//lua_getfield(L, LUA_REGISTRYINDEX, "e_mt");
@@ -28,7 +33,6 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 	else
 	{
 		lua_getclass(L, baseClass);
-
 		L_ASSERT(lua_istable(L, -1), "lua_beginclass: Implementing \"" + alt::String(className) + "\" class. Error: base class \"" + alt::String(baseClass) + "\" not found.");
 	}
 	lua_rawset(L, -3);
@@ -170,15 +174,26 @@ void lua_classfunction(lua_State* L, const char* functionName, lua_CFunction fun
 	//lua_stacktrace(L, "lua_classfunction::CFunction");
 }
 
-void lua_classmeta(lua_State* L, const char* metaName, lua_CFunction metaFunction, bool isClosure)
+void lua_classmeta(lua_State* L, const char* metaName, lua_CFunction metaFunction, bool useClosure)
 {
 	//lua_getfield(L, -1, "__meta");
 
 	L_ASSERT(lua_istable(L, -1), "lua_classfunction: \"__meta\" table not found");
 
 	lua_pushstring(L, metaName);
-	//lua_stacktrace(L, "lua_classmeta");
-	if (isClosure)
+	lua_rawget(L, -2);
+
+	//check if metafield exists
+	if (!lua_isnil(L, -1))
+	{
+		lua_pop(L, 1);
+		return;
+	}
+
+	lua_pop(L, 1);
+
+	lua_pushstring(L, metaName);
+	if (useClosure)
 	{
 		lua_pushvalue(L, -2);
 		lua_pushcclosure(L, metaFunction, 1);
@@ -284,7 +299,25 @@ void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool r
 	lua_setmetatable(L, -2); //apply metatable to userdata
 }
 
-void lua_pushmvalue(lua_State* L, alt::MValueConst mValue)
+//void lua_pushvector(lua_State* L, Vector3fp& vector, bool refUserData)
+//{
+//	Vector3fp* vec = new Vector3fp(vector);
+//	lua_pushuserdata(L, CLuaVector3Defs::ClassName, vec, refUserData);
+//}
+
+void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData)
+{
+	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+	lua_pushuserdata(L, runtime->GetBaseObjectType(baseObject->GetType()).c_str(), baseObject, refUserData);
+}
+
+void lua_pushrgba(lua_State* L, alt::RGBA& color, bool refUserData)
+{
+	alt::RGBA* tempColor = new alt::RGBA(color);
+	lua_pushuserdata(L, CLuaRGBADefs::ClassName, tempColor, refUserData);
+}
+
+void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue)
 {
 	switch (mValue->GetType())
 	{
@@ -304,6 +337,65 @@ void lua_pushmvalue(lua_State* L, alt::MValueConst mValue)
 	case alt::IMValue::Type::DOUBLE:
 		lua_pushnumber(L, mValue.As<alt::IMValueDouble>()->Value());
 		break;
+	case alt::IMValue::Type::STRING:
+		lua_pushstring(L, mValue.As<alt::IMValueString>()->Value().CStr());
+		break;
+	}
+}
+
+void lua_pushresource(lua_State* L, alt::IResource* resource, bool refUserData)
+{
+	lua_pushuserdata(L, CLuaResourceFuncDefs::ClassName, resource, refUserData);
+}
+
+int lua_functionref(lua_State* L, int idx)
+{
+	if (!lua_isfunction(L, idx))
+		return LUA_NOREF;
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+
+	lua_pushvalue(L, idx);
+
+	const void* ptr = lua_topointer(L, -1);
+	int ref = runtime->GetFunctionRef(ptr);
+	
+	if (ref == LUA_NOREF)
+	{
+		ref = luaL_ref(L, LUA_REGISTRYINDEX);
+		runtime->AddFunctionRef(ptr, ref);
+	}
+	
+	return ref;
+}
+
+//void lua_pushentity(lua_State* L, alt::IEntity* entity)
+//{
+//	switch (entity->GetType())
+//	{
+//	case alt::IBaseObject::Type::PLAYER:
+//		lua_pushbaseobject(L, entity);
+//		break;
+//	}
+//}
+
+void lua_todict(lua_State* L, int idx)
+{
+	lua_pushvalue(L, idx);
+	lua_pushnil(L);
+
+	while (lua_next(L, -2))
+	{
+		lua_pushvalue(L, -2);
+		// stack now contains: -1 => key; -2 => value; -3 => key; -4 => table
+
+
+
+		//const char* key = lua_tostring(L, -1);
+		//const char* value = lua_tostring(L, -2);
+		//printf("%s => %s\n", key, value);
+		// pop value + copy of key, leaving original key
+		lua_pop(L, 2);
 	}
 }
 

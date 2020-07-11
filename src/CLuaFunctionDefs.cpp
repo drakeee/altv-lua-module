@@ -2,9 +2,9 @@
 
 int CLuaFunctionDefs::Index(lua_State* L)
 {
-	Core->LogInfo("CLuaFunctionDefs::Index");
+	//Core->LogInfo("CLuaFunctionDefs::Index");
 
-	lua_stacktrace(L, "CLuaFunctionDefs::Index");
+	//lua_stacktrace(L, "CLuaFunctionDefs::Index");
 	//lua_stacktrace(L, "CLuaFunctionDefs::Index0.1");
 
 	//lua_getmetatable(L, -2);
@@ -26,7 +26,7 @@ int CLuaFunctionDefs::Index(lua_State* L)
 			//lua_getfield(L, -1, luaL_checkstring(L, -3));
 
 			if (lua_isfunction(L, -1))
-			{
+			{	
 				return 1;
 			}
 		}

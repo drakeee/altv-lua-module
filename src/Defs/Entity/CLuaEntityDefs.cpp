@@ -1,29 +1,31 @@
 #include <Main.h>
 
+const char* CLuaEntityDefs::ClassName = "Entity";
 void CLuaEntityDefs::Init(lua_State* L)
 {
-	lua_beginclass(L, "Entity", "BaseObject");
+	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
 	{
 		lua_classfunction(L, "getId", GetID);
 		lua_classfunction(L, "getNetworkOwner", GetNetworkOwner);
 		lua_classfunction(L, "getModel", GetModel);
-		lua_classfunction(L, "setPosition", SetPosition);
-		lua_classfunction(L, "getPosition", GetPosition);
+		//lua_classfunction(L, "setPosition", SetPosition);
+		//lua_classfunction(L, "getPosition", GetPosition);
 		lua_classfunction(L, "setRotation", SetRotation);
 		lua_classfunction(L, "getRotation", GetRotation);
 		lua_classfunction(L, "hasSyncedMetaData", HasSyncedMetaData);
 		lua_classfunction(L, "getSyncedMetaData", GetSyncedMetaData);
 		lua_classfunction(L, "hasStreamSyncedMetaData", HasStreamSyncedMetaData);
 		lua_classfunction(L, "getStreamSyncedMetaData", GetStreamSyncedMetaData);
-		//lua_classfunction(L, "setSyncedMetaData", SetSyncedMetaData);
+		lua_classfunction(L, "setSyncedMetaData", SetSyncedMetaData);
 		lua_classfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
-		//lua_classfunction(L, "setStreamSyncedMetaData", SetStreamSyncedMetaData);
+		lua_classfunction(L, "setStreamSyncedMetaData", SetStreamSyncedMetaData);
 		lua_classfunction(L, "deleteStreamSyncedMetaData", DeleteStreamSyncedMetaData);
 
 		lua_classvariable(L, "id", nullptr, "getId");
 		lua_classvariable(L, "networkOwner", nullptr, "getNetworkOwner");
 		lua_classvariable(L, "model", nullptr, "getModel");
-		lua_classvariable(L, "position", "setPosition", "getPosition");
+		//lua_classvariable(L, "position", "setPosition", "getPosition");
+		lua_classvariable(L, "rotation", "setRotation", "getRotation");
 	}
 	lua_endclass(L);
 
@@ -34,7 +36,7 @@ int CLuaEntityDefs::ToString(lua_State* L)
 	alt::IEntity* entity;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 
 	if (argReader.HasAnyError())
 	{
@@ -52,7 +54,7 @@ int CLuaEntityDefs::GetID(lua_State* L)
 	alt::IEntity *entity;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 
 	if (argReader.HasAnyError())
 	{
@@ -70,7 +72,7 @@ int CLuaEntityDefs::GetNetworkOwner(lua_State* L)
 	alt::IEntity* entity;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 
 	if (argReader.HasAnyError())
 	{
@@ -88,7 +90,7 @@ int CLuaEntityDefs::GetModel(lua_State* L)
 	alt::IEntity* entity;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 
 	if (argReader.HasAnyError())
 	{
@@ -101,43 +103,59 @@ int CLuaEntityDefs::GetModel(lua_State* L)
 	return 1;
 }
 
-int CLuaEntityDefs::SetPosition(lua_State* L)
-{
-	alt::IEntity* entity;
-	alt::Position position;
+//int CLuaEntityDefs::SetPosition(lua_State* L)
+//{
+//	Core->LogInfo("CLuaEntityDefs::SetPosition1");
+//
+//	alt::IEntity* entity;
+//	alt::Position position;
+//
+//	Core->LogInfo("CLuaEntityDefs::SetPosition2");
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(entity);
+//	argReader.ReadPosition(position);
+//
+//	Core->LogInfo("CLuaEntityDefs::SetPosition3");
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	Core->LogInfo("CLuaEntityDefs::SetPosition4");
+//
+//	//alt::IEntity* shit = dynamic_cast<alt::IEntity*>(entity);
+//
+//	printf("SetPosition: %p\n", entity);
+//	printf("SetPosition type: %d\n", entity->GetType());
+//	printf("SetPosition: %f, %f, %f\n", position.x, position.y, position.z);
+//
+//	entity->SetPosition(position);
+//
+//	Core->LogInfo("CLuaEntityDefs::SetPosition5");
+//
+//	return 0;
+//}
 
-	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
-	argReader.ReadPosition(position);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	entity->SetPosition(position);
-
-	return 0;
-}
-
-int CLuaEntityDefs::GetPosition(lua_State* L)
-{
-	alt::IEntity* entity;
-
-	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushuserdata(L, "Vector3", new alt::Position(entity->GetPosition()), false);
-
-	return 1;
-}
+//int CLuaEntityDefs::GetPosition(lua_State* L)
+//{
+//	alt::IEntity* entity;
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(entity);
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	lua_pushuserdata(L, "Vector3", new alt::Position(entity->GetPosition()), false);
+//
+//	return 1;
+//}
 
 int CLuaEntityDefs::SetRotation(lua_State* L)
 {
@@ -145,8 +163,8 @@ int CLuaEntityDefs::SetRotation(lua_State* L)
 	alt::Rotation rotation;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
-	argReader.ReadRotation(rotation);
+	argReader.ReadBaseObject(entity);
+	argReader.ReadVector(rotation);
 
 	if (argReader.HasAnyError())
 	{
@@ -164,7 +182,7 @@ int CLuaEntityDefs::GetRotation(lua_State* L)
 	alt::IEntity* entity;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 
 	if (argReader.HasAnyError())
 	{
@@ -172,7 +190,8 @@ int CLuaEntityDefs::GetRotation(lua_State* L)
 		return 0;
 	}
 
-	lua_pushuserdata(L, "Vector3", new alt::Rotation(entity->GetRotation()), false);
+	//lua_pushuserdata(L, "Vector3", new alt::Rotation(entity->GetRotation()), false);
+	lua_pushvector(L, entity->GetRotation());
 
 	return 1;
 }
@@ -183,7 +202,7 @@ int CLuaEntityDefs::HasSyncedMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())
@@ -203,7 +222,7 @@ int CLuaEntityDefs::GetSyncedMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())
@@ -223,7 +242,7 @@ int CLuaEntityDefs::HasStreamSyncedMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())
@@ -243,7 +262,7 @@ int CLuaEntityDefs::GetStreamSyncedMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())
@@ -257,27 +276,27 @@ int CLuaEntityDefs::GetStreamSyncedMetaData(lua_State* L)
 	return 1;
 }
 
-//int CLuaEntityDefs::SetSyncedMetaData(lua_State* L)
-//{
-//	alt::IEntity* entity;
-//	std::string key;
-//	alt::MValue value;
-//
-//	CArgReader argReader(L);
-//	argReader.ReadUserData(entity);
-//	argReader.ReadString(key);
-//	argReader.ReadMValue(value);
-//
-//	if (argReader.HasAnyError())
-//	{
-//		argReader.GetErrorMessages();
-//		return 0;
-//	}
-//
-//	entity->SetSyncedMetaData(key, val);
-//
-//	return 1;
-//}
+int CLuaEntityDefs::SetSyncedMetaData(lua_State* L)
+{
+	alt::IEntity* entity;
+	std::string key;
+	alt::MValue value;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+	argReader.ReadString(key);
+	argReader.ReadMValue(value);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	entity->SetSyncedMetaData(key, value);
+
+	return 0;
+}
 
 int CLuaEntityDefs::DeleteSyncedMetaData(lua_State* L)
 {
@@ -285,7 +304,7 @@ int CLuaEntityDefs::DeleteSyncedMetaData(lua_State* L)
 	std::string key;
 	
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 	argReader.ReadString(key);
 	
 	if (argReader.HasAnyError())
@@ -299,10 +318,27 @@ int CLuaEntityDefs::DeleteSyncedMetaData(lua_State* L)
 	return 0;
 }
 
-//int CLuaEntityDefs::SetStreamSyncedMetaData(lua_State* L)
-//{
-//	return 0;
-//}
+int CLuaEntityDefs::SetStreamSyncedMetaData(lua_State* L)
+{
+	alt::IEntity* entity;
+	std::string key;
+	alt::MValue value;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+	argReader.ReadString(key);
+	argReader.ReadMValue(value);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	entity->SetStreamSyncedMetaData(key, value);
+
+	return 0;
+}
 
 int CLuaEntityDefs::DeleteStreamSyncedMetaData(lua_State* L)
 {
@@ -310,7 +346,7 @@ int CLuaEntityDefs::DeleteStreamSyncedMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(entity);
+	argReader.ReadBaseObject(entity);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())

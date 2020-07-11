@@ -15,9 +15,12 @@ public:
 	};
 
 public:
+	static const char* ClassName;
 	static void Init(lua_State* L);
 
 private:
+	static int AltIndex(lua_State* L);
+
 	static int inext(lua_State* L);
 	static int pairs(lua_State* L);
 	static int ipairs(lua_State* L);
@@ -29,6 +32,9 @@ private:
 	static int LogWarning(lua_State* L);
 	static int LogError(lua_State* L);
 	static int LogColored(lua_State* L);
+
+	static int OnServer(lua_State* L);
+	static int OffServer(lua_State* L);
 
 	static int tostringtest(lua_State* L);
 };

@@ -1,38 +1,30 @@
 #include <Main.h>
 
-const std::list<std::string> CLuaBaseObjectDefs::entityTypes = std::list<std::string>({
-		"Player",
-		"Vehicle",
-		"Blip",
-		"WebView",
-		"VoiceChannel",
-		"ColShape",
-		"CheckPoint"
-});
-
+const char* CLuaBaseObjectDefs::ClassName = "BaseObject";
 void CLuaBaseObjectDefs::Init(lua_State* L)
 {
-	lua_beginclass(L, "BaseObject");
+	lua_beginclass(L, ClassName);
 	{
-		lua_classmeta(L, "__tostring", tostring);
+		//lua_classmeta(L, "__tostring", tostring);
 
 		lua_classfunction(L, "getType", GetType);
 		lua_classfunction(L, "hasMetaData", HasMetaData);
 		lua_classfunction(L, "getMetaData", GetMetaData);
-		//lua_classfunction(L, "setMetaData", SetMetaData);
+		lua_classfunction(L, "setMetaData", SetMetaData);
 		lua_classfunction(L, "deleteMetaData", DeleteMetaData);
+		lua_classfunction(L, "destroy", Destroy);
+
+		lua_classvariable(L, "type", nullptr, "getType");
 	}
 	lua_endclass(L);
 }
 
 int CLuaBaseObjectDefs::tostring(lua_State* L)
 {
-	Core->LogInfo("shit happens i guess");
-
 	alt::IBaseObject* baseObject;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(baseObject);
+	argReader.ReadBaseObject(baseObject);
 
 	if (argReader.HasAnyError())
 	{
@@ -40,22 +32,23 @@ int CLuaBaseObjectDefs::tostring(lua_State* L)
 		return 0;
 	}
 
-	std::list<std::string>::const_iterator it = entityTypes.begin();
-	std::advance(it, (static_cast<int>(baseObject->GetType()) - 1));
+	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+	//std::list<std::string>::const_iterator it = entityTypes.begin();
+	//std::advance(it, (static_cast<int>(baseObject->GetType()) - 1));
 
-	alt::StringView type("userdata:" + *it);
+	alt::StringView type("userdata:" + runtime->GetBaseObjectType(baseObject));
 
 	lua_pushstring(L, type.CStr());
 
 	return 1;
 }
 
-int CLuaBaseObjectDefs::GetType(lua_State* L)
+int CLuaBaseObjectDefs::Destroy(lua_State* L)
 {
 	alt::IBaseObject* baseObject;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(baseObject);
+	argReader.ReadBaseObject(baseObject);
 
 	if (argReader.HasAnyError())
 	{
@@ -63,7 +56,28 @@ int CLuaBaseObjectDefs::GetType(lua_State* L)
 		return 0;
 	}
 
-	lua_pushnumber(L, static_cast<int>(baseObject->GetType()));
+	Core->DestroyBaseObject(baseObject);
+
+	lua_pushboolean(L, true);
+
+	return 1;
+}
+
+int CLuaBaseObjectDefs::GetType(lua_State* L)
+{
+	alt::IBaseObject *baseObject;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(baseObject);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto type = CLuaScriptRuntime::Instance().GetBaseObjectType(baseObject->GetType());
+	lua_pushstring(L, type.c_str());
 
 	return 1;
 }
@@ -74,7 +88,7 @@ int CLuaBaseObjectDefs::HasMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(baseObject);
+	argReader.ReadBaseObject(baseObject);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())
@@ -94,7 +108,7 @@ int CLuaBaseObjectDefs::GetMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(baseObject);
+	argReader.ReadBaseObject(baseObject);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())
@@ -110,6 +124,23 @@ int CLuaBaseObjectDefs::GetMetaData(lua_State* L)
 
 int CLuaBaseObjectDefs::SetMetaData(lua_State* L)
 {
+	alt::IBaseObject* baseObject;
+	std::string key;
+	alt::MValue value;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(baseObject);
+	argReader.ReadString(key);
+	argReader.ReadMValue(value);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	baseObject->SetMetaData(key, value);
+
 	return 0;
 }
 
@@ -119,7 +150,7 @@ int CLuaBaseObjectDefs::DeleteMetaData(lua_State* L)
 	std::string key;
 
 	CArgReader argReader(L);
-	argReader.ReadUserData(baseObject);
+	argReader.ReadBaseObject(baseObject);
 	argReader.ReadString(key);
 
 	if (argReader.HasAnyError())

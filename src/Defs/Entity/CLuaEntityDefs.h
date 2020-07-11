@@ -5,8 +5,10 @@
 class CLuaEntityDefs
 {
 public:
+	static const char* ClassName;
 	static void Init(lua_State* L);
 
+private:
 	static int ToString(lua_State* L);
 
 	static int GetID(lua_State* L);
@@ -15,8 +17,8 @@ public:
 
 	static int GetModel(lua_State* L);
 
-	static int SetPosition(lua_State* L);
-	static int GetPosition(lua_State* L);
+	//static int SetPosition(lua_State* L);
+	//static int GetPosition(lua_State* L);
 	static int SetRotation(lua_State* L);
 	static int GetRotation(lua_State* L);
 

@@ -1,24 +1,33 @@
 #include <Main.h>
 
+const char* CLuaAltFuncDefs::ClassName = "alt";
 void CLuaAltFuncDefs::Init(lua_State* L)
 {
 	//lua_newtable(L);
 
-	lua_globalfunction(L, "logInfo", CLuaAltFuncDefs::LogInfo);
-	lua_globalfunction(L, "logDebug", CLuaAltFuncDefs::LogDebug);
-	lua_globalfunction(L, "logWarning", CLuaAltFuncDefs::LogWarning);
-	lua_globalfunction(L, "logError", CLuaAltFuncDefs::LogError);
-	lua_globalfunction(L, "logColored", CLuaAltFuncDefs::LogColored);
+	lua_globalfunction(L, "logInfo", LogInfo);
+	lua_globalfunction(L, "logDebug", LogDebug);
+	lua_globalfunction(L, "logWarning", LogWarning);
+	lua_globalfunction(L, "logError", LogError);
+	lua_globalfunction(L, "logColored", LogColored);
 
 	lua_beginclass(L, "Log");
+	{
+		lua_classfunction(L, "info", "logInfo");
+		lua_classfunction(L, "debug", "logDebug");
+		lua_classfunction(L, "warning", "logWarning");
+		lua_classfunction(L, "error", "logError");
+		lua_classfunction(L, "colored", "logColored");
+	}
+	lua_endclass(L);
 
-	lua_classfunction(L, "info", "logInfo");
+	lua_globalfunction(L, "onServer", OnServer);
+	lua_globalfunction(L, "offServer", OffServer);
 
-	/*lua_classfunction(L, "debug", "logDebug");
-	lua_classfunction(L, "warning", "logWarning");
-	lua_classfunction(L, "error", "logError");
-	lua_classfunction(L, "colored", "logColored");*/
-
+	lua_beginclass(L, ClassName);
+	{
+		lua_classmeta(L, "__index", AltIndex, true);
+	}
 	lua_endclass(L);
 
 	/*lua_pushstring(L, "logInfo");
@@ -100,6 +109,84 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_pop(L, 1);
 }
 
+int CLuaAltFuncDefs::OnServer(lua_State* L)
+{
+	std::string eventName;
+	int functionRef;
+
+	unsigned int ha = 1;
+	lua_pushnumber(L, ha);
+
+	CArgReader argReader(L);
+	argReader.ReadString(eventName);
+	argReader.ReadFunction(functionRef);
+	//argReader.ReadFunctionComplete();
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+
+	lua_pushboolean(L, resource->RegisterEvent(eventName, functionRef));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::OffServer(lua_State* L)
+{
+	std::string eventName;
+	int functionRef;
+
+	CArgReader argReader(L);
+	argReader.ReadString(eventName);
+	argReader.ReadFunction(functionRef);
+	//argReader.ReadFunctionComplete();
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+
+	lua_pushboolean(L, resource->RemoveEvent(eventName, functionRef));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::AltIndex(lua_State* L)
+{
+	//Route all index accessing to the default handler
+	int results = CLuaFunctionDefs::Index(L);
+	if (!lua_isnil(L, -1))
+	{
+		//return results
+		return results;
+	}
+
+	//pop nil
+	lua_pop(L, 1);
+
+	//string expected on top of the stack
+	L_ASSERT(lua_isstring(L, -1), "String expected");
+
+	//check if global namespace has the function, or if its a class
+	lua_getglobal(L, luaL_checkstring(L, -1));
+	if (lua_isfunction(L, -1) || lua_istable(L, -1))
+	{
+		return 1;
+	}
+
+	//nothing found
+	return 0;
+}
+
 int CLuaAltFuncDefs::inext(lua_State* L)
 {
 	luaL_checktype(L, 1, LUA_TTABLE);
@@ -133,21 +220,21 @@ int CLuaAltFuncDefs::pairs(lua_State* L)
 
 int CLuaAltFuncDefs::ipairsaux(lua_State* L)
 {
-	Core->LogInfo("CLuaAltFuncDefs::ipairsaux");
+	//Core->LogInfo("CLuaAltFuncDefs::ipairsaux");
 
 	int i = luaL_checkint(L, 2);
 	luaL_checktype(L, 1, LUA_TTABLE);
 	i++;  /* next value */
 	lua_pushinteger(L, i);
 	lua_rawgeti(L, 1, i);
-	lua_stacktrace(L, "CLuaAltFuncDefs::ipairsaux");
+	//lua_stacktrace(L, "CLuaAltFuncDefs::ipairsaux");
 
 	return (lua_isnil(L, -1)) ? 0 : 2;
 }
 
 int CLuaAltFuncDefs::ipairs(lua_State* L)
 {
-	Core->LogInfo("CLuaAltFuncDefs::ipairs");
+	//Core->LogInfo("CLuaAltFuncDefs::ipairs");
 	luaL_getmetafield(L, 1, "__ipairs");
 	
 	if (lua_isfunction(L, -1))
@@ -160,14 +247,14 @@ int CLuaAltFuncDefs::ipairs(lua_State* L)
 	lua_pushvalue(L, 1);
 	lua_pushnumber(L, 0);
 
-	lua_stacktrace(L, "CLuaAltFuncDefs::ipairs1");
+	//lua_stacktrace(L, "CLuaAltFuncDefs::ipairs1");
 
 	return 3;
 }
 
 int CLuaAltFuncDefs::tostringtest(lua_State* L)
 {
-	Core->LogInfo("CLuaAltFuncDefs::tostringtest");
+	//Core->LogInfo("CLuaAltFuncDefs::tostringtest");
 
 	return 2;
 }
