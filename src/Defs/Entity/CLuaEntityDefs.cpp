@@ -3,6 +3,27 @@
 const char* CLuaEntityDefs::ClassName = "Entity";
 void CLuaEntityDefs::Init(lua_State* L)
 {
+	lua_globalfunction(L, "getEntityID", GetID);
+
+	lua_globalfunction(L, "getEntityNetworkOwner", GetNetworkOwner);
+
+	lua_globalfunction(L, "getEntityModel", GetModel);
+
+	//lua_globalfunction(L, SetPosition(lua_State* "L", L);
+	//lua_globalfunction(L, GetPosition(lua_State* "L", L);
+	lua_globalfunction(L, "setEntityRotation", SetRotation);
+	lua_globalfunction(L, "getEntityRotation", GetRotation);
+
+	lua_globalfunction(L, "hasEntitySyncedMetaData", HasSyncedMetaData);
+	lua_globalfunction(L, "getEntitySyncedMetaData", GetSyncedMetaData);
+	lua_globalfunction(L, "hasEntityStreamSyncedMetaData", HasStreamSyncedMetaData);
+	lua_globalfunction(L, "getEntityStreamSyncedMetaData", GetStreamSyncedMetaData);
+
+	lua_globalfunction(L, "setEntitySyncedMetaData", SetSyncedMetaData);
+	lua_globalfunction(L, "deleteEntitySyncedMetaData", DeleteSyncedMetaData);
+	lua_globalfunction(L, "setEntityStreamSyncedMetaData", SetStreamSyncedMetaData);
+	lua_globalfunction(L, "deleteEntityStreamSyncedMetaData", DeleteStreamSyncedMetaData);
+
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
 	{
 		lua_classfunction(L, "getId", GetID);
