@@ -29,8 +29,7 @@ extern alt::ICore* Core;
 
 typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 
-//#include "CLuaDefs.h"
-#include "CLuaDefs2.h"
+#include "CLuaDefs.h"
 #include "CArgReader.h"
 #include "CLuaScriptRuntime.h"
 #include "CLuaResourceImpl.h"
