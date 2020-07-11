@@ -44,24 +44,3 @@ typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 #include <Defs/Entity/CLuaWorldObjectDefs.h>
 #include <Defs/Entity/CLuaEntityDefs.h>
 #include <Defs/Entity/CLuaVehicleDefs.h>
-
-
-class LuaCore : public alt::ICore
-{
-public:
-	LuaCore() {}
-	virtual ~LuaCore() {}
-
-	bool RegisterScriptRuntime2(alt::StringView resourceType, alt::IScriptRuntime* runtime)
-	{
-		LogInfo("RegisterScriptRuntime2");
-
-		return this->RegisterScriptRuntime(resourceType, runtime);
-		//return true;
-	}
-
-	void Shit(void)
-	{
-		LogInfo("Shit");
-	}
-};
