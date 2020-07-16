@@ -54,18 +54,6 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 
 void lua_endclass(lua_State* L)
 {
-	//assert(lua_istable(L, -1));
-	//assert(lua_isstring(L, -2));
-
-	//lua_pushstring(L, "e_mt");
-	//lua_rawget(L, LUA_REGISTRYINDEX); //e_mt, class table, class name
-
-	//lua_pushvalue(L, -3); //class name, e_mt, class table, class name
-	//lua_pushvalue(L, -3); //class table, class name, e_mt, class table, class name
-	//lua_rawset(L, -3); //e_mt, class table, class name
-
-	//lua_pop(L, 3); //empty
-
 	lua_classmeta(L, "__call", CLuaFunctionDefs::Call);
 	lua_classmeta(L, "__index", CLuaFunctionDefs::Index, true);
 	lua_classmeta(L, "__newindex", CLuaFunctionDefs::NewIndex, true);
@@ -78,36 +66,6 @@ void lua_endclass(lua_State* L)
 
 	lua_rawset(L, -3);
 	lua_pop(L, 1);
-
-	/*lua_newtable(L);
-	lua_getfield(L, -2, "__meta");
-	lua_setmetatable(L, -2);
-	L_ASSERT(lua_isstring(L, -3), "lua_endclass: String not found at position -3");
-	lua_setglobal(L, lua_tostring(L, -3));*/
-
-	/*lua_newtable(L); //this will be the metatable
-	lua_newtable(L); //table for storing metaevents
-	{
-		lua_pushstring(L, "__call");
-		lua_pushcfunction(L, CLuaFunctionDefs::Call);
-		lua_rawset(L, -3);
-
-		lua_pushstring(L, "__newindex");
-		lua_pushcfunction(L, CLuaFunctionDefs::NewIndex);
-		lua_rawset(L, -3);
-
-		lua_pushstring(L, "__index");
-		lua_pushcfunction(L, CLuaFunctionDefs::Index);
-		lua_rawset(L, -3);
-	}
-	lua_setmetatable(L, -2); //set metatable
-
-	L_ASSERT(lua_isstring(L, -3), "lua_endclass: String not found at position -3");
-	lua_setglobal(L, lua_tostring(L, -3));*/
-
-	//lua_rawset(L, -3);
-
-	//lua_pop(L, 3);
 }
 
 void lua_getclass(lua_State* L, const char* className)
@@ -340,6 +298,26 @@ void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue)
 	case alt::IMValue::Type::STRING:
 		lua_pushstring(L, mValue.As<alt::IMValueString>()->Value().CStr());
 		break;
+	case alt::IMValue::Type::BASE_OBJECT:
+		lua_pushbaseobject(L, mValue.As<alt::IMValueBaseObject>()->Value().Get());
+		break;
+	case alt::IMValue::Type::DICT:
+	{
+		auto dict = mValue.As<alt::IMValueDict>();
+
+		lua_newtable(L);
+		for (auto it = dict->Begin(); it; it = dict->Next())
+		{
+			lua_pushstring(L, it->GetKey().CStr());
+			lua_pushmvalue(L, it->GetValue());
+			lua_rawset(L, -3);
+		}
+
+		break;
+	}
+	default:
+		Core->LogError("lua_pushmvalue: Unhandled IMValue type: " + std::to_string(static_cast<int>(mValue->GetType())));
+		break;
 	}
 }
 
@@ -353,17 +331,18 @@ int lua_functionref(lua_State* L, int idx)
 	if (!lua_isfunction(L, idx))
 		return LUA_NOREF;
 
-	auto runtime = &CLuaScriptRuntime::Instance();
 
 	lua_pushvalue(L, idx);
-
 	const void* ptr = lua_topointer(L, -1);
-	int ref = runtime->GetFunctionRef(ptr);
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+	int ref = resource->GetFunctionRef(ptr);
 	
 	if (ref == LUA_NOREF)
 	{
 		ref = luaL_ref(L, LUA_REGISTRYINDEX);
-		runtime->AddFunctionRef(ptr, ref);
+		resource->AddFunctionRef(ptr, ref);
 	}
 	
 	return ref;
@@ -378,6 +357,64 @@ int lua_functionref(lua_State* L, int idx)
 //		break;
 //	}
 //}
+
+alt::MValue lua_tomvalue(lua_State* L, int idx)
+{
+	alt::MValue mValue;
+
+	int argType = lua_type(L, idx);
+	switch (argType)
+	{
+	case LUA_TNUMBER:
+		mValue = Core->CreateMValueDouble(lua_tonumber(L, idx));
+		break;
+	case LUA_TBOOLEAN:
+		mValue = Core->CreateMValueBool(lua_toboolean(L, idx));
+		break;
+	case LUA_TSTRING:
+		mValue = Core->CreateMValueString(lua_tostring(L, idx));
+		break;
+	case LUA_TTABLE:
+	{
+		//Core->LogInfo("Save table");
+		auto tempDict = Core->CreateMValueDict();
+
+		lua_pushvalue(L, idx);
+		lua_pushnil(L);
+
+		while (lua_next(L, -2))
+		{
+			lua_pushvalue(L, -2);
+			
+			const char* key = lua_tostring(L, -1);
+			auto value = lua_tomvalue(L, -2);
+
+			tempDict->Set(key, value.Get()->Clone());
+
+			lua_pop(L, 2);
+		}
+
+		lua_pop(L, 1);
+
+		mValue = tempDict.Get()->Clone();
+
+		break;
+	}
+	case LUA_TFUNCTION:
+		//Core->CreateMValueFunction()
+		//auto dict = Core->CreateMValueDict();
+
+		Core->LogError("Error: Function save not yet implemented.");
+		luaL_error(L, "Function save not yet implemented.");
+		mValue = Core->CreateMValueNil();
+		break;
+	default:
+		Core->LogError("ReadMValue: Unexpected Lua type: " + alt::String(lua_typename(L, argType)));
+		break;
+	}
+
+	return mValue;
+}
 
 void lua_todict(lua_State* L, int idx)
 {

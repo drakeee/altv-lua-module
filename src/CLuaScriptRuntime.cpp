@@ -1,21 +1,19 @@
 #include "CLuaScriptRuntime.h"
 
-alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
+CLuaScriptRuntime::CLuaScriptRuntime()
 {
+	CVehModels::Instance(); //instance class once for further usage
 
-	CLuaResourceImpl* resourceImpl = new CLuaResourceImpl(this, resource);
-
-	this->resources.insert({resourceImpl->GetLuaState(), resourceImpl});
-
-#ifndef NDEBUG
-	Core->LogInfo("CLuaScriptRuntime::CreateImpl: " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
-#endif
-
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_CONNECT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CPlayerConnectEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetTarget().Get());
 
@@ -23,11 +21,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_DISCONNECT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CPlayerDisconnectEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetTarget().Get());
 			lua_pushstring(L, event->GetReason().CStr());
@@ -36,11 +39,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::RESOURCE_START,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CResourceStartEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			//lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
@@ -49,11 +57,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::RESOURCE_STOP,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CResourceStopEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			//lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
@@ -62,33 +75,65 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::RESOURCE_ERROR,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CResourceErrorEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			//lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
 
 			return 1;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::SERVER_SCRIPT_EVENT,
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> const std::vector<int>*
+		{
+			auto event = static_cast<const alt::CServerScriptEvent*>(ev);
+			return &resource->GetEventReferences(event->GetName().CStr());
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CServerScriptEvent*>(ev);
+			auto runtime = &CLuaScriptRuntime::Instance();
+			lua_State* L = resource->GetLuaState();
+			
+			for (auto arg : event->GetArgs())
+			{
+				lua_pushmvalue(L, arg);
+			}
+
+			return static_cast<int>(event->GetArgs().GetSize());
 		}
 	);
 
 	//not used(?)
-	/*this->RegisterCallback(
+	/*this->RegisterServerCallback(
 		alt::CEvent::Type::META_CHANGE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
-			
+
 		}
 	)*/
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::SYNCED_META_CHANGE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CSyncedMetaDataChangeEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetTarget().Get());
 			lua_pushstring(L, event->GetKey().CStr());
@@ -99,11 +144,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::STREAM_SYNCED_META_CHANGE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CStreamSyncedMetaDataChangeEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetTarget().Get());
 			lua_pushstring(L, event->GetKey().CStr());
@@ -114,11 +164,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::GLOBAL_META_CHANGE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CGlobalMetaDataChangeEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushstring(L, event->GetKey().CStr());
 			lua_pushmvalue(L, event->GetVal());
@@ -128,11 +183,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::GLOBAL_SYNCED_META_CHANGE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CGlobalSyncedMetaDataChangeEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushstring(L, event->GetKey().CStr());
 			lua_pushmvalue(L, event->GetVal());
@@ -142,12 +202,17 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_DAMAGE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CPlayerDamageEvent*>(ev);
-			
+			lua_State* L = resource->GetLuaState();
+
 			lua_pushbaseobject(L, event->GetTarget().Get());
 
 			if (event->GetAttacker())
@@ -162,11 +227,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_DEATH,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CPlayerDeathEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetTarget().Get());
 
@@ -181,19 +251,24 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	/*this->RegisterCallback(
+	/*this->RegisterServerCallback(
 		alt::CEvent::Type::FIRE_EVENT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
-			
+
 		}
 	);*/
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::EXPLOSION_EVENT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CExplosionEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetSource().Get());
 			lua_pushnumber(L, static_cast<int>(event->GetExplosionType()));
@@ -204,11 +279,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::WEAPON_DAMAGE_EVENT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CWeaponDamageEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetSource().Get());
 			lua_pushbaseobject(L, event->GetTarget().Get());
@@ -221,11 +301,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::VEHICLE_DESTROY,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CVehicleDestroyEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetTarget().Get());
 
@@ -233,18 +318,25 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	/*this->RegisterCallback(
+	/*this->RegisterServerCallback(
 		alt::CEvent::Type::CHECKPOINT_EVENT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
-			
+
 		}
 	);*/
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::COLSHAPE_EVENT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto test = static_cast<const alt::CClientScriptEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
 			auto event = static_cast<const alt::CColShapeEvent*>(ev);
 
 			lua_pushbaseobject(L, event->GetTarget().Get());
@@ -255,11 +347,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_ENTER_VEHICLE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CPlayerEnterVehicleEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetPlayer().Get());
 			lua_pushbaseobject(L, event->GetTarget().Get());
@@ -269,11 +366,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_LEAVE_VEHICLE,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CPlayerLeaveVehicleEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetPlayer().Get());
 			lua_pushbaseobject(L, event->GetTarget().Get());
@@ -283,11 +385,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_CHANGE_VEHICLE_SEAT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CPlayerChangeVehicleSeatEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetPlayer().Get());
 			lua_pushbaseobject(L, event->GetTarget().Get());
@@ -298,11 +405,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::REMOVE_ENTITY_EVENT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CRemoveEntityEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetEntity().Get());
 
@@ -310,11 +422,16 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 		}
 	);
 
-	this->RegisterCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::CONSOLE_COMMAND_EVENT,
-		[](lua_State* L, const alt::CEvent* ev) -> int
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CConsoleCommandEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
 			lua_pushstring(L, event->GetName().CStr());
 			lua_newtable(L);
@@ -332,60 +449,18 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 			return 2;
 		}
 	);
+}
 
-	/*
-	enum class Type : uint16_t
-		{
-			NONE,
+alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
+{
 
-			// Shared
-			PLAYER_CONNECT,
-			PLAYER_DISCONNECT,
+	CLuaResourceImpl* resourceImpl = new CLuaResourceImpl(this, resource);
 
-			RESOURCE_START,
-			RESOURCE_STOP,
-			RESOURCE_ERROR,
-			
-			SERVER_SCRIPT_EVENT,
-			CLIENT_SCRIPT_EVENT,
+	this->resources.insert({resourceImpl->GetLuaState(), resourceImpl});
 
-			META_CHANGE,
-			SYNCED_META_CHANGE,
-			STREAM_SYNCED_META_CHANGE,
-			GLOBAL_META_CHANGE,
-			GLOBAL_SYNCED_META_CHANGE,
-
-			PLAYER_DAMAGE,
-			PLAYER_DEATH,
-			FIRE_EVENT,
-			EXPLOSION_EVENT,
-			WEAPON_DAMAGE_EVENT,
-			VEHICLE_DESTROY,
-
-			CHECKPOINT_EVENT,
-			COLSHAPE_EVENT,
-			PLAYER_ENTER_VEHICLE,
-			PLAYER_LEAVE_VEHICLE,
-			PLAYER_CHANGE_VEHICLE_SEAT,
-
-			REMOVE_ENTITY_EVENT,
-
-			DATA_NODE_RECEIVED_EVENT,
-
-			CONSOLE_COMMAND_EVENT,
-
-			// Client
-			CONNECTION_COMPLETE,
-			DISCONNECT_EVENT,
-			WEB_VIEW_EVENT,
-			KEYBOARD_EVENT,
-			GAME_ENTITY_CREATE,
-			GAME_ENTITY_DESTROY,
-
-			ALL,
-			SIZE
-		};
-	*/
+#ifndef NDEBUG
+	Core->LogInfo("CLuaScriptRuntime::CreateImpl: " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
+#endif
 
 	return resourceImpl;
 }
@@ -426,4 +501,9 @@ const std::string CLuaScriptRuntime::GetBaseObjectType(alt::IBaseObject::Type ba
 const std::string CLuaScriptRuntime::GetEventType(const alt::CEvent* ev)
 {
 	return this->eventTypes.at(static_cast<int>(ev->GetType()));
+}
+
+const std::string CLuaScriptRuntime::GetEventType(alt::CEvent::Type ev)
+{
+	return this->eventTypes.at(static_cast<int>(ev));
 }

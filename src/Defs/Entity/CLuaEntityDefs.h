@@ -27,8 +27,10 @@ private:
 	static int HasStreamSyncedMetaData(lua_State* L);
 	static int GetStreamSyncedMetaData(lua_State* L);
 
+#ifdef ALT_SERVER_API
 	static int SetSyncedMetaData(lua_State* L);
 	static int DeleteSyncedMetaData(lua_State* L);
 	static int SetStreamSyncedMetaData(lua_State* L);
 	static int DeleteStreamSyncedMetaData(lua_State* L);
+#endif
 };

@@ -26,6 +26,8 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaEntityDefs::Init(this->resourceState);
 	CLuaVehicleDefs::Init(this->resourceState);
 
+	CLuaMiscScripts::Init(this->resourceState);
+
 #ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl");
 #endif
@@ -103,11 +105,14 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 	Core->LogInfo(alt::String("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev));
 #endif
 
-	auto eventFunc = this->runtime->GetEventCallback(ev->GetType());
-	for (auto &functionReference : this->eventsReferences[this->runtime->GetEventType(ev).c_str()])
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto references = this->runtime->GetEventGetter(ev->GetType())(this, ev);
+	auto eventFunc = this->runtime->GetEventCallback(runtime->GetEventType(ev->GetType()));
+
+	for (auto &functionReference : (*references))
 	{
 		lua_rawgeti(this->resourceState, LUA_REGISTRYINDEX, functionReference);
-		auto arguments = eventFunc(this->resourceState, ev);
+		auto arguments = eventFunc(this, ev);
 
 		if (lua_pcall(this->resourceState, arguments, 0, 0) != 0)
 		{

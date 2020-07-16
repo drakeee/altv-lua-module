@@ -24,6 +24,8 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "onServer", OnServer);
 	lua_globalfunction(L, "offServer", OffServer);
 
+	lua_globalfunction(L, "emitServer", EmitServer);
+
 	lua_beginclass(L, ClassName);
 	{
 		lua_classmeta(L, "__index", AltIndex, true);
@@ -54,6 +56,10 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 
 	//Override default print function to behave as LogInfo
 	lua_getglobal(L, "_G");
+	lua_pushstring(L, "_print");
+	lua_getglobal(L, "print");
+	lua_rawset(L, -3);
+
 	lua_pushstring(L, "print");
 	lua_pushcfunction(L, CLuaAltFuncDefs::LogInfo);
 	lua_rawset(L, -3);
@@ -158,6 +164,30 @@ int CLuaAltFuncDefs::OffServer(lua_State* L)
 	lua_pushboolean(L, resource->RemoveEvent(eventName, functionRef));
 
 	return 1;
+}
+
+int CLuaAltFuncDefs::EmitServer(lua_State* L)
+{
+	std::string eventName;
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+	argReader.ReadString(eventName);
+	argReader.ReadArguments(args);
+	//argReader.ReadFunctionComplete();
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+
+	Core->TriggerLocalEvent(eventName, args);
+
+	return 0;
 }
 
 int CLuaAltFuncDefs::AltIndex(lua_State* L)
@@ -265,6 +295,10 @@ int CLuaAltFuncDefs::Log(lua_State* L, LogType logType)
 
 	CArgReader argReader(L);
 	argReader.ReadString(message);
+
+	//lua_getglobal(L, "_print");
+
+	//lua_stacktrace(L, "Log");
 
 	if (argReader.HasAnyError())
 	{

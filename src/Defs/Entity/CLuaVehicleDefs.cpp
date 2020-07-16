@@ -196,7 +196,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_beginclass(L, ClassName, CLuaEntityDefs::ClassName);
 	{
 		lua_classmeta(L, "__gc", destroy);
-		lua_classmeta(L, "__next", next);
+		lua_classmeta(L, "__tostring", tostring);
 		lua_classmeta(L, "__pairs", pairs);
 		lua_classmeta(L, "__ipairs", ipairs);
 
@@ -461,7 +461,7 @@ int CLuaVehicleDefs::ipairs(lua_State* L)
 	auto allVehicle = alt::ICore::Instance().GetVehicles();
 	for (size_t i = 0; i < allVehicle.GetSize(); i++)
 	{
-		lua_pushnumber(L, i + 1);
+		lua_pushnumber(L, (int)(i + 1));
 		//lua_pushuserdata(L, "Vehicle", static_cast<alt::IBaseObject*>(allVehicle[i].Get()));
 		lua_pushbaseobject(L, allVehicle[i].Get());
 		lua_rawset(L, -3);
@@ -474,7 +474,25 @@ int CLuaVehicleDefs::ipairs(lua_State* L)
 
 int CLuaVehicleDefs::tostring(lua_State* L)
 {
-	return 0;
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+	auto vehModels = &CVehModels::Instance();
+
+	alt::StringView type("userdata:" + runtime->GetBaseObjectType(vehicle) + ":" + vehModels->GetVehicleInfo(vehicle->GetModel())->vehicleName);
+
+	lua_pushstring(L, type.CStr());
+
+	return 1;
 }
 
 int CLuaVehicleDefs::CreateVehicle(lua_State* L)

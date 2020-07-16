@@ -93,41 +93,7 @@ public:
 
 	void ReadMValue(alt::MValue& mValue)
 	{
-		int argType = lua_type(m_luaVM, m_stackIndex);
-		switch (argType)
-		{
-		case LUA_TNUMBER:
-			mValue = Core->CreateMValueInt(ReadNumber<int32_t>());
-			break;
-		case LUA_TBOOLEAN:
-			mValue = Core->CreateMValueBool(ReadNumber<bool>());
-			break;
-		case LUA_TSTRING:
-			mValue = Core->CreateMValueString(ReadString<std::string>().c_str());
-			break;
-		case LUA_TTABLE:
-			//Core->LogInfo("Save table");
-
-			//lua_todict(m_luaVM, m_stackIndex);
-
-			//mValue = Core->CreateMValueBool(true);
-			Core->LogError("Error: Table save not yet implemented.");
-			luaL_error(m_luaVM, "Table save not yet implemented.");
-			mValue = Core->CreateMValueNil();
-			break;
-		case LUA_TFUNCTION:
-			//Core->CreateMValueFunction()
-			//auto dict = Core->CreateMValueDict();
-			
-			Core->LogError("Error: Function save not yet implemented.");
-			luaL_error(m_luaVM, "Function save not yet implemented.");
-			mValue = Core->CreateMValueNil();
-			break;
-		default:
-			Core->LogError("Error happened at ReadMValue");
-			break;
-		}
-
+		mValue = lua_tomvalue(m_luaVM, m_stackIndex);
 		m_stackIndex++;
 	}
 
@@ -144,11 +110,11 @@ public:
 	{
 		//check if argument is string
 		int argType = lua_type(m_luaVM, m_stackIndex);
-		if (argType == LUA_TSTRING)
+		if (argType == LUA_TSTRING || argType == LUA_TNUMBER)
 		{
 			//check if it is indeed a string
-			if (!lua_isstring(m_luaVM, m_stackIndex))
-				return;
+			//if (!lua_isstring(m_luaVM, m_stackIndex))
+			//	return;
 
 			//read if it is
 			stringValue.append(luaL_checkstring(m_luaVM, m_stackIndex));
@@ -313,6 +279,17 @@ public:
 
 		intVariable = LUA_NOREF;
 		m_stackIndex++;
+	}
+
+	void ReadArguments(alt::MValueArgs& arguments)
+	{
+		int argSize = lua_gettop(m_luaVM);
+		for (int argIndex = m_stackIndex; argIndex <= argSize; argIndex++)
+		{
+			arguments.Push(lua_tomvalue(m_luaVM, argIndex));
+
+			m_stackIndex++;
+		}
 	}
 
 	//void ReadFunction(int& intVariable)

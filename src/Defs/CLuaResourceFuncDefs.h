@@ -9,6 +9,9 @@ public:
 	static void Init(lua_State* L);
 
 private:
+	static int tostring(lua_State* L);
+
+	static int GetResourceFromName(lua_State* L);
 	static int IsStarted(lua_State* L);
 
 	static int GetType(lua_State* L);

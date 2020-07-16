@@ -29,12 +29,14 @@ extern alt::ICore* Core;
 
 typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 
+#include "CVehModels.h"
+#include "CVehMods.h"
+
 #include "CLuaDefs.h"
 #include "CArgReader.h"
 #include "CLuaScriptRuntime.h"
 #include "CLuaResourceImpl.h"
 #include "CLuaFunctionDefs.h"
-
 
 #include <Defs/CLuaAltFuncDefs.h>
 #include <Defs/CLuaResourceFuncDefs.h>
@@ -43,4 +45,8 @@ typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 #include <Defs/Entity/CLuaBaseObjectDefs.h>
 #include <Defs/Entity/CLuaWorldObjectDefs.h>
 #include <Defs/Entity/CLuaEntityDefs.h>
+#include <Defs/Entity/CLuaPlayerDefs.h>
 #include <Defs/Entity/CLuaVehicleDefs.h>
+#include <Defs/Entity/CLuaBlipDefs.h>
+
+#include <Defs/CLuaMiscScripts.h>

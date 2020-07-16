@@ -5,8 +5,6 @@ void CLuaBaseObjectDefs::Init(lua_State* L)
 {
 	lua_beginclass(L, ClassName);
 	{
-		//lua_classmeta(L, "__tostring", tostring);
-
 		lua_classfunction(L, "getType", GetType);
 		lua_classfunction(L, "hasMetaData", HasMetaData);
 		lua_classfunction(L, "getMetaData", GetMetaData);
@@ -17,30 +15,6 @@ void CLuaBaseObjectDefs::Init(lua_State* L)
 		lua_classvariable(L, "type", nullptr, "getType");
 	}
 	lua_endclass(L);
-}
-
-int CLuaBaseObjectDefs::tostring(lua_State* L)
-{
-	alt::IBaseObject* baseObject;
-
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(baseObject);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
-	//std::list<std::string>::const_iterator it = entityTypes.begin();
-	//std::advance(it, (static_cast<int>(baseObject->GetType()) - 1));
-
-	alt::StringView type("userdata:" + runtime->GetBaseObjectType(baseObject));
-
-	lua_pushstring(L, type.CStr());
-
-	return 1;
 }
 
 int CLuaBaseObjectDefs::Destroy(lua_State* L)

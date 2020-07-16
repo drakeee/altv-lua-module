@@ -3,8 +3,8 @@
 const char* CLuaResourceFuncDefs::ClassName = "Resource";
 void CLuaResourceFuncDefs::Init(lua_State* L)
 {
+	lua_globalfunction(L, "getResourceFromName", GetResourceFromName);
 	lua_globalfunction(L, "isResourceStarted", IsStarted);
-
 	lua_globalfunction(L, "getResourceType", GetType);
 	lua_globalfunction(L, "getResourceName", GetName);
 	lua_globalfunction(L, "getResourcePath", GetPath);
@@ -12,6 +12,9 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 
 	lua_beginclass(L, ClassName);
 	{
+		lua_classmeta(L, "__tostring", tostring);
+
+		lua_classfunction(L, "getFromName", GetResourceFromName);
 		lua_classfunction(L, "isStarted", IsStarted);
 		lua_classfunction(L, "getType", GetType);
 		lua_classfunction(L, "getName", GetName);
@@ -25,6 +28,48 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 		lua_classvariable(L, "main", nullptr, "getMain");
 	}
 	lua_endclass(L);
+}
+
+int CLuaResourceFuncDefs::tostring(lua_State* L)
+{
+	alt::IResource* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	alt::StringView type("userdata:Resource:" + resource->GetName());
+	lua_pushstring(L, type.CStr());
+
+	return 1;
+}
+
+int CLuaResourceFuncDefs::GetResourceFromName(lua_State* L)
+{
+	std::string resourceName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(resourceName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	alt::IResource* resource = Core->GetResource(resourceName);
+
+	if (resource != nullptr)
+		lua_pushresource(L, resource);
+	else
+		lua_pushnil(L);
+
+	return 1;
 }
 
 int CLuaResourceFuncDefs::IsStarted(lua_State* L)

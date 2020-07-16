@@ -9,8 +9,6 @@ void CLuaEntityDefs::Init(lua_State* L)
 
 	lua_globalfunction(L, "getEntityModel", GetModel);
 
-	//lua_globalfunction(L, SetPosition(lua_State* "L", L);
-	//lua_globalfunction(L, GetPosition(lua_State* "L", L);
 	lua_globalfunction(L, "setEntityRotation", SetRotation);
 	lua_globalfunction(L, "getEntityRotation", GetRotation);
 
@@ -19,10 +17,12 @@ void CLuaEntityDefs::Init(lua_State* L)
 	lua_globalfunction(L, "hasEntityStreamSyncedMetaData", HasStreamSyncedMetaData);
 	lua_globalfunction(L, "getEntityStreamSyncedMetaData", GetStreamSyncedMetaData);
 
+#ifdef ALT_SERVER_API
 	lua_globalfunction(L, "setEntitySyncedMetaData", SetSyncedMetaData);
 	lua_globalfunction(L, "deleteEntitySyncedMetaData", DeleteSyncedMetaData);
 	lua_globalfunction(L, "setEntityStreamSyncedMetaData", SetStreamSyncedMetaData);
 	lua_globalfunction(L, "deleteEntityStreamSyncedMetaData", DeleteStreamSyncedMetaData);
+#endif
 
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
 	{
@@ -37,15 +37,17 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classfunction(L, "getSyncedMetaData", GetSyncedMetaData);
 		lua_classfunction(L, "hasStreamSyncedMetaData", HasStreamSyncedMetaData);
 		lua_classfunction(L, "getStreamSyncedMetaData", GetStreamSyncedMetaData);
+
+#ifdef ALT_SERVER_API
 		lua_classfunction(L, "setSyncedMetaData", SetSyncedMetaData);
 		lua_classfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
 		lua_classfunction(L, "setStreamSyncedMetaData", SetStreamSyncedMetaData);
 		lua_classfunction(L, "deleteStreamSyncedMetaData", DeleteStreamSyncedMetaData);
+#endif
 
 		lua_classvariable(L, "id", nullptr, "getId");
 		lua_classvariable(L, "networkOwner", nullptr, "getNetworkOwner");
 		lua_classvariable(L, "model", nullptr, "getModel");
-		//lua_classvariable(L, "position", "setPosition", "getPosition");
 		lua_classvariable(L, "rotation", "setRotation", "getRotation");
 	}
 	lua_endclass(L);
@@ -297,6 +299,7 @@ int CLuaEntityDefs::GetStreamSyncedMetaData(lua_State* L)
 	return 1;
 }
 
+#ifdef ALT_SERVER_API
 int CLuaEntityDefs::SetSyncedMetaData(lua_State* L)
 {
 	alt::IEntity* entity;
@@ -380,3 +383,4 @@ int CLuaEntityDefs::DeleteStreamSyncedMetaData(lua_State* L)
 
 	return 0;
 }
+#endif

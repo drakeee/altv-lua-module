@@ -7,8 +7,10 @@ class CLuaScriptRuntime : public alt::IScriptRuntime
 {
 
 public:
-	typedef std::function<int(lua_State*, const alt::CEvent*)>		FunctionCallback;
-	typedef std::map<alt::CEvent::Type, FunctionCallback>			EventsCallbacks;
+	typedef std::function<int(CLuaResourceImpl*, const alt::CEvent*)>				FunctionCallback;
+	typedef std::function<const std::vector<int>*(CLuaResourceImpl*, const alt::CEvent*)>	CallbackGetter;
+	typedef std::map<std::string, FunctionCallback>					EventsCallbacks;
+	typedef std::map<std::string, CallbackGetter>					EventsGetter;
 
 	alt::IResource::Impl*	CreateImpl(alt::IResource* resource) override;
 	void					DestroyImpl(alt::IResource::Impl* impl) override;
@@ -17,40 +19,19 @@ public:
 	const std::string		GetBaseObjectType(alt::IBaseObject *baseObject);
 	const std::string		GetBaseObjectType(alt::IBaseObject::Type baseType);
 	const std::string		GetEventType(const alt::CEvent* ev);
-	inline void				RegisterCallback(alt::CEvent::Type eventType, FunctionCallback func)
+	const std::string		GetEventType(const alt::CEvent::Type ev);
+	inline void				RegisterServerCallback(alt::CEvent::Type eventType, CallbackGetter getter, FunctionCallback func)
 	{
-		this->eventsCallbacks[eventType] = func;
+		this->eventsGetter[this->GetEventType(eventType)] = getter;
+		this->eventsCallbacks[this->GetEventType(eventType)] = func;
 	}
-	inline FunctionCallback GetEventCallback(alt::CEvent::Type eventType)
+	inline CallbackGetter GetEventGetter(alt::CEvent::Type eventType)
 	{
-		return this->eventsCallbacks[eventType];
+		return this->eventsGetter[this->GetEventType(eventType)];
 	}
-	inline bool				AddFunctionRef(const void* ptr, int functionRef)
+	inline FunctionCallback GetEventCallback(const std::string& eventName)
 	{
-		if (this->IsFunctionRefExists(ptr))
-			return false;
-
-		this->functionReferences[ptr] = functionRef;
-		return true;
-	}
-	inline bool				RemoveFunctionRef(const void* ptr)
-	{
-		if (!this->IsFunctionRefExists(ptr))
-			return false;
-
-		this->functionReferences.erase(ptr);
-		return true;
-	}
-	inline bool				IsFunctionRefExists(const void* ptr)
-	{
-		return this->functionReferences.find(ptr) != this->functionReferences.end();
-	}
-	inline int				GetFunctionRef(const void* ptr)
-	{
-		if (!this->IsFunctionRefExists(ptr))
-			return LUA_NOREF;
-
-		return this->functionReferences[ptr];
+		return this->eventsCallbacks[eventName];
 	}
 
 
@@ -60,13 +41,13 @@ public:
 		return _Instance;
 	}
 
-	CLuaScriptRuntime() {};
+	CLuaScriptRuntime();
 	~CLuaScriptRuntime() {};
 
 private:
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
-	std::map<const void*, int>					functionReferences;
+	EventsGetter								eventsGetter;
 
 	const std::vector<std::string> entityTypes{
 		"Player",

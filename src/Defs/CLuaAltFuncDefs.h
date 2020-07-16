@@ -36,5 +36,7 @@ private:
 	static int OnServer(lua_State* L);
 	static int OffServer(lua_State* L);
 
+	static int EmitServer(lua_State* L);
+
 	static int tostringtest(lua_State* L);
 };
