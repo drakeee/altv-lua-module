@@ -1,14 +1,26 @@
 #include <Main.h>
+
 const char* CLuaBlipDefs::ClassName = "Blip";
 void CLuaBlipDefs::Init(lua_State* L)
 {
+	lua_classfunction(L, "createBlip", Create);
+	lua_classfunction(L, "isBlipGlobal", IsGlobal);
+	lua_classfunction(L, "getBlipTarget", GetTarget);
+	lua_classfunction(L, "isBlipAttached", IsAttached);
+	lua_classfunction(L, "getBlipAttachedTo", AttachedTo);
+	lua_classfunction(L, "getBlipType", GetBlipType);
+	lua_classfunction(L, "setBlipSprite", SetSprite);
+	lua_classfunction(L, "setBlipColor", SetColor);
+	lua_classfunction(L, "setBlipRoute", SetRoute);
+	lua_classfunction(L, "setBlipRouteColor", SetRouteColor);
+
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
 	{
 		lua_classfunction(L, "new", Create);
 		lua_classfunction(L, "isGlobal", IsGlobal);
 		lua_classfunction(L, "getTarget", GetTarget);
 		lua_classfunction(L, "isAttached", IsAttached);
-		lua_classfunction(L, "attachedTo", AttachedTo);
+		lua_classfunction(L, "getAttachedTo", AttachedTo);
 		lua_classfunction(L, "getBlipType", GetBlipType);
 		lua_classfunction(L, "setSprite", SetSprite);
 		lua_classfunction(L, "setColor", SetColor);
@@ -20,7 +32,7 @@ void CLuaBlipDefs::Init(lua_State* L)
 		lua_classvariable(L, "target", nullptr, "getTarget");
 		lua_classvariable(L, "attached", nullptr, "isAttached");
 		lua_classvariable(L, "attachedTo", nullptr, "attachedTo");
-		lua_classvariable(L, "type", nullptr, "getBlipType");
+		lua_classvariable(L, "blipType", nullptr, "getBlipType");
 		lua_classvariable(L, "sprite", "setSprite", nullptr);
 		lua_classvariable(L, "color", "setColor", nullptr);
 		lua_classvariable(L, "route", "setRoute", nullptr);

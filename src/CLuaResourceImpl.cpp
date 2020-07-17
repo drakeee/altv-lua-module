@@ -24,7 +24,9 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaBaseObjectDefs::Init(this->resourceState);
 	CLuaWorldObjectDefs::Init(this->resourceState);
 	CLuaEntityDefs::Init(this->resourceState);
+	CLuaPlayerDefs::Init(this->resourceState);
 	CLuaVehicleDefs::Init(this->resourceState);
+	CLuaBlipDefs::Init(this->resourceState);
 
 	CLuaMiscScripts::Init(this->resourceState);
 

@@ -56,7 +56,7 @@ private:
 		"WebView",
 		"VoiceChannel",
 		"ColShape",
-		"CheckPoint"
+		"Checkpoint"
 	};
 
 	const std::vector<std::string> eventTypes{
