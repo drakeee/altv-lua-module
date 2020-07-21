@@ -37,6 +37,7 @@ private:
 	static int OffServer(lua_State* L);
 
 	static int EmitServer(lua_State* L);
+	static int EmitClient(lua_State* L);
 
 	static int Export(lua_State* L);
 

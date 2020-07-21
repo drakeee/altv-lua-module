@@ -198,7 +198,6 @@ int CLuaAltFuncDefs::EmitServer(lua_State* L)
 	CArgReader argReader(L);
 	argReader.ReadString(eventName);
 	argReader.ReadArguments(args);
-	//argReader.ReadFunctionComplete();
 
 	if (argReader.HasAnyError())
 	{
@@ -206,10 +205,29 @@ int CLuaAltFuncDefs::EmitServer(lua_State* L)
 		return 0;
 	}
 
-	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
-
 	Core->TriggerLocalEvent(eventName, args);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::EmitClient(lua_State* L)
+{
+	alt::IPlayer* player;
+	std::string eventName;
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadString(eventName);
+	argReader.ReadArguments(args);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->TriggerClientEvent(player, eventName, args);
 
 	return 0;
 }
