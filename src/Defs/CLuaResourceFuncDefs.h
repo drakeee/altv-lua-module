@@ -10,6 +10,8 @@ public:
 
 private:
 	static int tostring(lua_State* L);
+	static int ResourceIndex(lua_State* L);
+	static int Call(lua_State* L);
 
 	static int GetResourceFromName(lua_State* L);
 	static int IsStarted(lua_State* L);

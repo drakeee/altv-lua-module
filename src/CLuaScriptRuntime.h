@@ -33,6 +33,10 @@ public:
 	{
 		return this->eventsCallbacks[eventName];
 	}
+	inline const semver::version& GetVersion(void)
+	{
+		return this->version;
+	}
 
 
 	static CLuaScriptRuntime& Instance()
@@ -45,6 +49,7 @@ public:
 	~CLuaScriptRuntime() {};
 
 private:
+	const semver::version						version{ 0, 3, 12, semver::prerelease::alpha };
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;
@@ -66,9 +71,9 @@ private:
 		"playerConnect", //done
 		"playerDisconnect", //done
 
-		"resourceStart", //done
-		"resourceStop", //done
-		"resourceError", //done
+		"anyResourceStart", //done
+		"anyResourceStop", //done
+		"anyResourceError", //done
 
 		"SERVER_SCRIPT_EVENT",
 		"CLIENT_SCRIPT_EVENT",

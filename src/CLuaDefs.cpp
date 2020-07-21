@@ -408,6 +408,9 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 		luaL_error(L, "Function save not yet implemented.");
 		mValue = Core->CreateMValueNil();
 		break;
+	case LUA_TNIL:
+		mValue = Core->CreateMValueNil();
+		break;
 	default:
 		Core->LogError("ReadMValue: Unexpected Lua type: " + alt::String(lua_typename(L, argType)));
 		break;

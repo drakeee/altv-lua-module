@@ -19,6 +19,9 @@ static const char* preferred_separator = "/";
 #include <map>
 #include <vector>
 
+//Semantic versioning
+#include <semver.hpp>
+
 //Include AltV SDK
 #include <SDK.h>
 

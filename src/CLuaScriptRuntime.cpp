@@ -454,7 +454,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 {
 
-	CLuaResourceImpl* resourceImpl = new CLuaResourceImpl(this, resource);
+	CLuaResourceImpl* resourceImpl = new CLuaResourceImpl{ this, resource };
 
 	this->resources.insert({resourceImpl->GetLuaState(), resourceImpl});
 

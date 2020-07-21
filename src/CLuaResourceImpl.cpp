@@ -2,8 +2,11 @@
 
 CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource) :
 	runtime(runtime),
-	resource(resource)
+	resource(resource),
+	exportFunction(Core->CreateMValueDict())
 {
+	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl1");
+
 	//Create new Lua state
 	this->resourceState = luaL_newstate();
 
@@ -13,6 +16,8 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 	//Pop LuaJIT information
 	lua_pop(this->resourceState, 4);
+
+	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl2");
 
 	//Init "es" and "e_mt" table
 	lua_initclass(this->resourceState);
@@ -27,11 +32,10 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaPlayerDefs::Init(this->resourceState);
 	CLuaVehicleDefs::Init(this->resourceState);
 	CLuaBlipDefs::Init(this->resourceState);
-
 	CLuaMiscScripts::Init(this->resourceState);
 
 #ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl");
+	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl4");
 #endif
 
 }
@@ -48,7 +52,7 @@ CLuaResourceImpl::~CLuaResourceImpl()
 bool CLuaResourceImpl::Start()
 {
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::Start");
 #endif
 
@@ -64,7 +68,7 @@ bool CLuaResourceImpl::Start()
 	alt::String workingDir(alt::String(resource->GetPath()) + alt::String(preferred_separator));
 	alt::String mainFile = workingDir + resource->GetMain();
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl::" + resource->GetMain());
 	Core->LogInfo("ResourcePath: " + workingDir);
 	Core->LogInfo("MainFile: " + mainFile);
@@ -87,6 +91,9 @@ bool CLuaResourceImpl::Start()
 		return false;
 	}
 
+	this->TriggerResourceLocalEvent("resourceStart", {});
+	resource->SetExports(this->exportFunction);
+
 	return true;
 }
 
@@ -96,6 +103,8 @@ bool CLuaResourceImpl::Stop()
 #ifdef _DEBUG
 	Core->LogInfo("CLuaResourceImpl::Stop");
 #endif
+
+	this->TriggerResourceLocalEvent("resourceStop", {});
 
 	return true;
 }
@@ -163,6 +172,34 @@ void CLuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
 
 }
 
+void CLuaResourceImpl::TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args)
+{
+	auto references = &this->GetEventReferences(eventName);
+
+	for (auto& functionReference : (*references))
+	{
+		lua_rawgeti(this->resourceState, LUA_REGISTRYINDEX, functionReference);
+
+		for (auto arg : args)
+		{
+			lua_pushmvalue(this->resourceState, arg);
+		}
+		//auto arguments = eventFunc(this, ev);
+
+		if (lua_pcall(this->resourceState, args.GetSize(), 0, 0) != 0)
+		{
+			//Sadly far from perfect
+			Core->LogError(" Unable to execute \"" + eventName + "\"");
+
+			//Get the error from the top of the stack
+			if (lua_isstring(this->resourceState, -1))
+				Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+
+			//Core->LogInfo("Error running function: %s" + alt::String(lua_tostring(this->resourceState, -1)));
+		}
+	}
+}
+
 bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReference)
 {
 	auto& event = this->eventsReferences[eventName];
@@ -192,4 +229,19 @@ bool CLuaResourceImpl::RemoveEvent(std::string eventName, int functionReference)
 	}
 
 	return false;
+}
+
+alt::MValue CLuaResourceImpl::LuaFunction::Call(alt::MValueArgs args) const
+{
+	lua_State* L = this->resource->GetLuaState();
+	lua_rawgeti(L, LUA_REGISTRYINDEX, this->functionRef);
+
+	for (auto arg : args)
+	{
+		lua_pushmvalue(L, arg);
+	}
+
+	lua_call(L, args.GetSize(), 1);
+
+	return lua_tomvalue(L, -1)->Clone();
 }

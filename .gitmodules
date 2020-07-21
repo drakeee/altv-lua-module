@@ -4,3 +4,6 @@
 [submodule "src/vendors/luajit"]
 	path = vendors/luajit
 	url = https://github.com/luajit/luajit
+[submodule "vendors/semver"]
+	path = vendors/semver
+	url = https://github.com/Neargye/semver

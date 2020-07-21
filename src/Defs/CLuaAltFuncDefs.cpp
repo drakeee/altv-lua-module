@@ -26,6 +26,8 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 
 	lua_globalfunction(L, "emitServer", EmitServer);
 
+	lua_globalfunction(L, "export", Export);
+
 	lua_beginclass(L, ClassName);
 	{
 		lua_classmeta(L, "__index", AltIndex, true);
@@ -113,6 +115,28 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_rawset(L, -3);
 
 	lua_pop(L, 1);
+}
+
+int CLuaAltFuncDefs::Export(lua_State* L)
+{
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+
+	std::string exportName;
+	int functionRef;
+
+	CArgReader argReader(L);
+	argReader.ReadString(exportName);
+	argReader.ReadFunction(functionRef);
+
+	if (resource->IsExportExists(exportName))
+	{
+		Core->LogError("Warning: Export \"" + exportName + "\" already exists. It will be overwritten by the new function.");
+	}
+
+	resource->AddExport(exportName, new CLuaResourceImpl::LuaFunction(resource, functionRef));
+
+	return 0;
 }
 
 int CLuaAltFuncDefs::OnServer(lua_State* L)
