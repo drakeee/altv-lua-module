@@ -25,6 +25,7 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "offServer", OffServer);
 
 	lua_globalfunction(L, "emitServer", EmitServer);
+	lua_globalfunction(L, "emitClient", EmitClient);
 
 	lua_globalfunction(L, "export", Export);
 
