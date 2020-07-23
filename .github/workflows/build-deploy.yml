@@ -11,9 +11,10 @@ jobs:
     name: Setup outputs
     runs-on: ubuntu-18.04
     outputs:
-      upload_url: ${{ steps.step_upload_url.outputs.upload_url }}
+      upload_url: ${{ steps.upload_url.outputs.upload_url }}
     steps:
       - name: Store Upload URL
+        id: upload_url
         shell: bash
         run: echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
   test:
