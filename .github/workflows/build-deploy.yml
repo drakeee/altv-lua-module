@@ -67,8 +67,12 @@ jobs:
           TAG=${GITHUB_REF/refs\/tags\//}
           echo ::set-output name=BRANCH::${TAG/\/*}
           echo ::set-output name=VERSION::${TAG/*\/}
-      - name: Build
+
+      # - name: Build
+      #   shell: cmd
+      #   run: |
+      #     build.bat
+
+      - name: Test
         shell: cmd
-        run: |
-          build.bat
-          tree
+        run: dir /s /q
