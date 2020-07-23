@@ -1,0 +1,75 @@
+name: Build & deploy
+on:
+  create:
+    tags:
+      - "dev/*.*-dev*"
+      - "rc/*.*-rc*"
+      - "release/*.*"
+
+jobs:
+  create_release:
+    name: Setup outputs
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+  build-windows:
+    name: Build windows release
+    runs-on: windows-2019
+    needs: [create_release]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          lfs: true
+      - name: Build
+        shell: cmd
+        run: build.bat
+      - name: Upload windows artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: lua-module-windows.zip
+          asset_name: lua-module-windows.zip
+          asset_content_type: application/zip
+  build-linux:
+    name: Build linux release
+    runs-on: ubuntu-18.04
+    needs: [create_release]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          lfs: true
+      - name: Build
+        run: |
+          ./build.sh
+      - name: Copy Files
+        run: |
+          cp -r build/linux64/Release/modules/* lua-module/
+      - name: Zip artifacts
+        run: |
+          zip -r lua-module-linux.zip lua-module/*
+      - name: Upload linux artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: lua-module-linux.zip
+          asset_name: lua-module-linux.zip
+          asset_content_type: application/zip
