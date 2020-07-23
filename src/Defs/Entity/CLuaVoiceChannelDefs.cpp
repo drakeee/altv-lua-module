@@ -24,6 +24,9 @@ void CLuaVoiceChannelDefs::Init(lua_State* L)
 		lua_classfunction(L, "isPlayerMuted", IsPlayerMuted);
 		lua_classfunction(L, "mutePlayer", MutePlayer);
 		lua_classfunction(L, "unmutePlayer", UnmutePlayer);
+
+		lua_classvariable(L, "spatial", nullptr, "isSpatial");
+		lua_classvariable(L, "maxDistance", nullptr, "getMaxDistance");
 	}
 	lua_endclass(L);
 }

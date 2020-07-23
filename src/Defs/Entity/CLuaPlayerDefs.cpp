@@ -1,6 +1,6 @@
 #include <Main.h>
 
-const char* CLuaPlayerDefs::ClassName = "Entity";
+const char* CLuaPlayerDefs::ClassName = "Player";
 void CLuaPlayerDefs::Init(lua_State* L)
 {
 	lua_globalfunction(L, "isPlayerConnected", IsConnected);
@@ -59,6 +59,9 @@ void CLuaPlayerDefs::Init(lua_State* L)
 
 	lua_beginclass(L, ClassName, CLuaEntityDefs::ClassName);
 	{
+		lua_classmeta(L, "__tostring", tostring);
+		lua_classmeta(L, "__ipairs", ipairs);
+
 		lua_classfunction(L, "isConnected", IsConnected);
 		lua_classfunction(L, "getPing", GetPing);
 		lua_classfunction(L, "getIP", GetIP);
@@ -107,6 +110,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getEntityAimOffset", GetEntityAimOffset);
 		lua_classfunction(L, "isFlashlightActive", IsFlashlightActive);
 		lua_classfunction(L, "kick", Kick);
+		lua_classfunction(L, "getAll", ipairs);
 
 #ifdef ALT_SERVER_API
 		lua_classfunction(L, "setModel", SetModel);
@@ -146,12 +150,50 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "aimingAt", nullptr, "getEntityAimingAt");
 		lua_classvariable(L, "aimOffset", nullptr, "getEntityAimOffset");
 		lua_classvariable(L, "flashlightActive", nullptr, "isFlashlightActive");
+		lua_classvariable(L, "all", nullptr, "getAll");
 
 #ifdef ALT_SERVER_API
 		lua_classvariable(L, "model", "setModel", "getModel");
 #endif
 	}
 	lua_endclass(L);
+}
+
+int CLuaPlayerDefs::tostring(lua_State* L)
+{
+	alt::IPlayer* player;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+	auto vehModels = &CVehModels::Instance();
+
+	alt::StringView type("userdata:" + runtime->GetBaseObjectType(player) + ":" + player->GetName());
+
+	lua_pushstring(L, type.CStr());
+
+	return 1;
+}
+
+int CLuaPlayerDefs::ipairs(lua_State* L)
+{
+	lua_newtable(L);
+	auto allPlayer = alt::ICore::Instance().GetPlayers();
+	for (size_t i = 0; i < allPlayer.GetSize(); i++)
+	{
+		lua_pushnumber(L, (int)(i + 1));
+		lua_pushbaseobject(L, allPlayer[i].Get());
+		lua_rawset(L, -3);
+	}
+
+	return 1;
 }
 
 int CLuaPlayerDefs::IsConnected(lua_State* L)
@@ -226,6 +268,7 @@ int CLuaPlayerDefs::Spawn(lua_State* L)
 	}
 
 	player->Spawn(position, delayMs);
+	player->SetPosition(position);
 
 	return 0;
 }
@@ -1081,11 +1124,19 @@ int CLuaPlayerDefs::Kick(lua_State* L)
 int CLuaPlayerDefs::SetModel(lua_State* L)
 {
 	alt::IPlayer* player;
-	uint32_t model;
+	std::string modelStr;
+	uint32_t modelHash = 0;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
-	argReader.ReadNumber(model);
+
+	if(argReader.IsCurrentType(LUA_TNUMBER))
+		argReader.ReadNumber(modelHash);
+	else if(argReader.IsCurrentType(LUA_TSTRING))
+	{
+		argReader.ReadString(modelStr);
+		modelHash = Core->Hash(modelStr);
+	}
 
 	if (argReader.HasAnyError())
 	{
@@ -1093,7 +1144,7 @@ int CLuaPlayerDefs::SetModel(lua_State* L)
 		return 0;
 	}
 
-	player->SetModel(model);
+	player->SetModel(modelHash);
 
 	return 0;
 }

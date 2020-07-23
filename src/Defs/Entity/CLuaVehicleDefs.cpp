@@ -331,6 +331,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classfunction(L, "isManualEngineControl", IsManualEngineControl);
 		lua_classfunction(L, "getScriptDataBase64", GetScriptDataBase64);
 		lua_classfunction(L, "loadScriptDataFromBase64", LoadScriptDataFromBase64);
+		lua_classfunction(L, "getAll", ipairs);
 
 		lua_classvariable(L, "destroyed", nullptr, "isDestroyed");
 		lua_classvariable(L, "modKitsCount", nullptr, "getModKitsCount");
@@ -381,29 +382,23 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "damageDataBase64", "loadDamageDataFromBase64", "getDamageDataBase64");
 		lua_classvariable(L, "manualEngineControl", "setManualEngineControl", "isManualEngineControl");
 		lua_classvariable(L, "scriptDataBase64", "loadScriptDataFromBase64", "getScriptDataBase64");
+		lua_classvariable(L, "all", nullptr, "getAll");
 	}
 	lua_endclass(L);
-}
-
-/*
-
-
-	auto allVehicle = vehicles;
 
 	lua_newtable(L);
-	int index = 1;
-	for(auto vehicle : allVehicle)
+	for (auto vehicle : CVehModels::Instance().GetVehicleInfosByHash())
 	{
-		Core->LogInfo("for: " + std::to_string(vehicle->GetModel()));
-		lua_pushnumber(L, index);
-		lua_pushuserdata(L, "Vehicle", vehicle);
+		lua_pushnumber(L, vehicle.first);
+		lua_pushstring(L, vehicle.second->vehicleName);
 		lua_rawset(L, -3);
 
-		index++;
+		lua_pushstring(L, vehicle.second->vehicleName);
+		lua_pushnumber(L, vehicle.first);
+		lua_rawset(L, -3);
 	}
-
-	lua_stacktrace(L, "CLuaVehicleDefs::ipairs");
-*/
+	lua_setglobal(L, "vehicleModel");
+}
 
 int CLuaVehicleDefs::destroy(lua_State* L)
 {
@@ -446,28 +441,19 @@ int CLuaVehicleDefs::next(lua_State* L)
 
 int CLuaVehicleDefs::pairs(lua_State* L)
 {
-	
-
 	return 0;
 }
 
 int CLuaVehicleDefs::ipairs(lua_State* L)
 {
-	//Core->LogInfo("CLuaVehicleDefs::ipairs");
-
-	//lua_stacktrace(L, "CLuaVehicleDefs::ipairs1");
-
 	lua_newtable(L);
 	auto allVehicle = alt::ICore::Instance().GetVehicles();
 	for (size_t i = 0; i < allVehicle.GetSize(); i++)
 	{
 		lua_pushnumber(L, (int)(i + 1));
-		//lua_pushuserdata(L, "Vehicle", static_cast<alt::IBaseObject*>(allVehicle[i].Get()));
 		lua_pushbaseobject(L, allVehicle[i].Get());
 		lua_rawset(L, -3);
 	}
-
-	//lua_stacktrace(L, "CLuaVehicleDefs::ipairs2");
 
 	return 1;
 }
@@ -497,12 +483,19 @@ int CLuaVehicleDefs::tostring(lua_State* L)
 
 int CLuaVehicleDefs::CreateVehicle(lua_State* L)
 {
-	unsigned int modelHash;
+	uint32_t modelHash;
+	std::string modelStr;
 	alt::Position position;
 	alt::Rotation rotation;
 
 	CArgReader argReader(L);
-	argReader.ReadNumber(modelHash);
+	if(argReader.IsCurrentType(LUA_TNUMBER))
+		argReader.ReadNumber(modelHash);
+	else if (argReader.IsCurrentType(LUA_TSTRING))
+	{
+		argReader.ReadString(modelStr);
+		modelHash = Core->Hash(modelStr);
+	}
 	argReader.ReadVector(position);
 	argReader.ReadVector(rotation);
 
@@ -752,7 +745,7 @@ int CLuaVehicleDefs::GetPrimaryColorRGB(lua_State* L)
 int CLuaVehicleDefs::SetPrimaryColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -772,7 +765,7 @@ int CLuaVehicleDefs::SetPrimaryColor(lua_State* L)
 int CLuaVehicleDefs::SetPrimaryColorRGB(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -846,7 +839,7 @@ int CLuaVehicleDefs::GetSecondaryColorRGB(lua_State* L)
 int CLuaVehicleDefs::SetSecondaryColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -866,7 +859,7 @@ int CLuaVehicleDefs::SetSecondaryColor(lua_State* L)
 int CLuaVehicleDefs::SetSecondaryColorRGB(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -904,7 +897,7 @@ int CLuaVehicleDefs::GetPearlColor(lua_State* L)
 int CLuaVehicleDefs::SetPearlColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -942,7 +935,7 @@ int CLuaVehicleDefs::GetWheelColor(lua_State* L)
 int CLuaVehicleDefs::SetWheelColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -980,7 +973,7 @@ int CLuaVehicleDefs::GetInteriorColor(lua_State* L)
 int CLuaVehicleDefs::SetInteriorColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -1018,7 +1011,7 @@ int CLuaVehicleDefs::GetDashboardColor(lua_State* L)
 int CLuaVehicleDefs::SetDashboardColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -1074,7 +1067,7 @@ int CLuaVehicleDefs::GetTireSmokeColor(lua_State* L)
 int CLuaVehicleDefs::SetTireSmokeColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -1543,7 +1536,7 @@ int CLuaVehicleDefs::GetNeonColor(lua_State* L)
 int CLuaVehicleDefs::SetNeonColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
@@ -1752,7 +1745,7 @@ int CLuaVehicleDefs::GetHeadlightColor(lua_State* L)
 int CLuaVehicleDefs::SetHeadlightColor(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	alt::RGBA color;
+	LRGBA color;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);

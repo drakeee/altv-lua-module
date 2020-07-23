@@ -36,7 +36,9 @@ void lua_pushvector(lua_State* L, alt::Vector<T, W, _Layout>& vector, bool refUs
 //void lua_pushvehicle(lua_State* L, alt::IVehicle* vehicle, bool refUserData = true);
 void lua_pushrgba(lua_State* L, alt::RGBA &color, bool refUserData = false);
 void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue);
+void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args);
 void lua_pushresource(lua_State* L, alt::IResource* resource, bool refUserData = true);
+void lua_pushstringarray(lua_State* L, alt::Array<alt::StringView>& array);
 int lua_functionref(lua_State* L, int idx);
 
 void lua_todict(lua_State* L, int idx);

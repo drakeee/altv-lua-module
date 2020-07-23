@@ -115,6 +115,29 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		}
 	);
 
+	this->RegisterServerCallback(
+		alt::CEvent::Type::CLIENT_SCRIPT_EVENT,
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> const std::vector<int>*
+		{
+			auto event = static_cast<const alt::CClientScriptEvent*>(ev);
+			return &resource->GetClientEventReferences(event->GetName().CStr());
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CClientScriptEvent*>(ev);
+			auto runtime = &CLuaScriptRuntime::Instance();
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget().Get());
+			for (auto arg : event->GetArgs())
+			{
+				lua_pushmvalue(L, arg);
+			}
+
+			return static_cast<int>(event->GetArgs().GetSize()) + 1;
+		}
+	);
+
 	//not used(?)
 	/*this->RegisterServerCallback(
 		alt::CEvent::Type::META_CHANGE,
@@ -294,7 +317,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_pushbaseobject(L, event->GetTarget().Get());
 			lua_pushnumber(L, event->GetWeaponHash());
 			lua_pushnumber(L, event->GetDamageValue());
-			lua_pushvector(L, Vector3fp(event->GetShotOffset()));
+			lua_pushvector(L, event->GetShotOffset());
 			lua_pushnumber(L, static_cast<int>(event->GetBodyPart()));
 
 			return 6;
@@ -456,8 +479,6 @@ alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 
 	CLuaResourceImpl* resourceImpl = new CLuaResourceImpl{ this, resource };
 
-	this->resources.insert({resourceImpl->GetLuaState(), resourceImpl});
-
 #ifndef NDEBUG
 	Core->LogInfo("CLuaScriptRuntime::CreateImpl: " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
 #endif
@@ -486,6 +507,11 @@ CLuaResourceImpl* CLuaScriptRuntime::GetResourceFromState(lua_State* L)
 		return it->second;
 
 	return nullptr;
+}
+
+void CLuaScriptRuntime::AddResource(lua_State* L, CLuaResourceImpl* resource)
+{
+	this->resources.insert({ L, resource });
 }
 
 const std::string CLuaScriptRuntime::GetBaseObjectType(alt::IBaseObject* baseObject)

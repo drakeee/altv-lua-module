@@ -1,14 +1,35 @@
 #include <Main.h>
 
+int setLuaPath(lua_State* L, const char* path)
+{
+	lua_getglobal(L, "package");
+	lua_getfield(L, -1, "path"); // get field "path" from table at top of stack (-1)
+	std::string cur_path = lua_tostring(L, -1); // grab path string from top of stack
+	cur_path.append(";"); // do your path magic here
+	cur_path.append(path);
+	lua_pop(L, 1); // get rid of the string on the stack we just pushed on line 5
+	lua_pushstring(L, cur_path.c_str()); // push the new one
+	lua_setfield(L, -2, "path"); // set the field "path" in table at -2 with value at top of stack
+	lua_pop(L, 1); // get rid of package table from top of stack
+	return 0; // all done!
+}
+
 CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource) :
 	runtime(runtime),
 	resource(resource),
 	exportFunction(Core->CreateMValueDict())
 {
-	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl1");
 
 	//Create new Lua state
 	this->resourceState = luaL_newstate();
+
+	//Add resource to runtime
+	runtime->AddResource(this->resourceState, this);
+
+	this->workingPath.append(resource->GetPath().CStr());
+	this->workingPath.append(preferred_separator);
+	this->workingPath.append(resource->GetMain().CStr());
+	this->workingPath = this->workingPath.substr(0, this->workingPath.find_last_of("\\/") + 1);
 
 	//Import default libraries into the state
 	luaL_openlibs(this->resourceState);
@@ -17,10 +38,12 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	//Pop LuaJIT information
 	lua_pop(this->resourceState, 4);
 
-	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl2");
-
 	//Init "es" and "e_mt" table
 	lua_initclass(this->resourceState);
+
+	setLuaPath(this->resourceState, (this->workingPath + "?.lua").c_str());
+
+	Core->LogInfo("Test: " + (this->workingPath + "?.lua"));
 
 	//Init functions
 	CLuaVector3Defs::Init(this->resourceState);
@@ -35,7 +58,7 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaMiscScripts::Init(this->resourceState);
 
 #ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl4");
+	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl");
 #endif
 
 }
@@ -55,14 +78,6 @@ bool CLuaResourceImpl::Start()
 #ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::Start");
 #endif
-
-	//lua_initclass(this->resourceState);
-
-	//Initialize alt functions in the state
-	/*CLuaAltFuncDefs::init(this->resourceState);
-	CLuaVector3Defs::init(this->resourceState);
-	CLuaEntityDefs::init(this->resourceState);
-	CLuaVehicleDefs::init(this->resourceState);*/
 
 	//Add path separator to the end
 	alt::String workingDir(alt::String(resource->GetPath()) + alt::String(preferred_separator));
@@ -92,6 +107,7 @@ bool CLuaResourceImpl::Start()
 	}
 
 	this->TriggerResourceLocalEvent("resourceStart", {});
+
 	resource->SetExports(this->exportFunction);
 
 	return true;
@@ -100,7 +116,7 @@ bool CLuaResourceImpl::Start()
 bool CLuaResourceImpl::Stop()
 {
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::Stop");
 #endif
 
@@ -144,7 +160,7 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 void CLuaResourceImpl::OnTick()
 {
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	//this->_core->LogInfo("CLuaResourceImpl::OnTick");
 #endif
 
@@ -156,10 +172,6 @@ void CLuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 #ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::OnCreateBaseObject: " + std::to_string(static_cast<int>(object->GetType())));
 #endif
-
-	//object->AddRef();
-
-	//Core->LogInfo("Ref count: " + std::to_string(object->GetRefCount()));
 
 }
 
@@ -180,11 +192,7 @@ void CLuaResourceImpl::TriggerResourceLocalEvent(std::string eventName, alt::MVa
 	{
 		lua_rawgeti(this->resourceState, LUA_REGISTRYINDEX, functionReference);
 
-		for (auto arg : args)
-		{
-			lua_pushmvalue(this->resourceState, arg);
-		}
-		//auto arguments = eventFunc(this, ev);
+		lua_pushmvalueargs(this->resourceState, args);
 
 		if (lua_pcall(this->resourceState, args.GetSize(), 0, 0) != 0)
 		{
@@ -205,7 +213,27 @@ bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReferenc
 	auto& event = this->eventsReferences[eventName];
 	auto& it = std::find(event.begin(), event.end(), functionReference);
 
+#ifndef NDEBUG
 	Core->LogInfo("RegisterEvent: " + eventName + " - " + std::to_string(functionReference));
+#endif
+
+	if (it != event.end())
+	{
+		return false;
+	}
+
+	event.push_back(functionReference);
+	return true;
+}
+
+bool CLuaResourceImpl::RegisterClientEvent(std::string eventName, int functionReference)
+{
+	auto& event = this->clientEventsReferences[eventName];
+	auto& it = std::find(event.begin(), event.end(), functionReference);
+
+#ifndef NDEBUG
+	Core->LogInfo("RegisterClientEvent: " + eventName + " - " + std::to_string(functionReference));
+#endif
 
 	if (it != event.end())
 	{
@@ -231,15 +259,33 @@ bool CLuaResourceImpl::RemoveEvent(std::string eventName, int functionReference)
 	return false;
 }
 
+bool CLuaResourceImpl::RemoveClientEvent(std::string eventName, int functionReference)
+{
+	auto& event = this->clientEventsReferences[eventName];
+	auto& it = std::find(event.begin(), event.end(), functionReference);
+
+	if (it != event.end())
+	{
+		event.erase(it);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool CLuaResourceImpl::MakeClient(alt::IResource::CreationInfo* info, alt::Array<alt::String> files)
+{
+	info->type = "js";
+	return true;
+}
+
 alt::MValue CLuaResourceImpl::LuaFunction::Call(alt::MValueArgs args) const
 {
 	lua_State* L = this->resource->GetLuaState();
 	lua_rawgeti(L, LUA_REGISTRYINDEX, this->functionRef);
 
-	for (auto arg : args)
-	{
-		lua_pushmvalue(L, arg);
-	}
+	lua_pushmvalueargs(L, args);
 
 	lua_call(L, args.GetSize(), 1);
 

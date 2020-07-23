@@ -9,6 +9,9 @@ public:
 	static void Init(lua_State* L);
 
 private:
+	static int tostring(lua_State* L);
+	static int ipairs(lua_State* L);
+
 	static int IsConnected(lua_State* L);
 
 	static int GetPing(lua_State* L);

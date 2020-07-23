@@ -51,7 +51,7 @@ int CLuaRGBADefs::SetColor(lua_State* L)
 
 int CLuaRGBADefs::GetColor(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(rgba);

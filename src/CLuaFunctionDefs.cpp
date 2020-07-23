@@ -2,15 +2,8 @@
 
 int CLuaFunctionDefs::Index(lua_State* L)
 {
-	//Core->LogInfo("CLuaFunctionDefs::Index");
-
-	//lua_stacktrace(L, "CLuaFunctionDefs::Index");
-	//lua_stacktrace(L, "CLuaFunctionDefs::Index0.1");
-
-	//lua_getmetatable(L, -2);
 	lua_pushvalue(L, lua_upvalueindex(1));
 
-	/*lua_stacktrace(L, "CLuaFunctionDefs::Index0.2");*/
 	//Search for function or variable in own metatable
 	{
 		//Search for function
@@ -33,8 +26,6 @@ int CLuaFunctionDefs::Index(lua_State* L)
 
 		lua_pop(L, 2);
 
-		//lua_stacktrace(L, "CLuaFunctionDefs::Index (after own metatable function search)");
-
 		//Search for get variable
 		{
 			lua_pushstring(L, "__get");
@@ -54,7 +45,6 @@ int CLuaFunctionDefs::Index(lua_State* L)
 
 				lua_remove(L, -2);
 
-				//Core->LogInfo("CLuaFunctionDefs::Index::lua_isfunction");
 				return 1;
 			}
 		}
@@ -79,17 +69,12 @@ int CLuaFunctionDefs::Index(lua_State* L)
 
 				lua_call(L, 2, 1);
 
-				/*lua_stacktrace(L, "CLuaFunctionDefs::Index (after call)");*/
-
 				return 1;
 			}
 		}
-
-		//lua_stacktrace(L, "CLuaFunctionDefs::Index (base search)");
-		//Core->LogInfo("CLuaFunctionDefs::Index: Function not found. Search for variable");
 	}
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	//lua_stacktrace(L, "CLuaFunctionDefs::Index2");
 #endif
 

@@ -37,6 +37,10 @@ int CLuaWorldObjectDefs::SetPosition(lua_State* L)
 		return 0;
 	}
 
+	Core->LogInfo("CLuaWorldObjectDefs::SetPosition: x = " + std::to_string(position.x));
+	Core->LogInfo("CLuaWorldObjectDefs::SetPosition: y = " + std::to_string(position.y));
+	Core->LogInfo("CLuaWorldObjectDefs::SetPosition: z = " + std::to_string(position.z));
+
 	worldObject->SetPosition(position);
 
 	return 0;
@@ -46,6 +50,8 @@ int CLuaWorldObjectDefs::GetPosition(lua_State* L)
 {
 	alt::IWorldObject* worldObject;
 
+	Core->LogInfo("CLuaWorldObjectDefs::GetPosition");
+
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(worldObject);
 
@@ -54,6 +60,8 @@ int CLuaWorldObjectDefs::GetPosition(lua_State* L)
 		argReader.GetErrorMessages();
 		return 0;
 	}
+
+	Core->LogInfo("CLuaWorldObjectDefs::GetPosition: " + std::to_string(worldObject->GetPosition().x));
 
 	lua_pushvector(L, worldObject->GetPosition());
 

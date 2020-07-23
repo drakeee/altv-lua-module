@@ -4,6 +4,7 @@ const char* CLuaBlipDefs::ClassName = "Blip";
 void CLuaBlipDefs::Init(lua_State* L)
 {
 	lua_globalfunction(L, "createBlip", Create);
+	lua_globalfunction(L, "createBlipAttached", CreateAttached);
 	lua_globalfunction(L, "isBlipGlobal", IsGlobal);
 	lua_globalfunction(L, "getBlipTarget", GetTarget);
 	lua_globalfunction(L, "isBlipAttached", IsAttached);

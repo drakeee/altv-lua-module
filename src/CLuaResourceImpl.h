@@ -29,6 +29,10 @@ public:
 	CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource);
 	~CLuaResourceImpl();
 
+#ifdef ALT_SERVER_API
+	bool MakeClient(alt::IResource::CreationInfo* info, alt::Array<alt::String> files) override;
+#endif
+
 	bool Start() override;
 	bool Stop() override;
 
@@ -41,10 +45,16 @@ public:
 	lua_State*	GetLuaState(void) { return this->resourceState; }
 	bool		RegisterEvent(std::string eventName, int functionReference);
 	bool		RemoveEvent(std::string eventName, int functionReference);
+	bool		RegisterClientEvent(std::string eventName, int functionReference);
+	bool		RemoveClientEvent(std::string eventName, int functionReference);
 	void		TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args);
 	inline const std::vector<int>& GetEventReferences(std::string eventName)
 	{
 		return this->eventsReferences[eventName];
+	}
+	inline const std::vector<int>& GetClientEventReferences(std::string eventName)
+	{
+		return this->clientEventsReferences[eventName];
 	}
 	inline bool				AddFunctionRef(const void* ptr, int functionRef)
 	{
@@ -85,13 +95,24 @@ public:
 	{
 		return this->resource;
 	}
+	inline std::string& GetWorkingPath(void)
+	{
+		return this->workingPath;
+	}
+	inline std::map<std::string, bool>& GetLoadedFiles(void)
+	{
+		return this->loadedFiles;
+	}
 
 private:
 	lua_State*			resourceState = nullptr;
 	CLuaScriptRuntime*	runtime;
 	alt::IResource*		resource;
+	std::string			workingPath;
 
 	EventsReferences			eventsReferences;
+	EventsReferences			clientEventsReferences;
 	std::map<const void*, int>	functionReferences;
 	alt::MValueDict				exportFunction;
+	std::map<std::string, bool> loadedFiles;
 };

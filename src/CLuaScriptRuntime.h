@@ -16,6 +16,7 @@ public:
 	void					DestroyImpl(alt::IResource::Impl* impl) override;
 
 	CLuaResourceImpl*		GetResourceFromState(lua_State* L);
+	void					AddResource(lua_State* L, CLuaResourceImpl* resource);
 	const std::string		GetBaseObjectType(alt::IBaseObject *baseObject);
 	const std::string		GetBaseObjectType(alt::IBaseObject::Type baseType);
 	const std::string		GetEventType(const alt::CEvent* ev);
