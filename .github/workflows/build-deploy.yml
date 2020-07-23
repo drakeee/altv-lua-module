@@ -74,4 +74,5 @@ jobs:
           build.bat
           mkdir lua-module
           xcopy "build\win64\Release\modules" "lua-module" /h /i /c /k /e /r /y
-          dir lua-module\* /AD-H /B /ON /S
+          cd lua-module
+          tree /f
