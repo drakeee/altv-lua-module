@@ -7,9 +7,43 @@ on:
       - "release/*.*"
 
 jobs:
+  build-windows:
+    name: Build windows release
+    runs-on: windows-2019
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          lfs: true
+
+      - name: Extract version
+        id: version
+        shell: bash
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=BRANCH::${TAG/\/*}
+          echo ::set-output name=VERSION::${TAG/*\/}
+
+      - name: Build
+        shell: cmd
+        run: |
+          build.bat
+
+      - name: Upload windows artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./lua-module-windows.zip
+          asset_name: lua-module-windows.zip
+          asset_content_type: application/zip
+
   build-linux:
     name: Build linux release
     runs-on: ubuntu-18.04
+    needs: [build-windows]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -45,39 +79,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./lua-module-linux.zip
           asset_name: lua-module-linux.zip
-          asset_content_type: application/zip
-
-  build-windows:
-    name: Build windows release
-    runs-on: windows-2019
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-          lfs: true
-
-      - name: Extract version
-        id: version
-        shell: bash
-        run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          echo ::set-output name=BRANCH::${TAG/\/*}
-          echo ::set-output name=VERSION::${TAG/*\/}
-
-      - name: Build
-        shell: cmd
-        run: |
-          build.bat
-
-      - name: Upload windows artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./lua-module-windows.zip
-          asset_name: lua-module-windows.zip
           asset_content_type: application/zip
 
   create-release:
