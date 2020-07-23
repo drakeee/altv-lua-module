@@ -44,7 +44,7 @@ jobs:
 
       - name: Zip artifacts
         run: |
-          zip -r -j lua-module-linux dist-linux
+          zip -r lua-module-linux dist-linux
 
       - name: Extract version
         id: version
