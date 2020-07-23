@@ -265,17 +265,22 @@ void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool r
 
 void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData)
 {
-	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
-	lua_pushuserdata(L, runtime->GetBaseObjectType(baseObject->GetType()).c_str(), baseObject, refUserData);
+	if (baseObject == nullptr)
+		lua_pushnil(L);
+	else
+	{
+		CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+		lua_pushuserdata(L, runtime->GetBaseObjectType(baseObject->GetType()).c_str(), baseObject, refUserData);
+	}
 }
 
-void lua_pushrgba(lua_State* L, alt::RGBA& color, bool refUserData)
+void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
 {
 	alt::RGBA* tempColor = new alt::RGBA(color);
 	lua_pushuserdata(L, CLuaRGBADefs::ClassName, tempColor, refUserData);
 }
 
-void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue)
+void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 {
 	switch (mValue->GetType())
 	{
@@ -301,6 +306,20 @@ void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue)
 	case alt::IMValue::Type::BASE_OBJECT:
 		lua_pushbaseobject(L, mValue.As<alt::IMValueBaseObject>()->Value().Get());
 		break;
+	case alt::IMValue::Type::LIST:
+	{
+		auto list = mValue.As<alt::IMValueList>();
+
+		lua_newtable(L);
+		for (uint32_t i = 0; i < list->GetSize(); ++i)
+		{
+			lua_pushnumber(L, i + 1);
+			lua_pushmvalue(L, list->Get(i));
+			lua_rawset(L, -3);
+		}
+
+		break;
+	}
 	case alt::IMValue::Type::DICT:
 	{
 		auto dict = mValue.As<alt::IMValueDict>();
@@ -321,16 +340,40 @@ void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue)
 	}
 }
 
+void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args)
+{
+	for (auto arg : args)
+	{
+		lua_pushmvalue(L, arg);
+	}
+}
+
+void lua_pushstringarray(lua_State* L, const alt::Array<alt::StringView>& array)
+{
+	lua_newtable(L);
+	uint32_t index = 1;
+	for (auto item : array)
+	{
+		lua_pushnumber(L, index);
+		lua_pushstring(L, item.CStr());
+		lua_rawset(L, -3);
+
+		index++;
+	}
+}
+
 void lua_pushresource(lua_State* L, alt::IResource* resource, bool refUserData)
 {
-	lua_pushuserdata(L, CLuaResourceFuncDefs::ClassName, resource, refUserData);
+	if (resource == nullptr)
+		lua_pushnil(L);
+	else
+		lua_pushuserdata(L, CLuaResourceFuncDefs::ClassName, resource, refUserData);
 }
 
 int lua_functionref(lua_State* L, int idx)
 {
 	if (!lua_isfunction(L, idx))
 		return LUA_NOREF;
-
 
 	lua_pushvalue(L, idx);
 	const void* ptr = lua_topointer(L, -1);
@@ -339,6 +382,8 @@ int lua_functionref(lua_State* L, int idx)
 	auto resource = runtime->GetResourceFromState(L);
 	int ref = resource->GetFunctionRef(ptr);
 	
+	printf("Ptr: %p\n", ptr);
+
 	if (ref == LUA_NOREF)
 	{
 		ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -378,6 +423,7 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 	{
 		//Core->LogInfo("Save table");
 		auto tempDict = Core->CreateMValueDict();
+		auto tempList = Core->CreateMValueList();
 
 		lua_pushvalue(L, idx);
 		lua_pushnil(L);
@@ -391,12 +437,24 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 
 			tempDict->Set(key, value.Get()->Clone());
 
+			if (lua_isnumber(L, -1))
+			{
+				tempList->Push(value.Get()->Clone());
+			}
+
 			lua_pop(L, 2);
 		}
 
 		lua_pop(L, 1);
 
-		mValue = tempDict.Get()->Clone();
+		if (tempList->GetSize() == tempDict->GetSize())
+		{
+			mValue = tempList.Get()->Clone();
+		}
+		else
+		{
+			mValue = tempDict.Get()->Clone();
+		}
 
 		break;
 	}

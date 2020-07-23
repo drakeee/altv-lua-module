@@ -10,6 +10,9 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getResourceName", GetName);
 	lua_globalfunction(L, "getResourcePath", GetPath);
 	lua_globalfunction(L, "getResourceMain", GetMain);
+	lua_globalfunction(L, "getResourceExports", GetExports);
+	lua_globalfunction(L, "getResourceDependencies", GetDependencies);
+	lua_globalfunction(L, "getResourceDependants", GetDependants);
 
 	lua_beginclass(L, ClassName);
 	{
@@ -22,14 +25,25 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 		lua_classfunction(L, "getName", GetName);
 		lua_classfunction(L, "getPath", GetPath);
 		lua_classfunction(L, "getMain", GetMain);
+		lua_classfunction(L, "getExports", GetExports);
+		lua_classfunction(L, "getDependencies", GetDependencies);
+		lua_classfunction(L, "getDependants", GetDependants);
 
 		lua_classvariable(L, "started", nullptr, "isStarted");
 		lua_classvariable(L, "type", nullptr, "getType");
 		lua_classvariable(L, "name", nullptr, "getName");
 		lua_classvariable(L, "path", nullptr, "getPath");
 		lua_classvariable(L, "main", nullptr, "getMain");
+		lua_classvariable(L, "exports", nullptr, "getExports");
+		lua_classvariable(L, "dependencies", nullptr, "getDependencies");
+		lua_classvariable(L, "dependants", nullptr, "getDependants");
 	}
 	lua_endclass(L);
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+	lua_pushresource(L, resource->GetResource());
+	lua_setglobal(L, "localResource");
 }
 
 int CLuaResourceFuncDefs::Call(lua_State* L)
@@ -102,7 +116,7 @@ int CLuaResourceFuncDefs::tostring(lua_State* L)
 		return 0;
 	}
 
-	alt::StringView type("userdata:Resource:" + resource->GetName());
+	alt::StringView type(alt::String("userdata:Resource:") + resource->GetName());
 	lua_pushstring(L, type.CStr());
 
 	return 1;
@@ -217,6 +231,70 @@ int CLuaResourceFuncDefs::GetMain(lua_State* L)
 	}
 
 	lua_pushstring(L, resource->GetMain().CStr());
+
+	return 1;
+}
+
+int CLuaResourceFuncDefs::GetExports(lua_State* L)
+{
+	alt::IResource* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_newtable(L);
+	int index = 1;
+
+	for (auto it = resource->GetExports()->Begin(); it; it = resource->GetExports()->Next())
+	{
+		lua_pushnumber(L, index);
+		lua_pushstring(L, it->GetKey().CStr());
+		lua_rawset(L, -3);
+
+		index++;
+	}
+
+	return 1;
+}
+
+int CLuaResourceFuncDefs::GetDependencies(lua_State* L)
+{
+	alt::IResource* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushstringarray(L, const_cast<alt::Array<alt::StringView>&&>(resource->GetDependencies()));
+
+	return 1;
+}
+
+int CLuaResourceFuncDefs::GetDependants(lua_State* L)
+{
+	alt::IResource* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushstringarray(L, const_cast<alt::Array<alt::StringView>&&>(resource->GetDependants()));
 
 	return 1;
 }

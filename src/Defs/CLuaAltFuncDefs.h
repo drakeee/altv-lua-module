@@ -21,6 +21,7 @@ public:
 private:
 	static int AltIndex(lua_State* L);
 
+	static int dofile(lua_State* L);
 	static int inext(lua_State* L);
 	static int pairs(lua_State* L);
 	static int ipairs(lua_State* L);
@@ -33,8 +34,23 @@ private:
 	static int LogError(lua_State* L);
 	static int LogColored(lua_State* L);
 
+	static int SetMetaData(lua_State* L);
+	static int GetMetaData(lua_State* L);
+	static int DeleteMetaData(lua_State* L);
+	static int HasMetaData(lua_State* L);
+	static int SetSyncedMetaData(lua_State* L);
+	static int GetSyncedMetaData(lua_State* L);
+	static int DeleteSyncedMetaData(lua_State* L);
+	static int HasSyncedMetaData(lua_State* L);
+
+	static int StartResource(lua_State* L);
+	static int StopResource(lua_State* L);
+	static int RestartResource(lua_State* L);
+
 	static int OnServer(lua_State* L);
 	static int OffServer(lua_State* L);
+	static int OnClient(lua_State* L);
+	static int OffClient(lua_State* L);
 
 	static int EmitServer(lua_State* L);
 	static int EmitClient(lua_State* L);

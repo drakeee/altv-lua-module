@@ -13,4 +13,11 @@ private:
 	static int destroy(lua_State* L);
 	static int tostring(lua_State* L);
 	static int add(lua_State* L);
+
+	static int SetX(lua_State* L);
+	static int SetY(lua_State* L);
+	static int SetZ(lua_State* L);
+	static int GetX(lua_State* L);
+	static int GetY(lua_State* L);
+	static int GetZ(lua_State* L);
 };

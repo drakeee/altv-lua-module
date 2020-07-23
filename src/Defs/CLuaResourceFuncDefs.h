@@ -20,4 +20,7 @@ private:
 	static int GetName(lua_State* L);
 	static int GetPath(lua_State* L);
 	static int GetMain(lua_State* L);
+	static int GetExports(lua_State* L);
+	static int GetDependencies(lua_State* L);
+	static int GetDependants(lua_State* L);
 };

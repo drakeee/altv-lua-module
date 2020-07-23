@@ -10,6 +10,16 @@ void CLuaVector3Defs::Init(lua_State *L)
 		lua_classmeta(L, "__add", CLuaVector3Defs::add);
 
 		lua_classfunction(L, "new", CLuaVector3Defs::create);
+		lua_classfunction(L, "setX", SetX);
+		lua_classfunction(L, "setY", SetY);
+		lua_classfunction(L, "setZ", SetZ);
+		lua_classfunction(L, "getX", GetX);
+		lua_classfunction(L, "getY", GetY);
+		lua_classfunction(L, "getZ", GetZ);
+
+		lua_classvariable(L, "x", "setX", "getX");
+		lua_classvariable(L, "y", "setY", "getY");
+		lua_classvariable(L, "z", "setZ", "getZ");
 	}
 	lua_endclass(L);
 }
@@ -175,12 +185,130 @@ int CLuaVector3Defs::add(lua_State* L)
 		return 1;
 	}
 
-	Vector3fp *temp = new Vector3fp(*leftVector + *rightVector);
+	Vector3fp *temp = new Vector3fp(
+		leftVector->x + rightVector->x,
+		leftVector->y + rightVector->y,
+		leftVector->z + rightVector->z
+	);
 
 	//lua_userdata(L, "Vector3", temp, false);
 
 	/*Core->LogInfo("LeftVector: " + std::to_string(leftVector->x));
 	Core->LogInfo("RightVector: " + std::to_string(rightVector->x));*/
+
+	return 1;
+}
+
+int CLuaVector3Defs::SetX(lua_State* L)
+{
+	Vector3fp* vector;
+	float x;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vector);
+	argReader.ReadNumber(x);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vector->x = x;
+
+	return 0;
+}
+
+int CLuaVector3Defs::SetY(lua_State* L)
+{
+	Vector3fp* vector;
+	float y;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vector);
+	argReader.ReadNumber(y);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vector->y = y;
+
+	return 0;
+}
+
+int CLuaVector3Defs::SetZ(lua_State* L)
+{
+	Vector3fp* vector;
+	float z;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vector);
+	argReader.ReadNumber(z);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vector->z = z;
+
+	return 0;
+}
+
+int CLuaVector3Defs::GetX(lua_State* L)
+{
+	Vector3fp* vector;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vector);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vector->x);
+
+	return 1;
+}
+
+int CLuaVector3Defs::GetY(lua_State* L)
+{
+	Vector3fp* vector;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vector);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vector->y);
+
+	return 1;
+}
+
+int CLuaVector3Defs::GetZ(lua_State* L)
+{
+	Vector3fp* vector;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(vector);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vector->z);
 
 	return 1;
 }

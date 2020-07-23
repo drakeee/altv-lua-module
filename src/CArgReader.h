@@ -292,6 +292,11 @@ public:
 		}
 	}
 
+	void SkipValue(void)
+	{
+		m_stackIndex++;
+	}
+
 	//void ReadFunction(int& intVariable)
 	//{
 	//	int argType = lua_type(m_luaVM, m_stackIndex);

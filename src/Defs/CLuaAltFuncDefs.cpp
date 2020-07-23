@@ -21,41 +21,36 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	}
 	lua_endclass(L);
 
+	lua_globalfunction(L, "on", OnServer);
 	lua_globalfunction(L, "onServer", OnServer);
 	lua_globalfunction(L, "offServer", OffServer);
+	lua_globalfunction(L, "onClient", OnClient);
+	lua_globalfunction(L, "offClient", OffClient);
 
+	lua_globalfunction(L, "emit", EmitServer);
 	lua_globalfunction(L, "emitServer", EmitServer);
 	lua_globalfunction(L, "emitClient", EmitClient);
 
 	lua_globalfunction(L, "export", Export);
+
+	lua_globalfunction(L, "startResource", StartResource);
+	lua_globalfunction(L, "stopResource", StopResource);
+	lua_globalfunction(L, "restartResource", RestartResource);
+
+	lua_globalfunction(L, "setMetaData", SetMetaData);
+	lua_globalfunction(L, "getMetaData", GetMetaData);
+	lua_globalfunction(L, "deleteMetaData", DeleteMetaData);
+	lua_globalfunction(L, "hasMetaData", HasMetaData);
+	lua_globalfunction(L, "setSyncedMetaData", SetSyncedMetaData);
+	lua_globalfunction(L, "getSyncedMetaData", GetSyncedMetaData);
+	lua_globalfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
+	lua_globalfunction(L, "hasSyncedMetaData", HasSyncedMetaData);
 
 	lua_beginclass(L, ClassName);
 	{
 		lua_classmeta(L, "__index", AltIndex, true);
 	}
 	lua_endclass(L);
-
-	/*lua_pushstring(L, "logInfo");
-	lua_pushcfunction(L, CLuaAltFuncDefs::LogInfo);
-	lua_settable(L, -3);
-
-	lua_pushstring(L, "logDebug");
-	lua_pushcfunction(L, &CLuaAltFuncDefs::LogDebug);
-	lua_settable(L, -3);
-
-	lua_pushstring(L, "logWarning");
-	lua_pushcfunction(L, &CLuaAltFuncDefs::LogWarning);
-	lua_settable(L, -3);
-
-	lua_pushstring(L, "logError");
-	lua_pushcfunction(L, &CLuaAltFuncDefs::LogError);
-	lua_settable(L, -3);
-
-	lua_pushstring(L, "logColored");
-	lua_pushcfunction(L, &CLuaAltFuncDefs::LogColored);
-	lua_settable(L, -3);
-
-	lua_setglobal(L, "alt");*/
 
 	//Override default print function to behave as LogInfo
 	lua_getglobal(L, "_G");
@@ -115,7 +110,159 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_pushcclosure(L, CLuaAltFuncDefs::ipairs, 1);
 	lua_rawset(L, -3);
 
+	/*lua_pushstring(L, "dofile");
+	lua_pushcfunction(L, dofile);
+	lua_rawset(L, -3);*/
+
 	lua_pop(L, 1);
+}
+
+int CLuaAltFuncDefs::SetMetaData(lua_State* L)
+{
+	std::string key;
+	alt::MValue value;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+	argReader.ReadMValue(value);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetMetaData(key, value);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::GetMetaData(lua_State* L)
+{
+	std::string key;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushmvalue(L, Core->GetMetaData(key));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::DeleteMetaData(lua_State* L)
+{
+	std::string key;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->DeleteMetaData(key);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::HasMetaData(lua_State* L)
+{
+	std::string key;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->HasMetaData(key));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::SetSyncedMetaData(lua_State* L)
+{
+	std::string key;
+	alt::MValue value;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+	argReader.ReadMValue(value);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetSyncedMetaData(key, value);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::GetSyncedMetaData(lua_State* L)
+{
+	std::string key;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushmvalue(L, Core->GetSyncedMetaData(key));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::DeleteSyncedMetaData(lua_State* L)
+{
+	std::string key;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->DeleteSyncedMetaData(key);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::HasSyncedMetaData(lua_State* L)
+{
+	std::string key;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->HasSyncedMetaData(key));
+
+	return 1;
 }
 
 int CLuaAltFuncDefs::Export(lua_State* L)
@@ -129,6 +276,12 @@ int CLuaAltFuncDefs::Export(lua_State* L)
 	CArgReader argReader(L);
 	argReader.ReadString(exportName);
 	argReader.ReadFunction(functionRef);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
 
 	if (resource->IsExportExists(exportName))
 	{
@@ -191,6 +344,57 @@ int CLuaAltFuncDefs::OffServer(lua_State* L)
 	return 1;
 }
 
+int CLuaAltFuncDefs::OnClient(lua_State* L)
+{
+	std::string eventName;
+	int functionRef;
+
+	unsigned int ha = 1;
+	lua_pushnumber(L, ha);
+
+	CArgReader argReader(L);
+	argReader.ReadString(eventName);
+	argReader.ReadFunction(functionRef);
+	//argReader.ReadFunctionComplete();
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+
+	lua_pushboolean(L, resource->RegisterClientEvent(eventName, functionRef));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::OffClient(lua_State* L)
+{
+	std::string eventName;
+	int functionRef;
+
+	CArgReader argReader(L);
+	argReader.ReadString(eventName);
+	argReader.ReadFunction(functionRef);
+	//argReader.ReadFunctionComplete();
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+
+	lua_pushboolean(L, resource->RemoveClientEvent(eventName, functionRef));
+
+	return 1;
+}
+
 int CLuaAltFuncDefs::EmitServer(lua_State* L)
 {
 	std::string eventName;
@@ -218,7 +422,14 @@ int CLuaAltFuncDefs::EmitClient(lua_State* L)
 	alt::MValueArgs args;
 
 	CArgReader argReader(L);
-	argReader.ReadBaseObject(player);
+	if (argReader.IsCurrentType(LUA_TNIL))
+	{
+		player = nullptr;
+		argReader.SkipValue();
+	}
+	else
+		argReader.ReadBaseObject(player);
+
 	argReader.ReadString(eventName);
 	argReader.ReadArguments(args);
 
@@ -231,6 +442,60 @@ int CLuaAltFuncDefs::EmitClient(lua_State* L)
 	Core->TriggerClientEvent(player, eventName, args);
 
 	return 0;
+}
+
+int CLuaAltFuncDefs::StartResource(lua_State* L)
+{
+	std::string resourceName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(resourceName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushresource(L, Core->StartResource(resourceName));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::StopResource(lua_State* L)
+{
+	std::string resourceName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(resourceName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->StopResource(resourceName);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::RestartResource(lua_State* L)
+{
+	std::string resourceName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(resourceName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushresource(L, Core->RestartResource(resourceName));
+
+	return 1;
 }
 
 int CLuaAltFuncDefs::AltIndex(lua_State* L)
@@ -257,6 +522,57 @@ int CLuaAltFuncDefs::AltIndex(lua_State* L)
 	}
 
 	//nothing found
+	return 0;
+}
+
+int CLuaAltFuncDefs::dofile(lua_State* L)
+{
+	std::string filePath;
+
+	CArgReader argReader(L);
+	argReader.ReadString(filePath);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto runtime = &CLuaScriptRuntime::Instance();
+	auto resource = runtime->GetResourceFromState(L);
+	auto file = (resource->GetWorkingPath() + filePath + ".lua");
+	auto &loadedFiles = resource->GetLoadedFiles();
+
+	if (loadedFiles.find(filePath) != loadedFiles.end())
+	{
+		Core->LogInfo("Found: " + filePath);
+		return 0;
+	}
+
+	Core->LogInfo("Load: " + filePath);
+
+	if (luaL_dofile(L, file.c_str()))
+	{
+		//Sadly far from perfect
+		Core->LogError(" Unable to load \"" + filePath + "\"");
+
+		//Get the error from the top of the stack
+		if (lua_isstring(L, -1))
+			Core->LogError(" Error: " + alt::String(luaL_checkstring(L, -1)));
+
+		//Close virtual machine and point to null pointer
+		//lua_close(L);
+		//this->resourceState = nullptr;
+
+		return 0;
+	}
+	else
+	{
+		loadedFiles.insert(std::pair<std::string, bool>(std::string(filePath.c_str()), true));
+		Core->LogInfo("Add loadedFiles: " + file);
+		Core->LogInfo("LoadedFiles: " + std::to_string(loadedFiles.size()));
+	}
+
 	return 0;
 }
 

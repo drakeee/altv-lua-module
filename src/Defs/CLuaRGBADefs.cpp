@@ -28,8 +28,8 @@ void CLuaRGBADefs::Init(lua_State* L)
 
 int CLuaRGBADefs::SetColor(lua_State* L)
 {
-	alt::RGBA* rgba;
-	alt::RGBA* copy;
+	LRGBA* rgba;
+	LRGBA* copy;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(rgba);
@@ -51,7 +51,7 @@ int CLuaRGBADefs::SetColor(lua_State* L)
 
 int CLuaRGBADefs::GetColor(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(rgba);
@@ -83,14 +83,14 @@ int CLuaRGBADefs::CreateRGBA(lua_State* L)
 		return 0;
 	}
 
-	lua_pushrgba(L, alt::RGBA(r, g, b, a));
+	lua_pushrgba(L, LRGBA(r, g, b, a));
 
 	return 1;
 }
 
 int CLuaRGBADefs::SetR(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 	int r;
 
 	CArgReader argReader(L);
@@ -110,7 +110,7 @@ int CLuaRGBADefs::SetR(lua_State* L)
 
 int CLuaRGBADefs::GetR(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(rgba);
@@ -128,7 +128,7 @@ int CLuaRGBADefs::GetR(lua_State* L)
 
 int CLuaRGBADefs::SetG(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 	int g;
 
 	CArgReader argReader(L);
@@ -148,7 +148,7 @@ int CLuaRGBADefs::SetG(lua_State* L)
 
 int CLuaRGBADefs::GetG(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(rgba);
@@ -166,7 +166,7 @@ int CLuaRGBADefs::GetG(lua_State* L)
 
 int CLuaRGBADefs::SetB(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 	int b;
 
 	CArgReader argReader(L);
@@ -186,7 +186,7 @@ int CLuaRGBADefs::SetB(lua_State* L)
 
 int CLuaRGBADefs::GetB(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(rgba);
@@ -204,7 +204,7 @@ int CLuaRGBADefs::GetB(lua_State* L)
 
 int CLuaRGBADefs::SetA(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 	int a;
 
 	CArgReader argReader(L);
@@ -224,7 +224,7 @@ int CLuaRGBADefs::SetA(lua_State* L)
 
 int CLuaRGBADefs::GetA(lua_State* L)
 {
-	alt::RGBA* rgba;
+	LRGBA* rgba;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(rgba);

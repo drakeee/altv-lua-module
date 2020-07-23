@@ -34,6 +34,7 @@ typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 
 #include "CVehModels.h"
 #include "CVehMods.h"
+#include "LRGBA.h"
 
 #include "CLuaDefs.h"
 #include "CArgReader.h"
