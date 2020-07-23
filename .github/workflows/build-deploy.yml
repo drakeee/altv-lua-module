@@ -28,7 +28,7 @@ jobs:
           ./build.sh
       - name: Zip artifacts
         run: |
-          zip lua-dist-linux.zip build/linux64/Release/modules
+          zip -r lua-dist-linux.zip build/linux64/Release/modules/*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
