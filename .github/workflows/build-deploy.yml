@@ -42,7 +42,7 @@ jobs:
   build-windows:
     name: Build windows release
     runs-on: windows-2019
-    needs: [prerelease]
+    needs: [create_release]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -65,7 +65,7 @@ jobs:
   build-linux:
     name: Build linux release
     runs-on: ubuntu-18.04
-    needs: [prerelease]
+    needs: [create_release]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
