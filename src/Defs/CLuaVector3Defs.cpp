@@ -185,7 +185,11 @@ int CLuaVector3Defs::add(lua_State* L)
 		return 1;
 	}
 
-	Vector3fp *temp = new Vector3fp(*leftVector + *rightVector);
+	Vector3fp *temp = new Vector3fp(
+		leftVector->x + rightVector->x,
+		leftVector->y + rightVector->y,
+		leftVector->z + rightVector->z
+	);
 
 	//lua_userdata(L, "Vector3", temp, false);
 
