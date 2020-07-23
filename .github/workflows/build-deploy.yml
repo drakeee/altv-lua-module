@@ -20,14 +20,16 @@ jobs:
     runs-on: windows-2019
     needs: [prerelease]
     steps:
-      - id: test
+      - name: Echo Stuff
+        shell: bash
         run: echo ${{ needs.prerelease.outputs.upload_url }}
   test2:
     name: Testing
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
     needs: [prerelease]
     steps:
-      - id: test
+      - name: Echo Stuff
+        shell: bash
         run: echo ${{ needs.prerelease.outputs.upload_url }}
   # build-windows:
   #   name: Build windows release
