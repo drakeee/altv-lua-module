@@ -30,30 +30,9 @@ jobs:
         with:
           name: lua-module-linux
           path: ./build/linux64
-
-  create-release:
-    name: Create GitHub Release
-    runs-on: ubuntu-18.04
-    needs: [build-linux]
-    steps:
-      - name: Download linux artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: lua-module-linux
-          path: dist-linux
-
       - name: Zip artifacts
         run: |
-          zip -r lua-module-linux dist-linux
-
-      - name: Extract version
-        id: version
-        shell: bash
-        run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          echo ::set-output name=BRANCH::${TAG/\/*}
-          echo ::set-output name=VERSION::${TAG/*\/}
-
+          zip -r lua-dist-linux.zip build/linux64/*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -62,20 +41,12 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ steps.version.outputs.VERSION }}
-
       - name: Upload linux artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./lua-module-linux.zip
-          asset_name: lua-module-linux.zip
+          asset_path: ./lua-dist-linux.zip
+          asset_name: lua-dist-linux.zip
           asset_content_type: application/zip
-
-      - name: Delete artifacts
-        if: ${{ always() }}
-        uses: geekyeggo/delete-artifact@v1
-        with:
-          name: |
-            lua-module-linux
