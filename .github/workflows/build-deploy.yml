@@ -23,22 +23,6 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-  # test:
-  #   name: Testing
-  #   runs-on: windows-2019
-  #   needs: [create_release]
-  #   steps:
-  #     - name: Echo Stuff
-  #       shell: bash
-  #       run: echo ${{ needs.create_release.outputs.upload_url }}
-  # test2:
-  #   name: Testing
-  #   runs-on: ubuntu-latest
-  #   needs: [create_release]
-  #   steps:
-  #     - name: Echo Stuff
-  #       shell: bash
-  #       run: echo ${{ needs.create_release.outputs.upload_url }}
   build-windows:
     name: Build windows release
     runs-on: windows-2019
@@ -59,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./lua-module-windows.zip
+          asset_path: lua-module-windows.zip
           asset_name: lua-module-windows.zip
           asset_content_type: application/zip
   build-linux:
@@ -87,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./lua-module-linux.zip
+          asset_path: lua-module-linux.zip
           asset_name: lua-module-linux.zip
           asset_content_type: application/zip
   create-release:
@@ -95,16 +79,14 @@ jobs:
     runs-on: ubuntu-18.04
     needs: [create_release, build-linux, build-windows]
     steps:
-      - name: Download windows artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: lua-module-windows
-          path: dist-windows
       - name: Download linux artifacts
         uses: actions/download-artifact@v2
         with:
           name: lua-module-linux
-          path: dist-linux
+      - name: Download windows artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: lua-module-windows
       - name: Extract version
         id: version
         shell: bash
