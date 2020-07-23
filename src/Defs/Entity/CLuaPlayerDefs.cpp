@@ -175,7 +175,7 @@ int CLuaPlayerDefs::tostring(lua_State* L)
 	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
 	auto vehModels = &CVehModels::Instance();
 
-	alt::StringView type("userdata:" + runtime->GetBaseObjectType(player) + ":" + player->GetName());
+	alt::StringView type(alt::String("userdata:") + runtime->GetBaseObjectType(player) + alt::String(":") + player->GetName());
 
 	lua_pushstring(L, type.CStr());
 

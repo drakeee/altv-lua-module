@@ -2,11 +2,13 @@
 
 #include <Main.h>
 
+#ifdef __linux__
+#include <Defs/CLuaVector3Defs.h>
+#endif
+
 #define L_ASSERT(a,b) \
 	assert((!a?(Core->LogError(b),true):true)&&a)
 
-class CLuaVector3Defs;
-const char* CLuaVector3Defs::ClassName;
 
 /*#define lua_globalfunction(a,b,c) \
 	lua_register(a,b,c)*/
@@ -29,17 +31,17 @@ void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool r
 void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData = true);
 
 template<class T, std::size_t W, class _Layout = alt::VectorLayout<T, W>>
-void lua_pushvector(lua_State* L, alt::Vector<T, W, _Layout>& vector, bool refUserData = false)
+void lua_pushvector(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool refUserData = false)
 {
 	alt::Vector<T, W, _Layout>* vec = new alt::Vector<T, W, _Layout>(vector);
 	lua_pushuserdata(L, CLuaVector3Defs::ClassName, vec, refUserData);
 }
 //void lua_pushvehicle(lua_State* L, alt::IVehicle* vehicle, bool refUserData = true);
-void lua_pushrgba(lua_State* L, alt::RGBA &color, bool refUserData = false);
-void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue);
+void lua_pushrgba(lua_State* L, const alt::RGBA &color, bool refUserData = false);
+void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue);
 void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args);
 void lua_pushresource(lua_State* L, alt::IResource* resource, bool refUserData = true);
-void lua_pushstringarray(lua_State* L, alt::Array<alt::StringView>& array);
+void lua_pushstringarray(lua_State* L, const alt::Array<alt::StringView>& array);
 int lua_functionref(lua_State* L, int idx);
 
 void lua_todict(lua_State* L, int idx);

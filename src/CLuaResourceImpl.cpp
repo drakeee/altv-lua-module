@@ -84,9 +84,9 @@ bool CLuaResourceImpl::Start()
 	alt::String mainFile = workingDir + resource->GetMain();
 
 #ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl::" + resource->GetMain());
-	Core->LogInfo("ResourcePath: " + workingDir);
-	Core->LogInfo("MainFile: " + mainFile);
+	Core->LogInfo(alt::String("CLuaResourceImpl::CLuaResourceImpl::") + resource->GetMain());
+	Core->LogInfo(alt::String("ResourcePath: ") + workingDir);
+	Core->LogInfo(alt::String("MainFile: ") + mainFile);
 #endif
 
 	//Try to load file for testing purposes
@@ -211,7 +211,7 @@ void CLuaResourceImpl::TriggerResourceLocalEvent(std::string eventName, alt::MVa
 bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReference)
 {
 	auto& event = this->eventsReferences[eventName];
-	auto& it = std::find(event.begin(), event.end(), functionReference);
+	auto it = std::find(event.begin(), event.end(), functionReference);
 
 #ifndef NDEBUG
 	Core->LogInfo("RegisterEvent: " + eventName + " - " + std::to_string(functionReference));
@@ -229,7 +229,7 @@ bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReferenc
 bool CLuaResourceImpl::RegisterClientEvent(std::string eventName, int functionReference)
 {
 	auto& event = this->clientEventsReferences[eventName];
-	auto& it = std::find(event.begin(), event.end(), functionReference);
+	auto it = std::find(event.begin(), event.end(), functionReference);
 
 #ifndef NDEBUG
 	Core->LogInfo("RegisterClientEvent: " + eventName + " - " + std::to_string(functionReference));
@@ -247,7 +247,7 @@ bool CLuaResourceImpl::RegisterClientEvent(std::string eventName, int functionRe
 bool CLuaResourceImpl::RemoveEvent(std::string eventName, int functionReference)
 {
 	auto &event = this->eventsReferences[eventName];
-	auto &it = std::find(event.begin(), event.end(), functionReference);
+	auto it = std::find(event.begin(), event.end(), functionReference);
 
 	if (it != event.end())
 	{
@@ -262,7 +262,7 @@ bool CLuaResourceImpl::RemoveEvent(std::string eventName, int functionReference)
 bool CLuaResourceImpl::RemoveClientEvent(std::string eventName, int functionReference)
 {
 	auto& event = this->clientEventsReferences[eventName];
-	auto& it = std::find(event.begin(), event.end(), functionReference);
+	auto it = std::find(event.begin(), event.end(), functionReference);
 
 	if (it != event.end())
 	{

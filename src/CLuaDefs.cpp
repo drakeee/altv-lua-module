@@ -274,13 +274,13 @@ void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUser
 	}
 }
 
-void lua_pushrgba(lua_State* L, alt::RGBA& color, bool refUserData)
+void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
 {
 	alt::RGBA* tempColor = new alt::RGBA(color);
 	lua_pushuserdata(L, CLuaRGBADefs::ClassName, tempColor, refUserData);
 }
 
-void lua_pushmvalue(lua_State* L, alt::MValueConst &mValue)
+void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 {
 	switch (mValue->GetType())
 	{
@@ -348,7 +348,7 @@ void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args)
 	}
 }
 
-void lua_pushstringarray(lua_State* L, alt::Array<alt::StringView>& array)
+void lua_pushstringarray(lua_State* L, const alt::Array<alt::StringView>& array)
 {
 	lua_newtable(L);
 	uint32_t index = 1;

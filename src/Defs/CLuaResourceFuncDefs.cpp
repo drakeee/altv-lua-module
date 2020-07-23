@@ -116,7 +116,7 @@ int CLuaResourceFuncDefs::tostring(lua_State* L)
 		return 0;
 	}
 
-	alt::StringView type("userdata:Resource:" + resource->GetName());
+	alt::StringView type(alt::String("userdata:Resource:") + resource->GetName());
 	lua_pushstring(L, type.CStr());
 
 	return 1;
