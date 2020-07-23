@@ -26,9 +26,13 @@ jobs:
       - name: Build
         run: |
           ./build.sh
+      - name: Copy Files
+        run: |
+          mkdir lua-module
+          cp -r build/linux64/Release/modules/* lua-module/
       - name: Zip artifacts
         run: |
-          zip -r lua-dist-linux.zip build/linux64/Release/modules/*
+          zip -r lua-module-linux.zip lua-module/*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -43,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./lua-dist-linux.zip
-          asset_name: lua-dist-linux.zip
+          asset_path: ./lua-module-linux.zip
+          asset_name: lua-module-linux.zip
           asset_content_type: application/zip
