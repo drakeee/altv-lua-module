@@ -1,6 +1,3 @@
 [submodule "src/vendors/cpp-sdk"]
 	path = vendors/cpp-sdk
 	url = https://github.com/altmp/cpp-sdk
-[submodule "vendors/semver"]
-	path = vendors/semver
-	url = https://github.com/Neargye/semver

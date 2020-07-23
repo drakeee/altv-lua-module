@@ -25,7 +25,6 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/src"
 	"${PROJECT_SOURCE_DIR}/vendors/luajit/include"
 	"${PROJECT_SOURCE_DIR}/vendors/cpp-sdk"
-	"${PROJECT_SOURCE_DIR}/vendors/semver/include"
 )
 
 add_library(

@@ -17,6 +17,8 @@
 //	lua_endclass(L,true)
 void lua_globalfunction(lua_State* L, const char* functionName, lua_CFunction func);
 
+int lua_setpath(lua_State* L, const char* path);
+
 void lua_initclass(lua_State* L);
 void lua_beginclass(lua_State* L, const char* className, const char* baseClass = nullptr);
 void lua_endclass(lua_State* L);
