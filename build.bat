@@ -13,5 +13,9 @@ cd ..
 xcopy vendors\luajit\bin\win64\lua51.dll build\win64\Release\modules\lua-module\ /Y
 xcopy build\win64\Release\lua-module.dll build\win64\Release\modules\lua-module\ /Y
 
-7z a -tzip lua-module-windows.zip -r build\win64\Release\modules\lua-module
+mkdir lua-module
+xcopy /s build\win64\Release\modules\lua-module\lua51.dll lua-module /Y
+xcopy /s build\win64\Release\modules\lua-module\lua-module.dll lua-module /Y
+
+7z a -tzip lua-module-windows.zip -r lua-module\
 
