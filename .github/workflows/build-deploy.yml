@@ -72,7 +72,22 @@ jobs:
         shell: cmd
         run: |
           build.bat
-          mkdir lua-module
-          xcopy "build\win64\Release\modules" "lua-module" /h /i /c /k /e /r /y
-          cd lua-module
-          tree /f
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.version.outputs.VERSION }}
+
+      - name: Upload windows artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./lua-module-windows.zip
+          asset_name: lua-module-windows.zip
+          asset_content_type: application/zip
