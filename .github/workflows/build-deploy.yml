@@ -98,13 +98,12 @@ jobs:
           path: dist-linux
 
       - name: Extract version
-          id: version
-          shell: bash
-          run: |
-            TAG=${GITHUB_REF/refs\/tags\//}
-            echo ::set-output name=BRANCH::${TAG/\/*}
-            echo ::set-output name=VERSION::${TAG/*\/}
-            ls
+        id: version
+        shell: bash
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=BRANCH::${TAG/\/*}
+          echo ::set-output name=VERSION::${TAG/*\/}
 
       - name: Create Release
         id: create_release
