@@ -15,126 +15,125 @@ jobs:
     steps:
       - id: step_upload_url
         run: echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
-
-  build-windows:
-    name: Build windows release
+  test:
+    name: Testing
     runs-on: windows-2019
     needs: [prerelease]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-          lfs: true
-
-      - name: Build
-        shell: cmd
-        run: |
-          build.bat
-
-      - name: Upload windows artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.prerelease.outputs.upload_url }}
-          asset_path: ./lua-module-windows.zip
-          asset_name: lua-module-windows.zip
-          asset_content_type: application/zip
-
-  build-linux:
-    name: Build linux release
-    runs-on: ubuntu-18.04
+      - id: test
+        run: echo ${{ needs.prerelease.outputs.upload_url }}
+  test2:
+    name: Testing
+    runs-on: windows-2019
     needs: [prerelease]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-          lfs: true
-
-      - name: Build
-        run: |
-          ./build.sh
-
-      - name: Copy Files
-        run: |
-          cp -r build/linux64/Release/modules/* lua-module/
-
-      - name: Zip artifacts
-        run: |
-          zip -r lua-module-linux.zip lua-module/*
-
-      - name: Upload linux artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.prerelease.outputs.upload_url }}
-          asset_path: ./lua-module-linux.zip
-          asset_name: lua-module-linux.zip
-          asset_content_type: application/zip
-
-  create-release:
-    name: Create GitHub Release
-    runs-on: ubuntu-18.04
-    needs: [build-linux, build-windows]
-    steps:
-      - name: Download windows artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: lua-module-windows
-          path: dist-windows
-
-      - name: Download linux artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: lua-module-linux
-          path: dist-linux
-
-      - name: Extract version
-        id: version
-        shell: bash
-        run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          echo ::set-output name=BRANCH::${TAG/\/*}
-          echo ::set-output name=VERSION::${TAG/*\/}
-          echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
-          echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.version.outputs.VERSION }}
-
-      - name: Upload windows artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.prerelease.outputs.upload_url }}
-          asset_path: ./lua-module-windows.zip
-          asset_name: lua-module-windows.zip
-          asset_content_type: application/zip
-
-      - name: Upload linux artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.prerelease.outputs.upload_url }}
-          asset_path: ./lua-module-linux.zip
-          asset_name: lua-module-linux.zip
-          asset_content_type: application/zip
-
-      - name: Delete artifacts
-        if: ${{ always() }}
-        uses: geekyeggo/delete-artifact@v1
-        with:
-          name: |
-            lua-module-linux
-            lua-module-windows
+      - id: test
+        run: echo ${{ needs.prerelease.outputs.upload_url }}
+  # build-windows:
+  #   name: Build windows release
+  #   runs-on: windows-2019
+  #   needs: [prerelease]
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         submodules: recursive
+  #         lfs: true
+  #     - name: Build
+  #       shell: cmd
+  #       run: |
+  #         build.bat
+  #     - name: Upload windows artifacts
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.prerelease.outputs.upload_url }}
+  #         asset_path: ./lua-module-windows.zip
+  #         asset_name: lua-module-windows.zip
+  #         asset_content_type: application/zip
+  # build-linux:
+  #   name: Build linux release
+  #   runs-on: ubuntu-18.04
+  #   needs: [prerelease]
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         submodules: recursive
+  #         lfs: true
+  #     - name: Build
+  #       run: |
+  #         ./build.sh
+  #     - name: Copy Files
+  #       run: |
+  #         cp -r build/linux64/Release/modules/* lua-module/
+  #     - name: Zip artifacts
+  #       run: |
+  #         zip -r lua-module-linux.zip lua-module/*
+  #     - name: Upload linux artifacts
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.prerelease.outputs.upload_url }}
+  #         asset_path: ./lua-module-linux.zip
+  #         asset_name: lua-module-linux.zip
+  #         asset_content_type: application/zip
+  # create-release:
+  #   name: Create GitHub Release
+  #   runs-on: ubuntu-18.04
+  #   needs: [build-linux, build-windows]
+  #   steps:
+  #     - name: Download windows artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: lua-module-windows
+  #         path: dist-windows
+  #     - name: Download linux artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: lua-module-linux
+  #         path: dist-linux
+  #     - name: Extract version
+  #       id: version
+  #       shell: bash
+  #       run: |
+  #         TAG=${GITHUB_REF/refs\/tags\//}
+  #         echo ::set-output name=BRANCH::${TAG/\/*}
+  #         echo ::set-output name=VERSION::${TAG/*\/}
+  #         echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
+  #         echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         release_name: Release ${{ steps.version.outputs.VERSION }}
+  #     - name: Upload windows artifacts
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.prerelease.outputs.upload_url }}
+  #         asset_path: ./lua-module-windows.zip
+  #         asset_name: lua-module-windows.zip
+  #         asset_content_type: application/zip
+  #     - name: Upload linux artifacts
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.prerelease.outputs.upload_url }}
+  #         asset_path: ./lua-module-linux.zip
+  #         asset_name: lua-module-linux.zip
+  #         asset_content_type: application/zip
+  #     - name: Delete artifacts
+  #       if: ${{ always() }}
+  #       uses: geekyeggo/delete-artifact@v1
+  #       with:
+  #         name: |
+  #           lua-module-linux
+  #           lua-module-windows
