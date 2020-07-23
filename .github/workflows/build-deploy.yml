@@ -28,11 +28,10 @@ jobs:
           ./build.sh
       - name: Copy Files
         run: |
-          mkdir lua-module
-          cp -r build/linux64/Release/modules/* modules/
+          cp -r build/linux64/Release/modules/* lua-module/
       - name: Zip artifacts
         run: |
-          zip -r lua-module-linux.zip modules/*
+          zip -r lua-module-linux.zip lua-module/*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
