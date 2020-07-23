@@ -1,19 +1,19 @@
 @echo off
 
 git submodule update --init --recursive --remote
-cd vendors/luajit/src/
-call msvcbuild.bat
+REM cd vendors/luajit/src/
+REM call msvcbuild.bat
 
-cd ..
-if not exist include mkdir include
-if not exist bin\\win64 mkdir bin\\win64
-if not exist lib\\win64 mkdir lib\\win64
+REM cd ..
+REM if not exist include mkdir include
+REM if not exist bin\\win64 mkdir bin\\win64
+REM if not exist lib\\win64 mkdir lib\\win64
 
-for %%I in (src\lauxlib.h src\lua.h src\lua.hpp src\luaconf.h src\luajit.h src\lualib.h) do xcopy %%I include\\ /Y
-for %%I in (src\lua51.lib src\luajit.lib) do xcopy %%I lib\\win64\\ /Y
-for %%I in (src\lua51.dll src\luajit.exe) do xcopy %%I bin\\win64\\ /Y
+REM for %%I in (src\lauxlib.h src\lua.h src\lua.hpp src\luaconf.h src\luajit.h src\lualib.h) do xcopy %%I include\\ /Y
+REM for %%I in (src\lua51.lib src\luajit.lib) do xcopy %%I lib\\win64\\ /Y
+REM for %%I in (src\lua51.dll src\luajit.exe) do xcopy %%I bin\\win64\\ /Y
 
-cd ..\\..
+REM cd ..\\..
 if not exist build mkdir build
 cd build
 
