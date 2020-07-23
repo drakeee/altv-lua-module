@@ -2,10 +2,11 @@
 
 #include <Main.h>
 
-#define USE_GLOBAL_ALT_NAMESPACE true
-
 #define L_ASSERT(a,b) \
 	assert((!a?(Core->LogError(b),true):true)&&a)
+
+class CLuaVector3Defs;
+const char* CLuaVector3Defs::ClassName;
 
 /*#define lua_globalfunction(a,b,c) \
 	lua_register(a,b,c)*/
