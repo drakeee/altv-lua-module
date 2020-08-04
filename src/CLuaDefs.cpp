@@ -393,7 +393,7 @@ int lua_functionref(lua_State* L, int idx)
 	const void* ptr = lua_topointer(L, -1);
 
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 	int ref = resource->GetFunctionRef(ptr);
 
 	if (ref == LUA_NOREF)

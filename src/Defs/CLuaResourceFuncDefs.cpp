@@ -41,7 +41,7 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 	lua_endclass(L);
 
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 	lua_pushresource(L, resource->GetResource());
 	lua_setglobal(L, "localResource");
 }

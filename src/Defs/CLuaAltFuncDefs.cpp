@@ -268,7 +268,7 @@ int CLuaAltFuncDefs::HasSyncedMetaData(lua_State* L)
 int CLuaAltFuncDefs::Export(lua_State* L)
 {
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 
 	std::string exportName;
 	int functionRef;
@@ -313,7 +313,7 @@ int CLuaAltFuncDefs::OnServer(lua_State* L)
 	}
 
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 
 	lua_pushboolean(L, resource->RegisterEvent(eventName, functionRef));
 
@@ -337,7 +337,7 @@ int CLuaAltFuncDefs::OffServer(lua_State* L)
 	}
 
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 
 	lua_pushboolean(L, resource->RemoveEvent(eventName, functionRef));
 
@@ -364,7 +364,7 @@ int CLuaAltFuncDefs::OnClient(lua_State* L)
 	}
 
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 
 	lua_pushboolean(L, resource->RegisterClientEvent(eventName, functionRef));
 
@@ -388,7 +388,7 @@ int CLuaAltFuncDefs::OffClient(lua_State* L)
 	}
 
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 
 	lua_pushboolean(L, resource->RemoveClientEvent(eventName, functionRef));
 
@@ -539,7 +539,7 @@ int CLuaAltFuncDefs::dofile(lua_State* L)
 	}
 
 	auto runtime = &CLuaScriptRuntime::Instance();
-	auto resource = runtime->GetResourceFromState(L);
+	auto resource = runtime->GetResourceImplFromState(L);
 	auto file = (resource->GetWorkingPath() + filePath + ".lua");
 	auto &loadedFiles = resource->GetLoadedFiles();
 

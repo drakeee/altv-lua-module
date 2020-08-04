@@ -500,7 +500,7 @@ void CLuaScriptRuntime::DestroyImpl(alt::IResource::Impl* impl)
 
 }
 
-CLuaResourceImpl* CLuaScriptRuntime::GetResourceFromState(lua_State* L)
+CLuaResourceImpl* CLuaScriptRuntime::GetResourceImplFromState(lua_State* L)
 {
 	auto it = this->resources.find(L);
 	if (it != this->resources.end())
