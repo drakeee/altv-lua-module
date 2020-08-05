@@ -1,5 +1,5 @@
 # altv-lua-module
-Keep in mind that this module is still WIP (so it should lack some of the functions) and its in beta phase. If you find a bug or missing a function which you think it would be awesome to exists don't hesitate just open an issue for it. Also it is using LuaJIT
+Keep in mind that this module is still WIP (so it should lack some of the functions) and its in beta phase. If you find a bug or missing a function which you think it would be awesome to exists don't hesitate just open an issue for it.
 
 ## Example
 https://github.com/drakeee/altv-quickstart-lua
