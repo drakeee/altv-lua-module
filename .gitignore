@@ -2,5 +2,6 @@
 /out
 /.vs
 /build
+/lua-module
 
 CMakeCache.txt
