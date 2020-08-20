@@ -2,3 +2,5 @@
 /out
 /.vs
 /build
+
+CMakeCache.txt
