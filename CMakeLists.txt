@@ -27,8 +27,6 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/src"
 	"${PROJECT_SOURCE_DIR}/vendors/luajit/include"
 	"${PROJECT_SOURCE_DIR}/vendors/cpp-sdk"
-	"${PROJECT_SOURCE_DIR}/vendors/mariadb/include"
-	"${PROJECT_SOURCE_DIR}/vendors/qtl/include"
 )
 
 add_library(
@@ -44,11 +42,8 @@ if(UNIX)
 	  -lstdc++fs
     )
 else()
-	target_link_libraries(${PROJECT_MODULE_NAME} ws2_32 crypt32 secur32 shlwapi)
 	target_link_libraries(${PROJECT_MODULE_NAME}
 	${PROJECT_SOURCE_DIR}/vendors/luajit/lib/win64/lua51.lib
 	${PROJECT_SOURCE_DIR}/vendors/luajit/lib/win64/luajit.lib
-	${PROJECT_SOURCE_DIR}/vendors/mariadb/lib/mariadbclient.lib
-	${PROJECT_SOURCE_DIR}/vendors/mariadb/lib/libmariadb.lib
 	)
 endif()
