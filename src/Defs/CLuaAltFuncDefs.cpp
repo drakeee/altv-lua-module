@@ -32,6 +32,7 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "emitClient", EmitClient);
 
 	lua_globalfunction(L, "export", Export);
+	lua_globalfunction(L, "hash", Hash);
 
 	lua_globalfunction(L, "startResource", StartResource);
 	lua_globalfunction(L, "stopResource", StopResource);
@@ -291,6 +292,24 @@ int CLuaAltFuncDefs::Export(lua_State* L)
 	resource->AddExport(exportName, new CLuaResourceImpl::LuaFunction(resource, functionRef));
 
 	return 0;
+}
+
+int CLuaAltFuncDefs::Hash(lua_State* L)
+{
+	std::string hashKey;
+
+	CArgReader argReader(L);
+	argReader.ReadString(hashKey);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, Core->Hash(hashKey));
+
+	return 1;
 }
 
 int CLuaAltFuncDefs::OnServer(lua_State* L)

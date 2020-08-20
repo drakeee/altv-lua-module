@@ -10,12 +10,14 @@ cmake --build . --config Release
 
 cd ..
 
-xcopy vendors\luajit\bin\win64\lua51.dll build\win64\Release\modules\lua-module\ /Y
+xcopy scripts build\win64\Release\modules\lua-module\scripts\ /Y /E
+xcopy libs\lua51\win64\lua51.dll build\win64\Release\modules\lua-module\ /Y
+xcopy libs\mariadb\win64\libmariadb.dll build\win64\Release\modules\lua-module\ /Y
+xcopy libs\sqlite3\win64\sqlite3.dll build\win64\Release\modules\lua-module\ /Y
 xcopy build\win64\Release\lua-module.dll build\win64\Release\modules\lua-module\ /Y
 
 mkdir lua-module
-xcopy build\win64\Release\modules\lua-module\lua51.dll lua-module\ /Y
-xcopy build\win64\Release\modules\lua-module\lua-module.dll lua-module\ /Y
+xcopy build\win64\Release\modules\lua-module lua-module\ /Y /E
 
-7z a -tzip "lua-module-windows.zip" -r lua-module\*.dll
+7z a -tzip "lua-module-windows.zip" -r lua-module\*
 

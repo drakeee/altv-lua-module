@@ -18,15 +18,23 @@ static const char* preferred_separator = "/";
 #include <list>
 #include <map>
 #include <vector>
+#include <memory>
 
 //Semantic versioning
 #include <semver.hpp>
 
 //Include AltV SDK
 #include <SDK.h>
+#include <events/CFireEvent.h>
+#include <events/CStartProjectileEvent.h>
 
 //Include Lua
 #include <lua.hpp>
+
+//Include SQL libraries
+//#include <mysql.h>
+//#include <CDatabaseManager.h>
+//#include <Database/MariaDatabase.h>
 
 extern alt::ICore* Core;
 

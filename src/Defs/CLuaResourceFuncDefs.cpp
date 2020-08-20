@@ -212,7 +212,8 @@ int CLuaResourceFuncDefs::GetPath(lua_State* L)
 		return 0;
 	}
 
-	lua_pushstring(L, resource->GetPath().CStr());
+	alt::String p_s(preferred_separator);
+	lua_pushstring(L, (resource->GetPath() + p_s).CStr());
 
 	return 1;
 }

@@ -40,8 +40,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getPlayerMaxArmour", GetMaxArmour);
 	lua_globalfunction(L, "setPlayerMaxArmour", SetMaxArmour);
 	lua_globalfunction(L, "getPlayerMoveSpeed", GetMoveSpeed);
-	lua_globalfunction(L, "getPlayerWeapon", GetWeapon);
-	lua_globalfunction(L, "getPlayerAmmo", GetAmmo);
+	//lua_globalfunction(L, "getPlayerWeapon", GetWeapon);
+	//lua_globalfunction(L, "getPlayerAmmo", GetAmmo);
 	lua_globalfunction(L, "getPlayerAimPos", GetAimPos);
 	lua_globalfunction(L, "getPlayerHeadRotation", GetHeadRotation);
 	lua_globalfunction(L, "isPlayerInVehicle", IsInVehicle);
@@ -99,8 +99,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getMaxArmour", GetMaxArmour);
 		lua_classfunction(L, "setMaxArmour", SetMaxArmour);
 		lua_classfunction(L, "getMoveSpeed", GetMoveSpeed);
-		lua_classfunction(L, "getWeapon", GetWeapon);
-		lua_classfunction(L, "getAmmo", GetAmmo);
+		//lua_classfunction(L, "getWeapon", GetWeapon);
+		//lua_classfunction(L, "getAmmo", GetAmmo);
 		lua_classfunction(L, "getAimPos", GetAimPos);
 		lua_classfunction(L, "getHeadRotation", GetHeadRotation);
 		lua_classfunction(L, "isInVehicle", IsInVehicle);
@@ -140,8 +140,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "armour", "setArmour", "getArmour");
 		lua_classvariable(L, "maxArmour", "setMaxArmour", "getMaxArmour");
 		lua_classvariable(L, "moveSpeed", nullptr, "getMoveSpeed");
-		lua_classvariable(L, "weapon", nullptr, "getWeapon");
-		lua_classvariable(L, "ammo", nullptr, "getAmmo");
+		lua_classvariable(L, "weapon", nullptr, "getCurrentWeapon");
+		//lua_classvariable(L, "ammo", nullptr, "getAmmo");
 		lua_classvariable(L, "aimPos", nullptr, "getAimPos");
 		lua_classvariable(L, "headRotation", nullptr, "getHeadRotation");
 		lua_classvariable(L, "inVehicle", nullptr, "isInVehicle");
@@ -913,41 +913,41 @@ int CLuaPlayerDefs::GetMoveSpeed(lua_State* L)
 	return 1;
 }
 
-int CLuaPlayerDefs::GetWeapon(lua_State* L)
-{
-	alt::IPlayer* player;
+//int CLuaPlayerDefs::GetWeapon(lua_State* L)
+//{
+//	alt::IPlayer* player;
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(player);
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	lua_pushnumber(L, player->GetWeapon());
+//
+//	return 1;
+//}
 
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(player);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushnumber(L, player->GetWeapon());
-
-	return 1;
-}
-
-int CLuaPlayerDefs::GetAmmo(lua_State* L)
-{
-	alt::IPlayer* player;
-
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(player);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushnumber(L, player->GetAmmo());
-
-	return 1;
-}
+//int CLuaPlayerDefs::GetAmmo(lua_State* L)
+//{
+//	alt::IPlayer* player;
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(player);
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	lua_pushnumber(L, player->GetAmmo());
+//
+//	return 1;
+//}
 
 int CLuaPlayerDefs::GetAimPos(lua_State* L)
 {

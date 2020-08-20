@@ -141,9 +141,14 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 	//not used(?)
 	/*this->RegisterServerCallback(
 		alt::CEvent::Type::META_CHANGE,
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> const std::vector<int>*
+		{
+			auto event = static_cast<const alt::CServerScriptEvent*>(ev);
+			return &resource->GetEventReferences(event->GetName().CStr());
+		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
-
+			
 		}
 	)*/
 
@@ -274,13 +279,40 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		}
 	);
 
-	/*this->RegisterServerCallback(
+	this->RegisterServerCallback(
 		alt::CEvent::Type::FIRE_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
+			auto event = static_cast<const alt::CFireEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
 
+			auto& fires = event->GetFires();
+
+			lua_pushbaseobject(L, event->GetSource().Get());
+			lua_newtable(L);
+			for (int i = 0; i < fires.GetSize(); ++i)
+			{
+				auto fire = fires[i];
+
+				lua_pushnumber(L, i + 1);
+				lua_newtable(L);
+				lua_pushstring(L, "position");
+				lua_pushvector(L, fire.position);
+				lua_rawset(L, -3);
+
+				lua_pushstring(L, "weapon");
+				lua_pushnumber(L, fire.weaponHash);
+				lua_rawset(L, -3);
+				lua_rawset(L, -3);
+			}
+
+			return 2;
 		}
-	);*/
+	);
 
 	this->RegisterServerCallback(
 		alt::CEvent::Type::EXPLOSION_EVENT,
@@ -299,6 +331,27 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_pushnumber(L, event->GetExplosionFX());
 
 			return 4;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::START_PROJECTILE_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CStartProjectileEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetSource().Get());
+			lua_pushvector(L, event->GetStartPosition());
+			lua_pushvector(L, event->GetDirection());
+			lua_pushnumber(L, event->GetAmmoHash());
+			lua_pushnumber(L, event->GetWeaponHash());
+
+			return 5;
 		}
 	);
 

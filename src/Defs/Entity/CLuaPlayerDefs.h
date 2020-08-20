@@ -64,8 +64,8 @@ private:
 
 	static int GetMoveSpeed(lua_State* L);
 
-	static int GetWeapon(lua_State* L);
-	static int GetAmmo(lua_State* L);
+	/*static int GetWeapon(lua_State* L);
+	static int GetAmmo(lua_State* L);*/
 
 	static int GetAimPos(lua_State* L);
 	static int GetHeadRotation(lua_State* L);

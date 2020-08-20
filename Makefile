@@ -123,32 +123,59 @@ lua-module/fast:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/build
 .PHONY : lua-module/fast
 
-src/CLuaDefs2.o: src/CLuaDefs2.cpp.o
+src/CDatabaseManager.o: src/CDatabaseManager.cpp.o
 
-.PHONY : src/CLuaDefs2.o
+.PHONY : src/CDatabaseManager.o
 
 # target to build an object file
-src/CLuaDefs2.cpp.o:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CLuaDefs2.cpp.o
-.PHONY : src/CLuaDefs2.cpp.o
+src/CDatabaseManager.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CDatabaseManager.cpp.o
+.PHONY : src/CDatabaseManager.cpp.o
 
-src/CLuaDefs2.i: src/CLuaDefs2.cpp.i
+src/CDatabaseManager.i: src/CDatabaseManager.cpp.i
 
-.PHONY : src/CLuaDefs2.i
+.PHONY : src/CDatabaseManager.i
 
 # target to preprocess a source file
-src/CLuaDefs2.cpp.i:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CLuaDefs2.cpp.i
-.PHONY : src/CLuaDefs2.cpp.i
+src/CDatabaseManager.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CDatabaseManager.cpp.i
+.PHONY : src/CDatabaseManager.cpp.i
 
-src/CLuaDefs2.s: src/CLuaDefs2.cpp.s
+src/CDatabaseManager.s: src/CDatabaseManager.cpp.s
 
-.PHONY : src/CLuaDefs2.s
+.PHONY : src/CDatabaseManager.s
 
 # target to generate assembly for a file
-src/CLuaDefs2.cpp.s:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CLuaDefs2.cpp.s
-.PHONY : src/CLuaDefs2.cpp.s
+src/CDatabaseManager.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CDatabaseManager.cpp.s
+.PHONY : src/CDatabaseManager.cpp.s
+
+src/CLuaDefs.o: src/CLuaDefs.cpp.o
+
+.PHONY : src/CLuaDefs.o
+
+# target to build an object file
+src/CLuaDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CLuaDefs.cpp.o
+.PHONY : src/CLuaDefs.cpp.o
+
+src/CLuaDefs.i: src/CLuaDefs.cpp.i
+
+.PHONY : src/CLuaDefs.i
+
+# target to preprocess a source file
+src/CLuaDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CLuaDefs.cpp.i
+.PHONY : src/CLuaDefs.cpp.i
+
+src/CLuaDefs.s: src/CLuaDefs.cpp.s
+
+.PHONY : src/CLuaDefs.s
+
+# target to generate assembly for a file
+src/CLuaDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CLuaDefs.cpp.s
+.PHONY : src/CLuaDefs.cpp.s
 
 src/CLuaFunctionDefs.o: src/CLuaFunctionDefs.cpp.o
 
@@ -231,6 +258,87 @@ src/CLuaScriptRuntime.cpp.s:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CLuaScriptRuntime.cpp.s
 .PHONY : src/CLuaScriptRuntime.cpp.s
 
+src/CVehModels.o: src/CVehModels.cpp.o
+
+.PHONY : src/CVehModels.o
+
+# target to build an object file
+src/CVehModels.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CVehModels.cpp.o
+.PHONY : src/CVehModels.cpp.o
+
+src/CVehModels.i: src/CVehModels.cpp.i
+
+.PHONY : src/CVehModels.i
+
+# target to preprocess a source file
+src/CVehModels.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CVehModels.cpp.i
+.PHONY : src/CVehModels.cpp.i
+
+src/CVehModels.s: src/CVehModels.cpp.s
+
+.PHONY : src/CVehModels.s
+
+# target to generate assembly for a file
+src/CVehModels.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CVehModels.cpp.s
+.PHONY : src/CVehModels.cpp.s
+
+src/CVehMods.o: src/CVehMods.cpp.o
+
+.PHONY : src/CVehMods.o
+
+# target to build an object file
+src/CVehMods.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CVehMods.cpp.o
+.PHONY : src/CVehMods.cpp.o
+
+src/CVehMods.i: src/CVehMods.cpp.i
+
+.PHONY : src/CVehMods.i
+
+# target to preprocess a source file
+src/CVehMods.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CVehMods.cpp.i
+.PHONY : src/CVehMods.cpp.i
+
+src/CVehMods.s: src/CVehMods.cpp.s
+
+.PHONY : src/CVehMods.s
+
+# target to generate assembly for a file
+src/CVehMods.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CVehMods.cpp.s
+.PHONY : src/CVehMods.cpp.s
+
+src/Database/MariaDatabase.o: src/Database/MariaDatabase.cpp.o
+
+.PHONY : src/Database/MariaDatabase.o
+
+# target to build an object file
+src/Database/MariaDatabase.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Database/MariaDatabase.cpp.o
+.PHONY : src/Database/MariaDatabase.cpp.o
+
+src/Database/MariaDatabase.i: src/Database/MariaDatabase.cpp.i
+
+.PHONY : src/Database/MariaDatabase.i
+
+# target to preprocess a source file
+src/Database/MariaDatabase.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Database/MariaDatabase.cpp.i
+.PHONY : src/Database/MariaDatabase.cpp.i
+
+src/Database/MariaDatabase.s: src/Database/MariaDatabase.cpp.s
+
+.PHONY : src/Database/MariaDatabase.s
+
+# target to generate assembly for a file
+src/Database/MariaDatabase.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Database/MariaDatabase.cpp.s
+.PHONY : src/Database/MariaDatabase.cpp.s
+
 src/Defs/CLuaAltFuncDefs.o: src/Defs/CLuaAltFuncDefs.cpp.o
 
 .PHONY : src/Defs/CLuaAltFuncDefs.o
@@ -257,6 +365,87 @@ src/Defs/CLuaAltFuncDefs.s: src/Defs/CLuaAltFuncDefs.cpp.s
 src/Defs/CLuaAltFuncDefs.cpp.s:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaAltFuncDefs.cpp.s
 .PHONY : src/Defs/CLuaAltFuncDefs.cpp.s
+
+src/Defs/CLuaMiscScripts.o: src/Defs/CLuaMiscScripts.cpp.o
+
+.PHONY : src/Defs/CLuaMiscScripts.o
+
+# target to build an object file
+src/Defs/CLuaMiscScripts.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaMiscScripts.cpp.o
+.PHONY : src/Defs/CLuaMiscScripts.cpp.o
+
+src/Defs/CLuaMiscScripts.i: src/Defs/CLuaMiscScripts.cpp.i
+
+.PHONY : src/Defs/CLuaMiscScripts.i
+
+# target to preprocess a source file
+src/Defs/CLuaMiscScripts.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaMiscScripts.cpp.i
+.PHONY : src/Defs/CLuaMiscScripts.cpp.i
+
+src/Defs/CLuaMiscScripts.s: src/Defs/CLuaMiscScripts.cpp.s
+
+.PHONY : src/Defs/CLuaMiscScripts.s
+
+# target to generate assembly for a file
+src/Defs/CLuaMiscScripts.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaMiscScripts.cpp.s
+.PHONY : src/Defs/CLuaMiscScripts.cpp.s
+
+src/Defs/CLuaRGBADefs.o: src/Defs/CLuaRGBADefs.cpp.o
+
+.PHONY : src/Defs/CLuaRGBADefs.o
+
+# target to build an object file
+src/Defs/CLuaRGBADefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaRGBADefs.cpp.o
+.PHONY : src/Defs/CLuaRGBADefs.cpp.o
+
+src/Defs/CLuaRGBADefs.i: src/Defs/CLuaRGBADefs.cpp.i
+
+.PHONY : src/Defs/CLuaRGBADefs.i
+
+# target to preprocess a source file
+src/Defs/CLuaRGBADefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaRGBADefs.cpp.i
+.PHONY : src/Defs/CLuaRGBADefs.cpp.i
+
+src/Defs/CLuaRGBADefs.s: src/Defs/CLuaRGBADefs.cpp.s
+
+.PHONY : src/Defs/CLuaRGBADefs.s
+
+# target to generate assembly for a file
+src/Defs/CLuaRGBADefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaRGBADefs.cpp.s
+.PHONY : src/Defs/CLuaRGBADefs.cpp.s
+
+src/Defs/CLuaResourceFuncDefs.o: src/Defs/CLuaResourceFuncDefs.cpp.o
+
+.PHONY : src/Defs/CLuaResourceFuncDefs.o
+
+# target to build an object file
+src/Defs/CLuaResourceFuncDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaResourceFuncDefs.cpp.o
+.PHONY : src/Defs/CLuaResourceFuncDefs.cpp.o
+
+src/Defs/CLuaResourceFuncDefs.i: src/Defs/CLuaResourceFuncDefs.cpp.i
+
+.PHONY : src/Defs/CLuaResourceFuncDefs.i
+
+# target to preprocess a source file
+src/Defs/CLuaResourceFuncDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaResourceFuncDefs.cpp.i
+.PHONY : src/Defs/CLuaResourceFuncDefs.cpp.i
+
+src/Defs/CLuaResourceFuncDefs.s: src/Defs/CLuaResourceFuncDefs.cpp.s
+
+.PHONY : src/Defs/CLuaResourceFuncDefs.s
+
+# target to generate assembly for a file
+src/Defs/CLuaResourceFuncDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/CLuaResourceFuncDefs.cpp.s
+.PHONY : src/Defs/CLuaResourceFuncDefs.cpp.s
 
 src/Defs/CLuaVector3Defs.o: src/Defs/CLuaVector3Defs.cpp.o
 
@@ -312,6 +501,87 @@ src/Defs/Entity/CLuaBaseObjectDefs.cpp.s:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaBaseObjectDefs.cpp.s
 .PHONY : src/Defs/Entity/CLuaBaseObjectDefs.cpp.s
 
+src/Defs/Entity/CLuaBlipDefs.o: src/Defs/Entity/CLuaBlipDefs.cpp.o
+
+.PHONY : src/Defs/Entity/CLuaBlipDefs.o
+
+# target to build an object file
+src/Defs/Entity/CLuaBlipDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaBlipDefs.cpp.o
+.PHONY : src/Defs/Entity/CLuaBlipDefs.cpp.o
+
+src/Defs/Entity/CLuaBlipDefs.i: src/Defs/Entity/CLuaBlipDefs.cpp.i
+
+.PHONY : src/Defs/Entity/CLuaBlipDefs.i
+
+# target to preprocess a source file
+src/Defs/Entity/CLuaBlipDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaBlipDefs.cpp.i
+.PHONY : src/Defs/Entity/CLuaBlipDefs.cpp.i
+
+src/Defs/Entity/CLuaBlipDefs.s: src/Defs/Entity/CLuaBlipDefs.cpp.s
+
+.PHONY : src/Defs/Entity/CLuaBlipDefs.s
+
+# target to generate assembly for a file
+src/Defs/Entity/CLuaBlipDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaBlipDefs.cpp.s
+.PHONY : src/Defs/Entity/CLuaBlipDefs.cpp.s
+
+src/Defs/Entity/CLuaCheckpointDefs.o: src/Defs/Entity/CLuaCheckpointDefs.cpp.o
+
+.PHONY : src/Defs/Entity/CLuaCheckpointDefs.o
+
+# target to build an object file
+src/Defs/Entity/CLuaCheckpointDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaCheckpointDefs.cpp.o
+.PHONY : src/Defs/Entity/CLuaCheckpointDefs.cpp.o
+
+src/Defs/Entity/CLuaCheckpointDefs.i: src/Defs/Entity/CLuaCheckpointDefs.cpp.i
+
+.PHONY : src/Defs/Entity/CLuaCheckpointDefs.i
+
+# target to preprocess a source file
+src/Defs/Entity/CLuaCheckpointDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaCheckpointDefs.cpp.i
+.PHONY : src/Defs/Entity/CLuaCheckpointDefs.cpp.i
+
+src/Defs/Entity/CLuaCheckpointDefs.s: src/Defs/Entity/CLuaCheckpointDefs.cpp.s
+
+.PHONY : src/Defs/Entity/CLuaCheckpointDefs.s
+
+# target to generate assembly for a file
+src/Defs/Entity/CLuaCheckpointDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaCheckpointDefs.cpp.s
+.PHONY : src/Defs/Entity/CLuaCheckpointDefs.cpp.s
+
+src/Defs/Entity/CLuaColShapeDefs.o: src/Defs/Entity/CLuaColShapeDefs.cpp.o
+
+.PHONY : src/Defs/Entity/CLuaColShapeDefs.o
+
+# target to build an object file
+src/Defs/Entity/CLuaColShapeDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaColShapeDefs.cpp.o
+.PHONY : src/Defs/Entity/CLuaColShapeDefs.cpp.o
+
+src/Defs/Entity/CLuaColShapeDefs.i: src/Defs/Entity/CLuaColShapeDefs.cpp.i
+
+.PHONY : src/Defs/Entity/CLuaColShapeDefs.i
+
+# target to preprocess a source file
+src/Defs/Entity/CLuaColShapeDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaColShapeDefs.cpp.i
+.PHONY : src/Defs/Entity/CLuaColShapeDefs.cpp.i
+
+src/Defs/Entity/CLuaColShapeDefs.s: src/Defs/Entity/CLuaColShapeDefs.cpp.s
+
+.PHONY : src/Defs/Entity/CLuaColShapeDefs.s
+
+# target to generate assembly for a file
+src/Defs/Entity/CLuaColShapeDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaColShapeDefs.cpp.s
+.PHONY : src/Defs/Entity/CLuaColShapeDefs.cpp.s
+
 src/Defs/Entity/CLuaEntityDefs.o: src/Defs/Entity/CLuaEntityDefs.cpp.o
 
 .PHONY : src/Defs/Entity/CLuaEntityDefs.o
@@ -339,6 +609,33 @@ src/Defs/Entity/CLuaEntityDefs.cpp.s:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaEntityDefs.cpp.s
 .PHONY : src/Defs/Entity/CLuaEntityDefs.cpp.s
 
+src/Defs/Entity/CLuaPlayerDefs.o: src/Defs/Entity/CLuaPlayerDefs.cpp.o
+
+.PHONY : src/Defs/Entity/CLuaPlayerDefs.o
+
+# target to build an object file
+src/Defs/Entity/CLuaPlayerDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaPlayerDefs.cpp.o
+.PHONY : src/Defs/Entity/CLuaPlayerDefs.cpp.o
+
+src/Defs/Entity/CLuaPlayerDefs.i: src/Defs/Entity/CLuaPlayerDefs.cpp.i
+
+.PHONY : src/Defs/Entity/CLuaPlayerDefs.i
+
+# target to preprocess a source file
+src/Defs/Entity/CLuaPlayerDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaPlayerDefs.cpp.i
+.PHONY : src/Defs/Entity/CLuaPlayerDefs.cpp.i
+
+src/Defs/Entity/CLuaPlayerDefs.s: src/Defs/Entity/CLuaPlayerDefs.cpp.s
+
+.PHONY : src/Defs/Entity/CLuaPlayerDefs.s
+
+# target to generate assembly for a file
+src/Defs/Entity/CLuaPlayerDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaPlayerDefs.cpp.s
+.PHONY : src/Defs/Entity/CLuaPlayerDefs.cpp.s
+
 src/Defs/Entity/CLuaVehicleDefs.o: src/Defs/Entity/CLuaVehicleDefs.cpp.o
 
 .PHONY : src/Defs/Entity/CLuaVehicleDefs.o
@@ -365,6 +662,60 @@ src/Defs/Entity/CLuaVehicleDefs.s: src/Defs/Entity/CLuaVehicleDefs.cpp.s
 src/Defs/Entity/CLuaVehicleDefs.cpp.s:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaVehicleDefs.cpp.s
 .PHONY : src/Defs/Entity/CLuaVehicleDefs.cpp.s
+
+src/Defs/Entity/CLuaVoiceChannelDefs.o: src/Defs/Entity/CLuaVoiceChannelDefs.cpp.o
+
+.PHONY : src/Defs/Entity/CLuaVoiceChannelDefs.o
+
+# target to build an object file
+src/Defs/Entity/CLuaVoiceChannelDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaVoiceChannelDefs.cpp.o
+.PHONY : src/Defs/Entity/CLuaVoiceChannelDefs.cpp.o
+
+src/Defs/Entity/CLuaVoiceChannelDefs.i: src/Defs/Entity/CLuaVoiceChannelDefs.cpp.i
+
+.PHONY : src/Defs/Entity/CLuaVoiceChannelDefs.i
+
+# target to preprocess a source file
+src/Defs/Entity/CLuaVoiceChannelDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaVoiceChannelDefs.cpp.i
+.PHONY : src/Defs/Entity/CLuaVoiceChannelDefs.cpp.i
+
+src/Defs/Entity/CLuaVoiceChannelDefs.s: src/Defs/Entity/CLuaVoiceChannelDefs.cpp.s
+
+.PHONY : src/Defs/Entity/CLuaVoiceChannelDefs.s
+
+# target to generate assembly for a file
+src/Defs/Entity/CLuaVoiceChannelDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaVoiceChannelDefs.cpp.s
+.PHONY : src/Defs/Entity/CLuaVoiceChannelDefs.cpp.s
+
+src/Defs/Entity/CLuaWorldObjectDefs.o: src/Defs/Entity/CLuaWorldObjectDefs.cpp.o
+
+.PHONY : src/Defs/Entity/CLuaWorldObjectDefs.o
+
+# target to build an object file
+src/Defs/Entity/CLuaWorldObjectDefs.cpp.o:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaWorldObjectDefs.cpp.o
+.PHONY : src/Defs/Entity/CLuaWorldObjectDefs.cpp.o
+
+src/Defs/Entity/CLuaWorldObjectDefs.i: src/Defs/Entity/CLuaWorldObjectDefs.cpp.i
+
+.PHONY : src/Defs/Entity/CLuaWorldObjectDefs.i
+
+# target to preprocess a source file
+src/Defs/Entity/CLuaWorldObjectDefs.cpp.i:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaWorldObjectDefs.cpp.i
+.PHONY : src/Defs/Entity/CLuaWorldObjectDefs.cpp.i
+
+src/Defs/Entity/CLuaWorldObjectDefs.s: src/Defs/Entity/CLuaWorldObjectDefs.cpp.s
+
+.PHONY : src/Defs/Entity/CLuaWorldObjectDefs.s
+
+# target to generate assembly for a file
+src/Defs/Entity/CLuaWorldObjectDefs.cpp.s:
+	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Defs/Entity/CLuaWorldObjectDefs.cpp.s
+.PHONY : src/Defs/Entity/CLuaWorldObjectDefs.cpp.s
 
 src/Main.o: src/Main.cpp.o
 
@@ -402,9 +753,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... lua-module"
 	@echo "... edit_cache"
-	@echo "... src/CLuaDefs2.o"
-	@echo "... src/CLuaDefs2.i"
-	@echo "... src/CLuaDefs2.s"
+	@echo "... src/CDatabaseManager.o"
+	@echo "... src/CDatabaseManager.i"
+	@echo "... src/CDatabaseManager.s"
+	@echo "... src/CLuaDefs.o"
+	@echo "... src/CLuaDefs.i"
+	@echo "... src/CLuaDefs.s"
 	@echo "... src/CLuaFunctionDefs.o"
 	@echo "... src/CLuaFunctionDefs.i"
 	@echo "... src/CLuaFunctionDefs.s"
@@ -414,21 +768,57 @@ help:
 	@echo "... src/CLuaScriptRuntime.o"
 	@echo "... src/CLuaScriptRuntime.i"
 	@echo "... src/CLuaScriptRuntime.s"
+	@echo "... src/CVehModels.o"
+	@echo "... src/CVehModels.i"
+	@echo "... src/CVehModels.s"
+	@echo "... src/CVehMods.o"
+	@echo "... src/CVehMods.i"
+	@echo "... src/CVehMods.s"
+	@echo "... src/Database/MariaDatabase.o"
+	@echo "... src/Database/MariaDatabase.i"
+	@echo "... src/Database/MariaDatabase.s"
 	@echo "... src/Defs/CLuaAltFuncDefs.o"
 	@echo "... src/Defs/CLuaAltFuncDefs.i"
 	@echo "... src/Defs/CLuaAltFuncDefs.s"
+	@echo "... src/Defs/CLuaMiscScripts.o"
+	@echo "... src/Defs/CLuaMiscScripts.i"
+	@echo "... src/Defs/CLuaMiscScripts.s"
+	@echo "... src/Defs/CLuaRGBADefs.o"
+	@echo "... src/Defs/CLuaRGBADefs.i"
+	@echo "... src/Defs/CLuaRGBADefs.s"
+	@echo "... src/Defs/CLuaResourceFuncDefs.o"
+	@echo "... src/Defs/CLuaResourceFuncDefs.i"
+	@echo "... src/Defs/CLuaResourceFuncDefs.s"
 	@echo "... src/Defs/CLuaVector3Defs.o"
 	@echo "... src/Defs/CLuaVector3Defs.i"
 	@echo "... src/Defs/CLuaVector3Defs.s"
 	@echo "... src/Defs/Entity/CLuaBaseObjectDefs.o"
 	@echo "... src/Defs/Entity/CLuaBaseObjectDefs.i"
 	@echo "... src/Defs/Entity/CLuaBaseObjectDefs.s"
+	@echo "... src/Defs/Entity/CLuaBlipDefs.o"
+	@echo "... src/Defs/Entity/CLuaBlipDefs.i"
+	@echo "... src/Defs/Entity/CLuaBlipDefs.s"
+	@echo "... src/Defs/Entity/CLuaCheckpointDefs.o"
+	@echo "... src/Defs/Entity/CLuaCheckpointDefs.i"
+	@echo "... src/Defs/Entity/CLuaCheckpointDefs.s"
+	@echo "... src/Defs/Entity/CLuaColShapeDefs.o"
+	@echo "... src/Defs/Entity/CLuaColShapeDefs.i"
+	@echo "... src/Defs/Entity/CLuaColShapeDefs.s"
 	@echo "... src/Defs/Entity/CLuaEntityDefs.o"
 	@echo "... src/Defs/Entity/CLuaEntityDefs.i"
 	@echo "... src/Defs/Entity/CLuaEntityDefs.s"
+	@echo "... src/Defs/Entity/CLuaPlayerDefs.o"
+	@echo "... src/Defs/Entity/CLuaPlayerDefs.i"
+	@echo "... src/Defs/Entity/CLuaPlayerDefs.s"
 	@echo "... src/Defs/Entity/CLuaVehicleDefs.o"
 	@echo "... src/Defs/Entity/CLuaVehicleDefs.i"
 	@echo "... src/Defs/Entity/CLuaVehicleDefs.s"
+	@echo "... src/Defs/Entity/CLuaVoiceChannelDefs.o"
+	@echo "... src/Defs/Entity/CLuaVoiceChannelDefs.i"
+	@echo "... src/Defs/Entity/CLuaVoiceChannelDefs.s"
+	@echo "... src/Defs/Entity/CLuaWorldObjectDefs.o"
+	@echo "... src/Defs/Entity/CLuaWorldObjectDefs.i"
+	@echo "... src/Defs/Entity/CLuaWorldObjectDefs.s"
 	@echo "... src/Main.o"
 	@echo "... src/Main.i"
 	@echo "... src/Main.s"

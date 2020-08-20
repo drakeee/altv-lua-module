@@ -57,5 +57,7 @@ private:
 
 	static int Export(lua_State* L);
 
+	static int Hash(lua_State* L);
+
 	static int tostringtest(lua_State* L);
 };

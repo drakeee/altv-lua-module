@@ -30,6 +30,10 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	//Set up working path
 	lua_setpath(this->resourceState, (this->workingPath + "?.lua").c_str());
 
+	alt::String p_s(preferred_separator);
+	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + "scripts" + p_s;
+	lua_setpath(this->resourceState, (modulePath + "?.lua").CStr());
+
 	//Init functions
 	CLuaVector3Defs::Init(this->resourceState);
 	CLuaAltFuncDefs::Init(this->resourceState);

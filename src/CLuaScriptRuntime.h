@@ -50,7 +50,7 @@ public:
 	~CLuaScriptRuntime() {};
 
 private:
-	const semver::version						version{ 0, 3, 12, semver::prerelease::dev };
+	const semver::version						version{ 0, 3, 15, semver::prerelease::dev };
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;
@@ -87,8 +87,9 @@ private:
 
 		"playerDamage", //done
 		"playerDeath", //done
-		"fire",
+		"startFire", //done
 		"explosion", //done
+		"startProjectile", //done
 		"weaponDamage", //done
 		"vehicleDestroy", //done
 
