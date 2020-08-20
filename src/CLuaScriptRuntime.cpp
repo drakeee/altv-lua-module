@@ -482,6 +482,25 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 	);
 
 	this->RegisterServerCallback(
+		alt::CEvent::Type::PLAYER_WEAPON_CHANGE,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CPlayerWeaponChangeEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget().Get());
+			lua_pushnumber(L, event->GetOldWeapon());
+			lua_pushnumber(L, event->GetNewWeapon());
+
+			return 3;
+		}
+	);
+
+	this->RegisterServerCallback(
 		alt::CEvent::Type::REMOVE_ENTITY_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{

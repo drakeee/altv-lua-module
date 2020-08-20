@@ -50,7 +50,7 @@ public:
 	~CLuaScriptRuntime() {};
 
 private:
-	const semver::version						version{ 0, 3, 15, semver::prerelease::dev };
+	const semver::version						version{ 0, 3, 16, semver::prerelease::dev };
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;
@@ -98,6 +98,7 @@ private:
 		"playerEnterVehicle", //done
 		"playerLeaveVehicle", //done
 		"playerChangeVehicleSeat", //done
+		"playerWeaponChange",
 
 		"removeEntity", //done
 
