@@ -107,6 +107,18 @@ function MySQL:query(query, ...)
 	return resultSet
 end
 
+function MySQL:insert(tableName, args)
+    assert(tableName, "[MySQL:insert] Table name is required.")
+    assert(type(args) == "table", "[MySQL:insert] Args type must be table.")
+
+    local columns, values = {}, {}
+    for k,v in pairs(args) do
+        table.insert(columns, k .. " = ?")
+        table.insert(values, v)
+    end
+    return self:query("INSERT INTO `"..tableName.."` SET "..table.concat(columns, ", "), unpack(values))
+end
+
 function MySQL:escape(...)
 
 	local result = {}
