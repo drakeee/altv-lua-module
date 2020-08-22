@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: lua-module-windows.zip
+          asset_path: artifacts/lua-module-windows.zip
           asset_name: lua-module-windows.zip
           asset_content_type: application/zip
   build-linux:
@@ -63,6 +63,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: lua-module-linux.zip
+          asset_path: artifacts/lua-module-linux.zip
           asset_name: lua-module-linux.zip
           asset_content_type: application/zip
