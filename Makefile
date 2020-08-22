@@ -123,33 +123,6 @@ lua-module/fast:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/build
 .PHONY : lua-module/fast
 
-src/CDatabaseManager.o: src/CDatabaseManager.cpp.o
-
-.PHONY : src/CDatabaseManager.o
-
-# target to build an object file
-src/CDatabaseManager.cpp.o:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CDatabaseManager.cpp.o
-.PHONY : src/CDatabaseManager.cpp.o
-
-src/CDatabaseManager.i: src/CDatabaseManager.cpp.i
-
-.PHONY : src/CDatabaseManager.i
-
-# target to preprocess a source file
-src/CDatabaseManager.cpp.i:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CDatabaseManager.cpp.i
-.PHONY : src/CDatabaseManager.cpp.i
-
-src/CDatabaseManager.s: src/CDatabaseManager.cpp.s
-
-.PHONY : src/CDatabaseManager.s
-
-# target to generate assembly for a file
-src/CDatabaseManager.cpp.s:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CDatabaseManager.cpp.s
-.PHONY : src/CDatabaseManager.cpp.s
-
 src/CLuaDefs.o: src/CLuaDefs.cpp.o
 
 .PHONY : src/CLuaDefs.o
@@ -311,33 +284,6 @@ src/CVehMods.s: src/CVehMods.cpp.s
 src/CVehMods.cpp.s:
 	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/CVehMods.cpp.s
 .PHONY : src/CVehMods.cpp.s
-
-src/Database/MariaDatabase.o: src/Database/MariaDatabase.cpp.o
-
-.PHONY : src/Database/MariaDatabase.o
-
-# target to build an object file
-src/Database/MariaDatabase.cpp.o:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Database/MariaDatabase.cpp.o
-.PHONY : src/Database/MariaDatabase.cpp.o
-
-src/Database/MariaDatabase.i: src/Database/MariaDatabase.cpp.i
-
-.PHONY : src/Database/MariaDatabase.i
-
-# target to preprocess a source file
-src/Database/MariaDatabase.cpp.i:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Database/MariaDatabase.cpp.i
-.PHONY : src/Database/MariaDatabase.cpp.i
-
-src/Database/MariaDatabase.s: src/Database/MariaDatabase.cpp.s
-
-.PHONY : src/Database/MariaDatabase.s
-
-# target to generate assembly for a file
-src/Database/MariaDatabase.cpp.s:
-	$(MAKE) -f CMakeFiles/lua-module.dir/build.make CMakeFiles/lua-module.dir/src/Database/MariaDatabase.cpp.s
-.PHONY : src/Database/MariaDatabase.cpp.s
 
 src/Defs/CLuaAltFuncDefs.o: src/Defs/CLuaAltFuncDefs.cpp.o
 
@@ -753,9 +699,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... lua-module"
 	@echo "... edit_cache"
-	@echo "... src/CDatabaseManager.o"
-	@echo "... src/CDatabaseManager.i"
-	@echo "... src/CDatabaseManager.s"
 	@echo "... src/CLuaDefs.o"
 	@echo "... src/CLuaDefs.i"
 	@echo "... src/CLuaDefs.s"
@@ -774,9 +717,6 @@ help:
 	@echo "... src/CVehMods.o"
 	@echo "... src/CVehMods.i"
 	@echo "... src/CVehMods.s"
-	@echo "... src/Database/MariaDatabase.o"
-	@echo "... src/Database/MariaDatabase.i"
-	@echo "... src/Database/MariaDatabase.s"
 	@echo "... src/Defs/CLuaAltFuncDefs.o"
 	@echo "... src/Defs/CLuaAltFuncDefs.i"
 	@echo "... src/Defs/CLuaAltFuncDefs.s"

@@ -48,6 +48,7 @@ int lua_functionref(lua_State* L, int idx);
 
 void lua_todict(lua_State* L, int idx);
 alt::MValue lua_tomvalue(lua_State* L, int indx);
+alt::IBaseObject* lua_tobaseobject(lua_State* L, int idx);
 //void lua_toentity(lua_State* L, alt::IEntity* entity);
 
 void lua_stacktrace(lua_State* L, const char* stackName = "Unknown");

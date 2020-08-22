@@ -10,14 +10,15 @@ cmake --build . --config Release
 
 cd ..
 
-xcopy scripts build\win64\Release\modules\lua-module\scripts\ /Y /E
-xcopy libs\lua51\win64\lua51.dll build\win64\Release\modules\lua-module\ /Y
-xcopy libs\mariadb\win64\libmariadb.dll build\win64\Release\modules\lua-module\ /Y
-xcopy libs\sqlite3\win64\sqlite3.dll build\win64\Release\modules\lua-module\ /Y
-xcopy build\win64\Release\lua-module.dll build\win64\Release\modules\lua-module\ /Y
+mkdir artifacts
 
-mkdir lua-module
-xcopy build\win64\Release\modules\lua-module lua-module\ /Y /E
+xcopy libs\lua51\win64\lua51.dll artifacts\lua-module\ /Y
+REM xcopy libs\mariadb\win64\libmariadb.dll build\win64\Release\modules\lua-module\ /Y
+REM xcopy libs\sqlite3\win64\sqlite3.dll build\win64\Release\modules\lua-module\ /Y
+xcopy build\win64\Release\lua-module.dll artifacts\lua-module\ /Y
 
-7z a -tzip "lua-module-windows.zip" -r lua-module\*
+cd artifacts
+if not exist "lua-module\modules" mkdir "lua-module\modules"
+7z a -tzip "lua-module-windows.zip" -r lua-module
 
+cd ..

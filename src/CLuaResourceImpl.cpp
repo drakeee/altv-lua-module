@@ -1,5 +1,11 @@
 #include <Main.h>
 
+#ifdef _WIN32
+#include <filesystem>
+#else
+#include <dirent.h>
+#endif
+
 CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource) :
 	runtime(runtime),
 	resource(resource),
@@ -30,9 +36,14 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	//Set up working path
 	lua_setpath(this->resourceState, (this->workingPath + "?.lua").c_str());
 
+	this->IncludeModulesPath();
+
 	alt::String p_s(preferred_separator);
-	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + "scripts" + p_s;
+	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
 	lua_setpath(this->resourceState, (modulePath + "?.lua").CStr());
+
+	lua_pushstring(this->resourceState, ADDITIONAL_MODULE_FOLDER);
+	lua_setglobal(this->resourceState, "MODULE_FOLDER");
 
 	//Init functions
 	CLuaVector3Defs::Init(this->resourceState);
@@ -59,6 +70,56 @@ CLuaResourceImpl::~CLuaResourceImpl()
 	Core->LogInfo("CLuaResourceImpl::~CLuaResourceImpl");
 #endif
 
+}
+
+void CLuaResourceImpl::IncludeModulesPath()
+{
+	alt::String p_s(preferred_separator);
+	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
+
+#ifdef _WIN32
+	std::filesystem::path directory(modulePath.CStr());
+
+	if (std::filesystem::exists(directory) && std::filesystem::is_directory(directory))
+	{
+		std::filesystem::directory_iterator begin(directory);
+		std::filesystem::directory_iterator end;
+
+		while (begin != end)
+		{
+			if (!std::filesystem::is_directory(*begin))
+			{
+				++begin;
+				continue;
+			}
+
+			std::string moduleDir((*begin).path().string() + p_s.ToString() + std::string("?.lua"));
+			lua_setpath(this->resourceState, moduleDir.c_str());
+
+			++begin;
+		}
+	}
+#else
+	DIR* directory = opendir(modulePath.CStr());
+	dirent* ent;
+
+	if(directory != NULL)
+	{
+		while ((ent = readdir(directory)) != NULL)
+		{
+			if (ent->d_type != DT_DIR)
+				continue;
+
+			if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
+				continue;
+
+			std::string moduleDir(modulePath.ToString() + ent->d_name + p_s.ToString() + std::string("?.lua"));
+			lua_setpath(this->resourceState, moduleDir.c_str());
+		}
+
+		closedir(directory);
+	}
+#endif
 }
 
 bool CLuaResourceImpl::Start()

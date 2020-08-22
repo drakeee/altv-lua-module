@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define MODULE_VERSION "0.1.0"
+#define ADDITIONAL_MODULE_FOLDER "modules"
 #define ALT_SERVER_API
 
 #ifdef _WIN32

@@ -48,6 +48,7 @@ public:
 	bool		RegisterClientEvent(std::string eventName, int functionReference);
 	bool		RemoveClientEvent(std::string eventName, int functionReference);
 	void		TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args);
+	void		IncludeModulesPath(void);
 	inline const std::vector<int>& GetEventReferences(std::string eventName)
 	{
 		return this->eventsReferences[eventName];

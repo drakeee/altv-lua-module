@@ -415,6 +415,11 @@ int lua_functionref(lua_State* L, int idx)
 //	}
 //}
 
+alt::IBaseObject* lua_tobaseobject(lua_State* L, int idx)
+{
+	return reinterpret_cast<alt::IBaseObject*>(*((void**)lua_touserdata(L, idx)));
+}
+
 alt::MValue lua_tomvalue(lua_State* L, int idx)
 {
 	alt::MValue mValue;
@@ -430,6 +435,9 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 		break;
 	case LUA_TSTRING:
 		mValue = Core->CreateMValueString(lua_tostring(L, idx));
+		break;
+	case LUA_TUSERDATA:
+		mValue = Core->CreateMValueBaseObject(lua_tobaseobject(L, idx));
 		break;
 	case LUA_TTABLE:
 	{
