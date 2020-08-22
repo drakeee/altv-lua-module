@@ -56,7 +56,7 @@ jobs:
           submodules: recursive
           lfs: true
       - name: Build
-        run: build.sh
+        run: ./build.sh
       - name: Upload linux artifacts
         uses: actions/upload-release-asset@v1
         env:
