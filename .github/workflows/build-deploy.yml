@@ -71,7 +71,9 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Zipping Lua modules
+        shell: cmd
         run: |
+          if not exist "lua-module\modules" mkdir "lua-module\modules"
           if not exist "artifacts" mkdir artifacts
           cd scripts
           FOR /D %%G in (*) DO (
