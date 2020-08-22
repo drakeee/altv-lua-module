@@ -71,10 +71,14 @@ jobs:
     runs-on: windows-2019
     needs: [create_release]
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          lfs: true
       - name: Zipping Lua modules
         shell: cmd
         run: |
-          cd ..
           if not exist "artifacts" mkdir artifacts
           echo %CD%
           dir
