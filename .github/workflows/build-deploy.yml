@@ -76,6 +76,7 @@ jobs:
           FOR /D %%G in (*) DO (
             echo Try to 7Zip the following folder: %%~nxG
             7z a -tzip "lua-%%G-module.zip" -r %%G
+            move /Y "lua-%%G-module.zip" ..\artifacts
           )
       - name: Uploading Lua modules artifact
         uses: csexton/release-asset-action
