@@ -79,7 +79,7 @@ jobs:
             move /Y "lua-%%G-module.zip" ..\artifacts
           )
       - name: Uploading Lua modules artifact
-        uses: csexton/release-asset-action
+        uses: csexton/release-asset-action@v2
         with:
           pattern: artifacts/lua-*-module.zip
           github-token: ${{ secrets.GITHUB_TOKEN }}
