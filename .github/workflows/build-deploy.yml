@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: lua-module-windows.zip
+          asset_path: artifacts/lua-module-windows.zip
           asset_name: lua-module-windows.zip
           asset_content_type: application/zip
   build-linux:
@@ -56,20 +56,32 @@ jobs:
           submodules: recursive
           lfs: true
       - name: Build
-        run: |
-          ./build.sh
-      - name: Copy Files
-        run: |
-          cp -r build/linux64/Release/modules/* lua-module/
-      - name: Zip artifacts
-        run: |
-          zip -r lua-module-linux.zip lua-module/*
+        run: build.sh
       - name: Upload linux artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: lua-module-linux.zip
+          asset_path: artifacts/lua-module-linux.zip
           asset_name: lua-module-linux.zip
           asset_content_type: application/zip
+  publish-artifacts:
+    runs-on: windows-2019
+    steps:
+      - name: Zipping Lua modules
+        run: |
+          if not exist "artifacts" mkdir artifacts
+          cd scripts
+          FOR /D %%G in (*) DO (
+            echo Try to 7Zip the following folder: %%~nxG
+            7z a -tzip "lua-%%G-module.zip" -r %%G
+            move /Y "lua-%%G-module.zip" ..\artifacts
+          )
+      - name: Uploading Lua modules artifact
+        uses: csexton/release-asset-action
+        with:
+          pattern: artifacts/lua-*-module.zip
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-url: ${{ needs.create_release.outputs.upload_url }}
+        
