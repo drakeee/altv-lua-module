@@ -69,6 +69,7 @@ jobs:
   publish-artifacts:
     name: Publish Lua modules
     runs-on: windows-2019
+    needs: [create_release]
     steps:
       - name: Zipping Lua modules
         shell: cmd
@@ -84,7 +85,7 @@ jobs:
       - name: Uploading Lua modules artifact
         uses: csexton/release-asset-action@v2
         with:
-          pattern: artifacts/lua-*-module.zip
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           release-url: ${{ needs.create_release.outputs.upload_url }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: "artifacts/lua-*-module.zip"
         
