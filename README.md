@@ -17,7 +17,7 @@ The module itself doesn't come with MySQL/SQLite3, json implemented but you can 
 1. Download which module you need (mysql-module, sqlite3-module, json-module).
 2. Open the zip file.
 3. Drag & Drop the folder inside the archive file to your server's modules/lua-module/modules folder.
-4. Include the module in your script
+4. Include the corresponding module in your script:
 ```lua
 -- local sqlite = require("sqlite3")
 -- local mysql = require("mysql")
