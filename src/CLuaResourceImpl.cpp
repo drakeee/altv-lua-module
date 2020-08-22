@@ -35,6 +35,9 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 	//Set up working path
 	lua_setpath(this->resourceState, (this->workingPath + "?.lua").c_str());
+	lua_setpath(this->resourceState, (resource->GetPath().ToString() + std::string(preferred_separator) + std::string("?.lua")).c_str());
+
+	Core->LogInfo(alt::String("Resource Path: ") + resource->GetPath());
 
 	this->IncludeModulesPath();
 
@@ -55,6 +58,9 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaPlayerDefs::Init(this->resourceState);
 	CLuaVehicleDefs::Init(this->resourceState);
 	CLuaBlipDefs::Init(this->resourceState);
+	CLuaCheckpointDefs::Init(this->resourceState);
+	CLuaColShapeDefs::Init(this->resourceState);
+	CLuaVoiceChannelDefs::Init(this->resourceState);
 	CLuaMiscScripts::Init(this->resourceState);
 
 #ifndef NDEBUG
@@ -149,10 +155,6 @@ bool CLuaResourceImpl::Start()
 		if (lua_isstring(this->resourceState, -1))
 			Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
 
-		//Close virtual machine and point to null pointer
-		lua_close(this->resourceState);
-		this->resourceState = nullptr;
-
 		return false;
 	}
 
@@ -171,6 +173,9 @@ bool CLuaResourceImpl::Stop()
 #endif
 
 	this->TriggerResourceLocalEvent("resourceStop", {});
+
+	lua_close(this->resourceState);
+	this->resourceState = nullptr;
 
 	return true;
 }

@@ -50,7 +50,7 @@ public:
 	~CLuaScriptRuntime() {};
 
 private:
-	const semver::version						version{ 0, 3, 17, semver::prerelease::dev };
+	const semver::version						version{ 0, 3, 18, semver::prerelease::dev };
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;

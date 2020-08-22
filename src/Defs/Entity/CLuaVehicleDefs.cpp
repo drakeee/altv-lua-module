@@ -334,6 +334,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classfunction(L, "getAll", ipairs);
 
 		lua_classvariable(L, "destroyed", nullptr, "isDestroyed");
+		lua_classvariable(L, "driver", nullptr, "getDriver");
 		lua_classvariable(L, "modKitsCount", nullptr, "getModKitsCount");
 		lua_classvariable(L, "modKit", "setModKit", "getModKit");
 		lua_classvariable(L, "primaryColor", "setPrimaryColor", "getPrimaryColor");
