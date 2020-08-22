@@ -56,14 +56,7 @@ jobs:
           submodules: recursive
           lfs: true
       - name: Build
-        run: |
-          ./build.sh
-      - name: Copy Files
-        run: |
-          cp -r build/linux64/Release/modules/* lua-module/
-      - name: Zip artifacts
-        run: |
-          zip -r lua-module-linux.zip lua-module/*
+        run: build.sh
       - name: Upload linux artifacts
         uses: actions/upload-release-asset@v1
         env:
