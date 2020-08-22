@@ -37,8 +37,6 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	lua_setpath(this->resourceState, (this->workingPath + "?.lua").c_str());
 	lua_setpath(this->resourceState, (resource->GetPath().ToString() + std::string(preferred_separator) + std::string("?.lua")).c_str());
 
-	Core->LogInfo(alt::String("Resource Path: ") + resource->GetPath());
-
 	this->IncludeModulesPath();
 
 	alt::String p_s(preferred_separator);
@@ -175,7 +173,6 @@ bool CLuaResourceImpl::Stop()
 	this->TriggerResourceLocalEvent("resourceStop", {});
 
 	lua_close(this->resourceState);
-	this->resourceState = nullptr;
 
 	return true;
 }

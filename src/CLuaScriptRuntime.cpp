@@ -562,7 +562,10 @@ void CLuaScriptRuntime::DestroyImpl(alt::IResource::Impl* impl)
 {
 	CLuaResourceImpl* resourceImpl = dynamic_cast<CLuaResourceImpl*>(impl);
 
-	this->resources.erase(resourceImpl->GetLuaState());
+	if (resourceImpl != nullptr)
+	{
+		this->resources.erase(resourceImpl->GetLuaState());
+	}
 
 #ifndef NDEBUG
 	Core->LogInfo("CLuaScriptRuntime::DestroyImpl: " + std::to_string(reinterpret_cast<intptr_t>(impl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
