@@ -66,3 +66,21 @@ jobs:
           asset_path: artifacts/lua-module-linux.zip
           asset_name: lua-module-linux.zip
           asset_content_type: application/zip
+  publish-artifacts:
+    runs-on: windows-2019
+    steps:
+      - name: Zipping Lua modules
+        run: |
+          if not exist "artifacts" mkdir artifacts
+          cd scripts
+          FOR /D %%G in (*) DO (
+            echo Try to 7Zip the following folder: %%~nxG
+            7z a -tzip "lua-%%G-module.zip" -r %%G
+          )
+      - name: Uploading Lua modules artifact
+        uses: csexton/release-asset-action
+        with:
+          pattern: artifacts/lua-*-module.zip
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-url: ${{ needs.create_release.outputs.upload_url }}
+        
