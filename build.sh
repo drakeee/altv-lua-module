@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git submodule update --init --recursive --remote
+#git submodule update --init --recursive --remote
 
 cmake -DCMAKE_BUILD_TYPE=Release ./
 cmake --build . --config Release
