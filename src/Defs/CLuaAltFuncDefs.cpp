@@ -5,6 +5,7 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 {
 	//lua_newtable(L);
 
+	lua_globalfunction(L, "log", LogInfo);
 	lua_globalfunction(L, "logInfo", LogInfo);
 	lua_globalfunction(L, "logDebug", LogDebug);
 	lua_globalfunction(L, "logWarning", LogWarning);

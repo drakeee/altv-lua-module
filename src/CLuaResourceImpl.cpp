@@ -193,7 +193,7 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 		lua_rawgeti(this->resourceState, LUA_REGISTRYINDEX, functionReference);
 		auto arguments = eventFunc(this, ev);
 
-		if (lua_pcall(this->resourceState, arguments, 0, 0) != 0)
+		if (lua_pcall(this->resourceState, arguments, 1, 0) != 0)
 		{
 			//Sadly far from perfect
 			Core->LogError(" Unable to execute \"" + this->runtime->GetEventType(ev) + "\"");
@@ -203,6 +203,19 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 				Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
 
 			//Core->LogInfo("Error running function: %s" + alt::String(lua_tostring(this->resourceState, -1)));
+		}
+
+		if (lua_isboolean(this->resourceState, -1))
+		{
+			if (!lua_toboolean(this->resourceState, -1))
+			{
+				ev->Cancel();
+
+#ifndef NDEBUG
+				Core->LogInfo(std::string("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev) + std::string("::Cancelled"));
+#endif
+
+			}
 		}
 	}
 
