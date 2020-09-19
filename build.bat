@@ -1,6 +1,6 @@
 @echo on
 
-git submodule update --init --recursive --remote
+REM git submodule update --init --recursive --remote
 
 if not exist build mkdir build
 cd build
