@@ -113,8 +113,8 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_globalfunction(L, "isVehicleDaylightOn", IsDaylightOn);
 	lua_globalfunction(L, "isVehicleNightlightOn", IsNightlightOn);
 
-	lua_globalfunction(L, "isVehicleRoofOpened", IsRoofOpened);
-	lua_globalfunction(L, "setVehicleRoofOpened", SetRoofOpened);
+	lua_globalfunction(L, "getVehicleRoofState", GetRoofState);
+	lua_globalfunction(L, "setVehicleRoofState", SetRoofState);
 
 	lua_globalfunction(L, "isVehicleFlamethrowerActive", IsFlamethrowerActive);
 
@@ -279,8 +279,8 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classfunction(L, "setWindowOpened", SetWindowOpened);
 		lua_classfunction(L, "isDaylightOn", IsDaylightOn);
 		lua_classfunction(L, "isNightlightOn", IsNightlightOn);
-		lua_classfunction(L, "isRoofOpened", IsRoofOpened);
-		lua_classfunction(L, "setRoofOpened", SetRoofOpened);
+		lua_classfunction(L, "getRoofState", GetRoofState);
+		lua_classfunction(L, "setRoofState", SetRoofState);
 		lua_classfunction(L, "isFlamethrowerActive", IsFlamethrowerActive);
 		lua_classfunction(L, "getLightsMultiplier", GetLightsMultiplier);
 		lua_classfunction(L, "setLightsMultiplier", SetLightsMultiplier);
@@ -368,7 +368,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "doorState", "setDoorState", "getDoorState");
 		lua_classvariable(L, "daylightOn", nullptr, "isDaylightOn");
 		lua_classvariable(L, "nightlightOn", nullptr, "isNightlightOn");
-		lua_classvariable(L, "roofOpened", "setRoofOpened", "isRoofOpened");
+		lua_classvariable(L, "roof", "setRoofState", "getRoofState");
 		lua_classvariable(L, "flamethrowerActive", nullptr, "isFlamethrowerActive");
 		lua_classvariable(L, "lightsMultiplier", "setLightsMultiplier", "getLightsMultiplier");
 		lua_classvariable(L, "gameStateBase64", "loadGameStateFromBase64", "getGameStateBase64");
@@ -1999,7 +1999,7 @@ int CLuaVehicleDefs::IsNightlightOn(lua_State* L)
 	return 1;
 }
 
-int CLuaVehicleDefs::IsRoofOpened(lua_State* L)
+int CLuaVehicleDefs::GetRoofState(lua_State* L)
 {
 	alt::IVehicle* vehicle;
 
@@ -2012,19 +2012,19 @@ int CLuaVehicleDefs::IsRoofOpened(lua_State* L)
 		return 0;
 	}
 
-	lua_pushboolean(L, vehicle->IsRoofOpened());
+	lua_pushnumber(L, vehicle->GetRoofState());
 
 	return 1;
 }
 
-int CLuaVehicleDefs::SetRoofOpened(lua_State* L)
+int CLuaVehicleDefs::SetRoofState(lua_State* L)
 {
 	alt::IVehicle* vehicle;
-	bool state;
+	uint8_t state;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(vehicle);
-	argReader.ReadBool(state);
+	argReader.ReadNumber(state);
 
 	if (argReader.HasAnyError())
 	{
@@ -2032,7 +2032,7 @@ int CLuaVehicleDefs::SetRoofOpened(lua_State* L)
 		return 0;
 	}
 
-	vehicle->SetRoofOpened(state);
+	vehicle->SetRoofState(state);
 
 	return 0;
 }

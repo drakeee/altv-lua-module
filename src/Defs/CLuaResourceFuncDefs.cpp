@@ -13,6 +13,8 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getResourceExports", GetExports);
 	lua_globalfunction(L, "getResourceDependencies", GetDependencies);
 	lua_globalfunction(L, "getResourceDependants", GetDependants);
+	lua_globalfunction(L, "getResourceRequiredPermissions", GetRequiredPermissions);
+	lua_globalfunction(L, "getResourceOptionalPermissions", GetOptionalPermissions);
 
 	lua_beginclass(L, ClassName);
 	{
@@ -28,6 +30,8 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 		lua_classfunction(L, "getExports", GetExports);
 		lua_classfunction(L, "getDependencies", GetDependencies);
 		lua_classfunction(L, "getDependants", GetDependants);
+		lua_classfunction(L, "getRequiredPermissions", GetRequiredPermissions);
+		lua_classfunction(L, "getOptionalPermissions", GetOptionalPermissions);
 
 		lua_classvariable(L, "started", nullptr, "isStarted");
 		lua_classvariable(L, "type", nullptr, "getType");
@@ -37,6 +41,8 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 		lua_classvariable(L, "exports", nullptr, "getExports");
 		lua_classvariable(L, "dependencies", nullptr, "getDependencies");
 		lua_classvariable(L, "dependants", nullptr, "getDependants");
+		lua_classvariable(L, "requiredPermissions", nullptr, "getRequiredPermissions");
+		lua_classvariable(L, "optionalPermissions", nullptr, "getOptionalPermissions");
 	}
 	lua_endclass(L);
 
@@ -296,6 +302,64 @@ int CLuaResourceFuncDefs::GetDependants(lua_State* L)
 	}
 
 	lua_pushstringarray(L, const_cast<alt::Array<alt::StringView>&&>(resource->GetDependants()));
+
+	return 1;
+}
+
+int CLuaResourceFuncDefs::GetRequiredPermissions(lua_State* L)
+{
+	alt::IResource* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto requiredPermissions = resource->GetRequiredPermissions();
+	lua_newtable(L);
+
+	unsigned short index = 1;
+	for (auto& perm : requiredPermissions)
+	{
+		lua_pushnumber(L, index);
+		lua_pushnumber(L, static_cast<int>(perm));
+		lua_rawset(L, -3);
+
+		index++;
+	}
+
+	return 1;
+}
+
+int CLuaResourceFuncDefs::GetOptionalPermissions(lua_State* L)
+{
+	alt::IResource* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto optionalPermissions = resource->GetOptionalPermissions();
+	lua_newtable(L);
+
+	unsigned short index = 1;
+	for (auto& perm : optionalPermissions)
+	{
+		lua_pushnumber(L, index);
+		lua_pushnumber(L, static_cast<int>(perm));
+		lua_rawset(L, -3);
+
+		index++;
+	}
 
 	return 1;
 }

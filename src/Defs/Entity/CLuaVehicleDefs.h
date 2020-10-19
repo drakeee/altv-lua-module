@@ -125,8 +125,8 @@ private:
 	static int IsDaylightOn(lua_State* L);
 	static int IsNightlightOn(lua_State* L);
 
-	static int IsRoofOpened(lua_State* L);
-	static int SetRoofOpened(lua_State* L);
+	static int GetRoofState(lua_State* L);
+	static int SetRoofState(lua_State* L);
 
 	static int IsFlamethrowerActive(lua_State* L);
 

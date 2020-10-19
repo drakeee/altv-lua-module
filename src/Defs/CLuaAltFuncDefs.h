@@ -43,6 +43,9 @@ private:
 	static int DeleteSyncedMetaData(lua_State* L);
 	static int HasSyncedMetaData(lua_State* L);
 
+	static int GetRequiredPermissions(lua_State* L);
+	static int GetOptionalPermissions(lua_State* L);
+
 	static int StartResource(lua_State* L);
 	static int StopResource(lua_State* L);
 	static int RestartResource(lua_State* L);

@@ -48,6 +48,9 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
 	lua_globalfunction(L, "hasSyncedMetaData", HasSyncedMetaData);
 
+	lua_globalfunction(L, "getRequiredPermissions", GetRequiredPermissions);
+	lua_globalfunction(L, "getOptionalPermissions", GetOptionalPermissions);
+
 	lua_beginclass(L, ClassName);
 	{
 		lua_classmeta(L, "__index", AltIndex, true);
@@ -263,6 +266,42 @@ int CLuaAltFuncDefs::HasSyncedMetaData(lua_State* L)
 	}
 
 	lua_pushboolean(L, Core->HasSyncedMetaData(key));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetRequiredPermissions(lua_State* L)
+{
+	auto requiredPermissions = Core->GetRequiredPermissions();
+	lua_newtable(L);
+
+	unsigned short index = 1;
+	for (auto &perm : requiredPermissions)
+	{
+		lua_pushnumber(L, index);
+		lua_pushnumber(L, static_cast<int>(perm));
+		lua_rawset(L, -3);
+
+		index++;
+	}
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetOptionalPermissions(lua_State* L)
+{
+	auto optionalPermissions = Core->GetOptionalPermissions();
+	lua_newtable(L);
+
+	unsigned short index = 1;
+	for (auto& perm : optionalPermissions)
+	{
+		lua_pushnumber(L, index);
+		lua_pushnumber(L, static_cast<int>(perm));
+		lua_rawset(L, -3);
+
+		index++;
+	}
 
 	return 1;
 }

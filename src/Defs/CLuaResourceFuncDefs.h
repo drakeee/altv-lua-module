@@ -23,4 +23,7 @@ private:
 	static int GetExports(lua_State* L);
 	static int GetDependencies(lua_State* L);
 	static int GetDependants(lua_State* L);
+
+	static int GetRequiredPermissions(lua_State* L);
+	static int GetOptionalPermissions(lua_State* L);
 };
