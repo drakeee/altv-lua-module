@@ -19,8 +19,8 @@ private:
 	static int AttachedTo(lua_State* L);
 	static int GetBlipType(lua_State* L);
 
-	static int SetSprite(lua_State* L);
+	/*static int SetSprite(lua_State* L);
 	static int SetColor(lua_State* L);
 	static int SetRoute(lua_State* L);
-	static int SetRouteColor(lua_State* L);
+	static int SetRouteColor(lua_State* L);*/
 };

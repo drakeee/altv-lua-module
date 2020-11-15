@@ -2,7 +2,10 @@
 
 #define MODULE_VERSION "0.1.0"
 #define ADDITIONAL_MODULE_FOLDER "modules"
-#define ALT_SERVER_API
+
+#ifndef ALT_SERVER_API
+	#define ALT_SERVER_API
+#endif
 
 #ifdef _WIN32
 static const char* preferred_separator = "\\";
@@ -42,8 +45,8 @@ extern alt::ICore* Core;
 
 typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 
-#include "CVehModels.h"
-#include "CVehMods.h"
+#include "VehicleModels.hpp"
+//#include "CVehMods.h"
 #include "LRGBA.h"
 
 #include "CLuaDefs.h"

@@ -2,7 +2,7 @@
 
 CLuaScriptRuntime::CLuaScriptRuntime()
 {
-	CVehModels::Instance(); //instance class once for further usage
+	VehicleModels::Instance(); //instance class once for further usage
 
 	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_CONNECT,

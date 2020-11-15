@@ -388,7 +388,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_endclass(L);
 
 	lua_newtable(L);
-	for (auto vehicle : CVehModels::Instance().GetVehicleInfosByHash())
+	for (auto vehicle : VehicleModels::Instance().GetVehicleInfosByHash())
 	{
 		lua_pushnumber(L, vehicle.first);
 		lua_pushstring(L, vehicle.second->vehicleName);
@@ -473,7 +473,7 @@ int CLuaVehicleDefs::tostring(lua_State* L)
 	}
 
 	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
-	auto vehModels = &CVehModels::Instance();
+	auto vehModels = &VehicleModels::Instance();
 
 	alt::StringView type("userdata:" + runtime->GetBaseObjectType(vehicle) + ":" + vehModels->GetVehicleInfo(vehicle->GetModel())->vehicleName);
 

@@ -420,6 +420,14 @@ alt::IBaseObject* lua_tobaseobject(lua_State* L, int idx)
 	return reinterpret_cast<alt::IBaseObject*>(*((void**)lua_touserdata(L, idx)));
 }
 
+
+int lua_isinteger(lua_State* L, int index)
+{
+	int32_t x = (int32_t)lua_tointeger(L, index);
+	lua_Number n = lua_tonumber(L, index);
+	return ((lua_Number)x == n);
+}
+
 alt::MValue lua_tomvalue(lua_State* L, int idx)
 {
 	alt::MValue mValue;
@@ -428,7 +436,10 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 	switch (argType)
 	{
 	case LUA_TNUMBER:
-		mValue = Core->CreateMValueDouble(lua_tonumber(L, idx));
+		if (lua_isinteger(L, idx))
+			mValue = Core->CreateMValueInt(lua_tointeger(L, idx));
+		else
+			mValue = Core->CreateMValueDouble(lua_tonumber(L, idx));
 		break;
 	case LUA_TBOOLEAN:
 		mValue = Core->CreateMValueBool(lua_toboolean(L, idx));
@@ -441,7 +452,6 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 		break;
 	case LUA_TTABLE:
 	{
-		//Core->LogInfo("Save table");
 		auto tempDict = Core->CreateMValueDict();
 		auto tempList = Core->CreateMValueList();
 
@@ -630,4 +640,44 @@ void lua_getdebuginfo(lua_State* L, lua_Debug& debugInfo)
 			break;
 		}
 	}
+}
+
+const char* luaL_tolstring(lua_State* L, int idx, size_t* len)
+{
+	if (luaL_callmeta(L, idx, "__tostring"))
+	{
+		if (!lua_isstring(L, -1))
+			luaL_error(L, "'__tostring' must return a string");
+	}
+	else {
+		switch (lua_type(L, idx)) {
+		case LUA_TNUMBER: {
+			if (lua_isinteger(L, idx))
+				lua_pushfstring(L, "%d", lua_tointeger(L, idx));
+			else
+				lua_pushfstring(L, "%f", lua_tonumber(L, idx));
+			break;
+		}
+		case LUA_TSTRING:
+			lua_pushvalue(L, idx);
+			break;
+		case LUA_TBOOLEAN:
+			lua_pushstring(L, (lua_toboolean(L, idx) ? "true" : "false"));
+			break;
+		case LUA_TNIL:
+			lua_pushliteral(L, "nil");
+			break;
+		default: {
+			int tt = luaL_getmetafield(L, idx, "__name");  /* try name */
+			const char* kind = (tt == LUA_TSTRING) ? lua_tostring(L, -1) :
+				luaL_typename(L, idx);
+			lua_pushfstring(L, "%s: %p", kind, lua_topointer(L, idx));
+			if (tt != LUA_TNIL)
+				lua_remove(L, -2);  /* remove '__name' */
+			break;
+		}
+		}
+	}
+
+	return lua_tolstring(L, -1, len);
 }

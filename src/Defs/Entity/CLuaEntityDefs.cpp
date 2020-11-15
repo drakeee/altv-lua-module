@@ -26,6 +26,9 @@ void CLuaEntityDefs::Init(lua_State* L)
 
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
 	{
+		lua_classmeta(L, "__pairs", pairs);
+		lua_classmeta(L, "__ipairs", ipairs);
+
 		lua_classfunction(L, "getId", GetID);
 		lua_classfunction(L, "getNetworkOwner", GetNetworkOwner);
 		lua_classfunction(L, "getModel", GetModel);
@@ -37,6 +40,7 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classfunction(L, "getSyncedMetaData", GetSyncedMetaData);
 		lua_classfunction(L, "hasStreamSyncedMetaData", HasStreamSyncedMetaData);
 		lua_classfunction(L, "getStreamSyncedMetaData", GetStreamSyncedMetaData);
+		lua_classfunction(L, "getAll", ipairs);
 
 #ifdef ALT_SERVER_API
 		lua_classfunction(L, "setSyncedMetaData", SetSyncedMetaData);
@@ -49,12 +53,13 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classvariable(L, "networkOwner", nullptr, "getNetworkOwner");
 		lua_classvariable(L, "model", nullptr, "getModel");
 		lua_classvariable(L, "rotation", "setRotation", "getRotation");
+		lua_classvariable(L, "all", nullptr, "getAll");
 	}
 	lua_endclass(L);
 
 }
 
-int CLuaEntityDefs::ToString(lua_State* L)
+int CLuaEntityDefs::tostring(lua_State* L)
 {
 	alt::IEntity* entity;
 
@@ -68,6 +73,25 @@ int CLuaEntityDefs::ToString(lua_State* L)
 	}
 
 	entity->GetType();
+
+	return 1;
+}
+
+int CLuaEntityDefs::pairs(lua_State* L)
+{
+	return 0;
+}
+
+int CLuaEntityDefs::ipairs(lua_State* L)
+{
+	lua_newtable(L);
+	auto allEntites = alt::ICore::Instance().GetEntities();
+	for (size_t i = 0; i < allEntites.GetSize(); i++)
+	{
+		lua_pushnumber(L, (int)(i + 1));
+		lua_pushbaseobject(L, allEntites[i].Get());
+		lua_rawset(L, -3);
+	}
 
 	return 1;
 }

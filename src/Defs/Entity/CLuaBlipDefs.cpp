@@ -10,10 +10,10 @@ void CLuaBlipDefs::Init(lua_State* L)
 	lua_globalfunction(L, "isBlipAttached", IsAttached);
 	lua_globalfunction(L, "getBlipAttachedTo", AttachedTo);
 	lua_globalfunction(L, "getBlipType", GetBlipType);
-	lua_globalfunction(L, "setBlipSprite", SetSprite);
+	/*lua_globalfunction(L, "setBlipSprite", SetSprite);
 	lua_globalfunction(L, "setBlipColor", SetColor);
 	lua_globalfunction(L, "setBlipRoute", SetRoute);
-	lua_globalfunction(L, "setBlipRouteColor", SetRouteColor);
+	lua_globalfunction(L, "setBlipRouteColor", SetRouteColor);*/
 
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
 	{
@@ -23,10 +23,10 @@ void CLuaBlipDefs::Init(lua_State* L)
 		lua_classfunction(L, "isAttached", IsAttached);
 		lua_classfunction(L, "getAttachedTo", AttachedTo);
 		lua_classfunction(L, "getBlipType", GetBlipType);
-		lua_classfunction(L, "setSprite", SetSprite);
+		/*lua_classfunction(L, "setSprite", SetSprite);
 		lua_classfunction(L, "setColor", SetColor);
 		lua_classfunction(L, "setRoute", SetRoute);
-		lua_classfunction(L, "setRouteColor", SetRouteColor);
+		lua_classfunction(L, "setRouteColor", SetRouteColor);*/
 
 
 		lua_classvariable(L, "global", nullptr, "isGlobal");
@@ -34,10 +34,10 @@ void CLuaBlipDefs::Init(lua_State* L)
 		lua_classvariable(L, "attached", nullptr, "isAttached");
 		lua_classvariable(L, "attachedTo", nullptr, "getAttachedTo");
 		lua_classvariable(L, "blipType", nullptr, "getBlipType");
-		lua_classvariable(L, "sprite", "setSprite", nullptr);
+		/*lua_classvariable(L, "sprite", "setSprite", nullptr);
 		lua_classvariable(L, "color", "setColor", nullptr);
 		lua_classvariable(L, "route", "setRoute", nullptr);
-		lua_classvariable(L, "routeColor", "setRouteColor", nullptr);
+		lua_classvariable(L, "routeColor", "setRouteColor", nullptr);*/
 	}
 	lua_endclass(L);
 
@@ -195,82 +195,82 @@ int CLuaBlipDefs::GetBlipType(lua_State* L)
 	return 1;
 }
 
-int CLuaBlipDefs::SetSprite(lua_State* L)
-{
-	alt::IBlip* blip;
-	uint16_t sprite;
-
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(blip);
-	argReader.ReadNumber(sprite);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	blip->SetSprite(sprite);
-
-	return 0;
-}
-
-int CLuaBlipDefs::SetColor(lua_State* L)
-{
-	alt::IBlip* blip;
-	uint8_t color;
-
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(blip);
-	argReader.ReadNumber(color);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	blip->SetColor(color);
-
-	return 0;
-}
-
-int CLuaBlipDefs::SetRoute(lua_State* L)
-{
-	alt::IBlip* blip;
-	bool state;
-
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(blip);
-	argReader.ReadBool(state);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	blip->SetRoute(state);
-
-	return 0;
-}
-
-int CLuaBlipDefs::SetRouteColor(lua_State* L)
-{
-	alt::IBlip* blip;
-	uint8_t color;
-
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(blip);
-	argReader.ReadNumber(color);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	blip->SetRouteColor(color);
-
-	return 0;
-}
+//int CLuaBlipDefs::SetSprite(lua_State* L)
+//{
+//	alt::IBlip* blip;
+//	uint16_t sprite;
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(blip);
+//	argReader.ReadNumber(sprite);
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	blip->SetSprite(sprite);
+//
+//	return 0;
+//}
+//
+//int CLuaBlipDefs::SetColor(lua_State* L)
+//{
+//	alt::IBlip* blip;
+//	uint8_t color;
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(blip);
+//	argReader.ReadNumber(color);
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	blip->SetColor(color);
+//
+//	return 0;
+//}
+//
+//int CLuaBlipDefs::SetRoute(lua_State* L)
+//{
+//	alt::IBlip* blip;
+//	bool state;
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(blip);
+//	argReader.ReadBool(state);
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	blip->SetRoute(state);
+//
+//	return 0;
+//}
+//
+//int CLuaBlipDefs::SetRouteColor(lua_State* L)
+//{
+//	alt::IBlip* blip;
+//	uint8_t color;
+//
+//	CArgReader argReader(L);
+//	argReader.ReadBaseObject(blip);
+//	argReader.ReadNumber(color);
+//
+//	if (argReader.HasAnyError())
+//	{
+//		argReader.GetErrorMessages();
+//		return 0;
+//	}
+//
+//	blip->SetRouteColor(color);
+//
+//	return 0;
+//}

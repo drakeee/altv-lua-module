@@ -34,13 +34,17 @@ add_library(
 	${PROJECT_SOURCE_FILES}
 )
 
+target_compile_definitions(${PROJECT_MODULE_NAME} PRIVATE
+	-DALT_SERVER_API
+)
+
 if(UNIX)
 	target_link_libraries(${PROJECT_MODULE_NAME} ${PROJECT_SOURCE_DIR}/vendors/luajit/lib/linux64/libluajit.so)
-	target_compile_options(${PROJECT_MODULE_NAME} PRIVATE
-      -fuse-ld=lld
-      -std=c++17
-	  -lstdc++fs
-    )
+	#target_compile_options(${PROJECT_MODULE_NAME} PRIVATE
+	#	-fuse-ld=lld
+	#	-std=c++17
+	#	-lstdc++fs
+    #)
 else()
 	target_link_libraries(${PROJECT_MODULE_NAME}
 	${PROJECT_SOURCE_DIR}/vendors/luajit/lib/win64/lua51.lib

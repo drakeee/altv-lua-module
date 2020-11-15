@@ -46,6 +46,7 @@ void lua_pushresource(lua_State* L, alt::IResource* resource, bool refUserData =
 void lua_pushstringarray(lua_State* L, const alt::Array<alt::StringView>& array);
 int lua_functionref(lua_State* L, int idx);
 
+int lua_isinteger(lua_State* L, int idx);
 void lua_todict(lua_State* L, int idx);
 alt::MValue lua_tomvalue(lua_State* L, int indx);
 alt::IBaseObject* lua_tobaseobject(lua_State* L, int idx);
@@ -54,3 +55,5 @@ alt::IBaseObject* lua_tobaseobject(lua_State* L, int idx);
 void lua_stacktrace(lua_State* L, const char* stackName = "Unknown");
 void lua_dumptable(lua_State* L, int idx, int level = 0);
 void lua_getdebuginfo(lua_State* L, lua_Debug& debugInfo);
+
+const char* luaL_tolstring(lua_State* L, int idx, size_t* len);

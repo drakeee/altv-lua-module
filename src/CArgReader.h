@@ -9,6 +9,7 @@ public:
 	{
 		m_luaVM = L;
 		m_stackIndex = 1;
+		m_stackNum = lua_gettop(L);
 		m_errorOccured = false;
 		pendingFunctionRefOut = nullptr;
 		pendingFunctionRef = -1;
@@ -17,6 +18,16 @@ public:
 	~CArgReader()
 	{
 
+	}
+
+	const char* ToString()
+	{
+		return luaL_tolstring(m_luaVM, m_stackIndex++, NULL);
+	}
+
+	int GetArgNum()
+	{
+		return m_stackNum;
 	}
 
 	bool IsNextType(int type)
@@ -409,6 +420,7 @@ private:
 	int			pendingFunctionRef;
 
 	int			m_stackIndex;
+	int			m_stackNum;
 	bool		m_errorOccured;
 
 	std::vector<std::string> m_errorMessages;

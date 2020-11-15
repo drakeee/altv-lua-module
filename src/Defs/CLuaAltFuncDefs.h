@@ -60,6 +60,16 @@ private:
 
 	static int Export(lua_State* L);
 
+	static int IsDebug(lua_State* L);
+	static int FileExists(lua_State* L);
+	static int FileRead(lua_State* L);
+	static int GetEntityByID(lua_State* L);
+	static int GetRootDirectory(lua_State* L);
+	static int GetPlayersByName(lua_State* L);
+	static int GetNetTime(lua_State* L);
+	static int GetVersion(lua_State* L);
+	static int GetBranch(lua_State* L);
+
 	static int Hash(lua_State* L);
 
 	static int tostringtest(lua_State* L);

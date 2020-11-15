@@ -9,7 +9,9 @@ public:
 	static void Init(lua_State* L);
 
 private:
-	static int ToString(lua_State* L);
+	static int tostring(lua_State* L);
+	static int pairs(lua_State* L);
+	static int ipairs(lua_State* L);
 
 	static int GetID(lua_State* L);
 

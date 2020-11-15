@@ -1,4 +1,5 @@
 #include <Main.h>
+#include <sstream>
 
 const char* CLuaAltFuncDefs::ClassName = "alt";
 void CLuaAltFuncDefs::Init(lua_State* L)
@@ -34,6 +35,15 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 
 	lua_globalfunction(L, "export", Export);
 	lua_globalfunction(L, "hash", Hash);
+	lua_globalfunction(L, "isDebug", IsDebug);
+	lua_globalfunction(L, "fileExists", FileExists);
+	lua_globalfunction(L, "fileRead", FileRead);
+	lua_globalfunction(L, "getEntityByID", GetEntityByID);
+	lua_globalfunction(L, "getRootDirectory", GetRootDirectory);
+	lua_globalfunction(L, "getPlayersByName", GetPlayersByName);
+	lua_globalfunction(L, "getNetTime", GetNetTime);
+	lua_globalfunction(L, "getVersion", GetVersion);
+	lua_globalfunction(L, "getBranch", GetBranch);
 
 	lua_globalfunction(L, "startResource", StartResource);
 	lua_globalfunction(L, "stopResource", StopResource);
@@ -114,6 +124,12 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_getglobal(L, "ipairsaux");
 	lua_pushcclosure(L, CLuaAltFuncDefs::ipairs, 1);
 	lua_rawset(L, -3);
+
+	lua_pushnumber(L, alt::DEFAULT_DIMENSION);
+	lua_setglobal(L, "DEFAULT_DIMENSION");
+
+	lua_pushnumber(L, alt::GLOBAL_DIMENSION);
+	lua_setglobal(L, "GLOBAL_DIMENSION");
 
 	/*lua_pushstring(L, "dofile");
 	lua_pushcfunction(L, dofile);
@@ -332,6 +348,115 @@ int CLuaAltFuncDefs::Export(lua_State* L)
 	resource->AddExport(exportName, new CLuaResourceImpl::LuaFunction(resource, functionRef));
 
 	return 0;
+}
+
+int CLuaAltFuncDefs::IsDebug(lua_State* L)
+{
+	lua_pushboolean(L, Core->IsDebug());
+	return 1;
+}
+
+int CLuaAltFuncDefs::FileExists(lua_State* L)
+{
+	std::string filePath;
+
+	CArgReader argReader(L);
+	argReader.ReadString(filePath);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->FileExists(filePath));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::FileRead(lua_State* L)
+{
+	std::string filePath;
+
+	CArgReader argReader(L);
+	argReader.ReadString(filePath);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushstring(L, Core->FileRead(filePath).CStr());
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetEntityByID(lua_State* L)
+{
+	alt::IEntity* entity;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, entity);
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetRootDirectory(lua_State* L)
+{
+	lua_pushstring(L, Core->GetRootDirectory().CStr());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetPlayersByName(lua_State* L)
+{
+	std::string playersName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(playersName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_newtable(L);
+	auto playersFound = Core->GetPlayersByName(playersName);
+	for (size_t i = 0; i < playersFound.GetSize(); i++)
+	{
+		lua_pushnumber(L, (int)(i + 1));
+		lua_pushbaseobject(L, playersFound[i].Get());
+		lua_rawset(L, -3);
+	}
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetNetTime(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetNetTime());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetVersion(lua_State* L)
+{
+	lua_pushstring(L, Core->GetVersion().CStr());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetBranch(lua_State* L)
+{
+	lua_pushstring(L, Core->GetBranch().CStr());
+	return 1;
 }
 
 int CLuaAltFuncDefs::Hash(lua_State* L)
@@ -709,41 +834,37 @@ int CLuaAltFuncDefs::tostringtest(lua_State* L)
 
 int CLuaAltFuncDefs::Log(lua_State* L, LogType logType)
 {
-	std::string message;
-
 	CArgReader argReader(L);
-	argReader.ReadString(message);
+	std::ostringstream message;
 
-	//lua_getglobal(L, "_print");
-
-	//lua_stacktrace(L, "Log");
-
-	if (argReader.HasAnyError())
+	for (int i = 0; i < argReader.GetArgNum(); i++)
 	{
-		argReader.GetErrorMessages();
-		return 0;
+		message << alt::String(argReader.ToString());
+
+		if (i != (argReader.GetArgNum() - 1))
+			message << '\t';
 	}
 
 	switch (logType)
 	{
 	case LogType::LOG_COLORED:
-		Core->LogColored(message);
+		Core->LogColored(message.str());
 		break;
 
 	case LogType::LOG_DEBUG:
-		Core->LogDebug(message);
+		Core->LogDebug(message.str());
 		break;
 
 	case LogType::LOG_ERROR:
-		Core->LogError(message);
+		Core->LogError(message.str());
 		break;
 
 	case LogType::LOG_INFO:
-		Core->LogInfo(message);
+		Core->LogInfo(message.str());
 		break;
 
 	case LogType::LOG_WARNING:
-		Core->LogWarning(message);
+		Core->LogWarning(message.str());
 		break;
 	}
 

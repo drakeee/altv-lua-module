@@ -173,7 +173,7 @@ int CLuaPlayerDefs::tostring(lua_State* L)
 	}
 
 	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
-	auto vehModels = &CVehModels::Instance();
+	auto vehModels = &VehicleModels::Instance();
 
 	alt::StringView type(alt::String("userdata:") + runtime->GetBaseObjectType(player) + alt::String(":") + player->GetName());
 

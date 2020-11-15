@@ -225,6 +225,8 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 void CLuaResourceImpl::OnTick()
 {
 
+	this->TriggerResourceLocalEvent("tick", {});
+
 #ifndef NDEBUG
 	//this->_core->LogInfo("CLuaResourceImpl::OnTick");
 #endif
