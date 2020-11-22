@@ -13,8 +13,10 @@ private:
 	static int ResourceIndex(lua_State* L);
 	static int Call(lua_State* L);
 
-	static int GetResourceFromName(lua_State* L);
+	static int GetResourceByName(lua_State* L);
 	static int IsStarted(lua_State* L);
+
+	static int GetConfig(lua_State* L);
 
 	static int GetType(lua_State* L);
 	static int GetName(lua_State* L);

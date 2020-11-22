@@ -12,9 +12,12 @@ public:
 	typedef std::map<std::string, FunctionCallback>					EventsCallbacks;
 	typedef std::map<std::string, CallbackGetter>					EventsGetter;
 
+	std::map<alt::IResource*, alt::config::Node::Dict> resourceNodeDictMap;
+
 	alt::IResource::Impl*	CreateImpl(alt::IResource* resource) override;
 	void					DestroyImpl(alt::IResource::Impl* impl) override;
 
+	alt::config::Node::Dict	ParseConfig(std::string path);
 	CLuaResourceImpl*		GetResourceImplFromState(lua_State* L);
 	void					AddResource(lua_State* L, CLuaResourceImpl* resource);
 	const std::string		GetBaseObjectType(alt::IBaseObject *baseObject);
@@ -38,6 +41,14 @@ public:
 	{
 		return this->version;
 	}
+	inline alt::config::Node::Dict &GetServerConfig(void)
+	{
+		return this->serverConfigDict;
+	}
+	inline alt::config::Node::Dict& GetResourceConfig(alt::IResource* resource)
+	{
+		return this->resourceNodeDictMap[resource];
+	}
 
 
 	static CLuaScriptRuntime& Instance()
@@ -47,13 +58,17 @@ public:
 	}
 
 	CLuaScriptRuntime();
-	~CLuaScriptRuntime() {};
+	~CLuaScriptRuntime() { };
 
 private:
-	const semver::version						version{ 0, 4, 0, semver::prerelease::dev };
+	const semver::version						version{ 0, 4, 1, semver::prerelease::dev };
+	alt::config::Node::Dict						serverConfigDict;
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;
+
+	static bool OnResourceStart(const alt::CEvent* e, void* userData);
+	static bool OnResourceStop(const alt::CEvent* e, void* userData);
 
 	const std::vector<std::string> entityTypes{
 		"Player",

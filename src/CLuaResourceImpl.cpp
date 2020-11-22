@@ -46,8 +46,16 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	lua_pushstring(this->resourceState, ADDITIONAL_MODULE_FOLDER);
 	lua_setglobal(this->resourceState, "MODULE_FOLDER");
 
+	//Parse the resource config here as well because RESOURCE_START event is called after the script is executed
+	{
+		alt::String resourceConfigPath = this->resource->GetPath() + preferred_separator + "resource.cfg";
+		auto resourceNode = runtime->ParseConfig(resourceConfigPath.CStr());
+		runtime->resourceNodeDictMap[this->resource] = resourceNode;
+	}
+
 	//Init functions
 	CLuaVector3Defs::Init(this->resourceState);
+	CLuaConfigDefs::Init(this->resourceState);
 	CLuaAltFuncDefs::Init(this->resourceState);
 	CLuaResourceFuncDefs::Init(this->resourceState);
 	CLuaBaseObjectDefs::Init(this->resourceState);

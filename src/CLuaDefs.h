@@ -31,6 +31,7 @@ void lua_classvariable(lua_State* L, const char* variableName, const char* setFu
 
 void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool refUserData = true);
 void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData = true);
+void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData = true);
 
 template<class T, std::size_t W, class _Layout = alt::VectorLayout<T, W>>
 void lua_pushvector(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool refUserData = false)
@@ -41,6 +42,7 @@ void lua_pushvector(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool
 //void lua_pushvehicle(lua_State* L, alt::IVehicle* vehicle, bool refUserData = true);
 void lua_pushrgba(lua_State* L, const alt::RGBA &color, bool refUserData = false);
 void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue);
+void lua_pushnode(lua_State* L, alt::config::Node& node);
 void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args);
 void lua_pushresource(lua_State* L, alt::IResource* resource, bool refUserData = true);
 void lua_pushstringarray(lua_State* L, const alt::Array<alt::StringView>& array);

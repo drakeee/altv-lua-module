@@ -26,6 +26,7 @@ file(GLOB_RECURSE PROJECT_SOURCE_FILES "./src/*.h" "./src/*.hpp" "./src/*.cpp")
 include_directories(
 	"${PROJECT_SOURCE_DIR}/src"
 	"${PROJECT_SOURCE_DIR}/vendors/luajit/include"
+	"${PROJECT_SOURCE_DIR}/vendors/alt-config"
 	"${PROJECT_SOURCE_DIR}/vendors/cpp-sdk"
 )
 

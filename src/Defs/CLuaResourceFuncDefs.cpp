@@ -3,9 +3,10 @@
 const char* CLuaResourceFuncDefs::ClassName = "Resource";
 void CLuaResourceFuncDefs::Init(lua_State* L)
 {
-	lua_globalfunction(L, "import", GetResourceFromName);
-	lua_globalfunction(L, "getResourceFromName", GetResourceFromName);
+	lua_globalfunction(L, "import", GetResourceByName);
+	lua_globalfunction(L, "getResourceByName", GetResourceByName);
 	lua_globalfunction(L, "isResourceStarted", IsStarted);
+	lua_globalfunction(L, "getResourceConfig", GetConfig);
 	lua_globalfunction(L, "getResourceType", GetType);
 	lua_globalfunction(L, "getResourceName", GetName);
 	lua_globalfunction(L, "getResourcePath", GetPath);
@@ -21,8 +22,9 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 		lua_classmeta(L, "__tostring", tostring);
 		lua_classmeta(L, "__index", ResourceIndex, true);
 
-		lua_classfunction(L, "getFromName", GetResourceFromName);
+		lua_classfunction(L, "getByName", GetResourceByName);
 		lua_classfunction(L, "isStarted", IsStarted);
+		lua_classfunction(L, "getConfig", GetConfig);
 		lua_classfunction(L, "getType", GetType);
 		lua_classfunction(L, "getName", GetName);
 		lua_classfunction(L, "getPath", GetPath);
@@ -34,6 +36,7 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 		lua_classfunction(L, "getOptionalPermissions", GetOptionalPermissions);
 
 		lua_classvariable(L, "started", nullptr, "isStarted");
+		lua_classvariable(L, "config", nullptr, "getConfig");
 		lua_classvariable(L, "type", nullptr, "getType");
 		lua_classvariable(L, "name", nullptr, "getName");
 		lua_classvariable(L, "path", nullptr, "getPath");
@@ -128,7 +131,7 @@ int CLuaResourceFuncDefs::tostring(lua_State* L)
 	return 1;
 }
 
-int CLuaResourceFuncDefs::GetResourceFromName(lua_State* L)
+int CLuaResourceFuncDefs::GetResourceByName(lua_State* L)
 {
 	std::string resourceName;
 
@@ -165,6 +168,24 @@ int CLuaResourceFuncDefs::IsStarted(lua_State* L)
 	}
 
 	lua_pushboolean(L, resource->IsStarted());
+
+	return 1;
+}
+
+int CLuaResourceFuncDefs::GetConfig(lua_State* L)
+{
+	alt::IResource* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushconfig(L, &CLuaScriptRuntime::Instance().GetResourceConfig(resource));
 
 	return 1;
 }

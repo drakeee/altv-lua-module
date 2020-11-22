@@ -288,6 +288,11 @@ void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUser
 	}
 }
 
+void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData)
+{
+	lua_pushuserdata(L, CLuaConfigDefs::ClassName, nodeDict, refUserData);
+}
+
 void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
 {
 	alt::RGBA* tempColor = new alt::RGBA(color);
@@ -351,6 +356,59 @@ void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 	default:
 		Core->LogError("lua_pushmvalue: Unhandled IMValue type: " + std::to_string(static_cast<int>(mValue->GetType())));
 		break;
+	}
+}
+
+void lua_pushnode(lua_State* L, alt::config::Node& node)
+{
+	switch (node.GetType())
+	{
+	case alt::config::Node::Type::DICT:
+	{
+		auto dict = node.ToDict();
+
+		lua_newtable(L);
+		for (auto it = dict.begin(); it != dict.end(); ++it)
+		{
+			lua_pushstring(L, it->first.c_str());
+			lua_pushnode(L, it->second);
+			lua_rawset(L, -3);
+		}
+
+		break;
+	}
+	case alt::config::Node::Type::LIST:
+	{
+		alt::config::Node::List list;
+		try
+		{
+			list = node.ToList();
+		}
+		catch (alt::config::Error exception)
+		{
+			Core->LogError(" Unable to convert config node to list!");
+		}
+
+		lua_newtable(L);
+		for (uint32_t i = 0; i < list.size(); ++i)
+		{
+			lua_pushnumber(L, i + 1);
+			lua_pushnode(L, list[i]);
+			lua_rawset(L, -3);
+		}
+
+		break;
+	}
+	case alt::config::Node::Type::SCALAR:
+	{
+		lua_pushstring(L, node.ToString().c_str());
+
+		break;
+	}
+	default:
+	{
+		break;
+	}
 	}
 }
 

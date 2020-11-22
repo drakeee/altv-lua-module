@@ -131,6 +131,10 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_pushnumber(L, alt::GLOBAL_DIMENSION);
 	lua_setglobal(L, "GLOBAL_DIMENSION");
 
+	auto runtime = &CLuaScriptRuntime::Instance();
+	lua_pushconfig(L, &runtime->GetServerConfig());
+	lua_setglobal(L, "serverConfig");
+
 	/*lua_pushstring(L, "dofile");
 	lua_pushcfunction(L, dofile);
 	lua_rawset(L, -3);*/

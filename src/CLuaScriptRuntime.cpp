@@ -1,4 +1,5 @@
 #include "CLuaScriptRuntime.h"
+#include <fstream>
 
 CLuaScriptRuntime::CLuaScriptRuntime()
 {
@@ -50,7 +51,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			auto event = static_cast<const alt::CResourceStartEvent*>(ev);
 			lua_State* L = resource->GetLuaState();
 
-			//lua_pushstring(L, event->GetResource()->GetName().CStr());
+			lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
 
 			return 1;
@@ -68,7 +69,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			auto event = static_cast<const alt::CResourceStopEvent*>(ev);
 			lua_State* L = resource->GetLuaState();
 
-			//lua_pushstring(L, event->GetResource()->GetName().CStr());
+			lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
 
 			return 1;
@@ -86,7 +87,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			auto event = static_cast<const alt::CResourceErrorEvent*>(ev);
 			lua_State* L = resource->GetLuaState();
 
-			//lua_pushstring(L, event->GetResource()->GetName().CStr());
+			lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
 
 			return 1;
@@ -544,6 +545,37 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			return 2;
 		}
 	);
+
+	alt::String serverConfigPath = Core->GetRootDirectory() + preferred_separator + "server.cfg";
+	this->serverConfigDict = this->ParseConfig(serverConfigPath.CStr());
+
+	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_START, CLuaScriptRuntime::OnResourceStart, this);
+	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_STOP, CLuaScriptRuntime::OnResourceStop, this);
+}
+
+bool CLuaScriptRuntime::OnResourceStart(const alt::CEvent* e, void* userData)
+{
+	CLuaScriptRuntime *runtime = (CLuaScriptRuntime*)userData;
+	auto event = (alt::CResourceStartEvent*)e;
+
+	if (event->GetResource()->GetType() == "lua")
+		return true;
+
+	alt::String resourceConfigPath = event->GetResource()->GetPath() + preferred_separator + "resource.cfg";
+	auto resourceNode = runtime->ParseConfig(resourceConfigPath.CStr());
+
+	runtime->resourceNodeDictMap[event->GetResource()] = resourceNode;
+	return true;
+}
+
+bool CLuaScriptRuntime::OnResourceStop(const alt::CEvent* e, void* userData)
+{
+	CLuaScriptRuntime* runtime = (CLuaScriptRuntime*)userData;
+	auto event = (alt::CResourceStartEvent*)e;
+
+	runtime->resourceNodeDictMap.erase(event->GetResource());
+
+	return true;
 }
 
 alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
@@ -573,6 +605,30 @@ void CLuaScriptRuntime::DestroyImpl(alt::IResource::Impl* impl)
 
 	delete impl;
 
+}
+
+alt::config::Node::Dict CLuaScriptRuntime::ParseConfig(std::string path)
+{
+	std::ifstream file(path);
+	std::string str;
+	std::string file_contents;
+
+	while (std::getline(file, str))
+	{
+		file_contents += str;
+		file_contents.push_back('\n');
+	}
+
+	alt::config::Parser parser(file_contents.c_str(), file_contents.size());
+	auto node = parser.Parse();
+
+	if (!node.IsDict())
+	{
+		Core->LogError("Unable to parse config file: " + path);
+		return {};
+	}
+
+	return node.ToDict();
 }
 
 CLuaResourceImpl* CLuaScriptRuntime::GetResourceImplFromState(lua_State* L)

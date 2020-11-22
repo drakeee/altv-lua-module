@@ -29,6 +29,8 @@ static const char* preferred_separator = "/";
 
 //Include AltV SDK
 #include <SDK.h>
+#include <alt-config.h>
+
 #include <events/CFireEvent.h>
 #include <events/CStartProjectileEvent.h>
 #include <events/CPlayerWeaponChangeEvent.h>
@@ -46,7 +48,6 @@ extern alt::ICore* Core;
 typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 
 #include "VehicleModels.hpp"
-//#include "CVehMods.h"
 #include "LRGBA.h"
 
 #include "CLuaDefs.h"
@@ -56,6 +57,7 @@ typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 #include "CLuaFunctionDefs.h"
 
 #include <Defs/CLuaAltFuncDefs.h>
+#include <Defs/CLuaConfigDefs.h>
 #include <Defs/CLuaResourceFuncDefs.h>
 #include <Defs/CLuaVector3Defs.h>
 #include <Defs/CLuaRGBADefs.h>

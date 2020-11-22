@@ -117,7 +117,7 @@ public:
 		return tempString;
 	}
 
-	void ReadString(std::string &stringValue, const char* defaultValue = NULL, bool useDefaultValue = true)
+	void ReadString(std::string &stringValue)
 	{
 		//check if argument is string
 		int argType = lua_type(m_luaVM, m_stackIndex);
@@ -135,10 +135,9 @@ public:
 			return;
 		}
 
-		if(!useDefaultValue)
-			AddErrorMessage("string");
+		AddErrorMessage("string");
+		stringValue = "";
 
-		stringValue.append(defaultValue);
 		m_stackIndex++;
 	}
 
@@ -394,6 +393,7 @@ public:
 
 		int argType = lua_type(m_luaVM, m_stackIndex);
 
+		Core->LogInfo("Shit: " + alt::String(debugInfo.source));
 		sprintf_s(buffer, "Bad Argument (%s:%d) Expected argument at index %d: '%s', got '%s' instead.", debugInfo.name, debugInfo.currentline, m_stackIndex, expectedType, lua_typename(m_luaVM, argType));
 
 		AddMessage(buffer);

@@ -104,10 +104,15 @@ public:
 	{
 		return this->loadedFiles;
 	}
+	inline alt::config::Node::Dict& GetResourceConfig(void)
+	{
+		return this->resourceConfigDict;
+	}
 
 private:
 	lua_State*			resourceState = nullptr;
 	CLuaScriptRuntime*	runtime;
+	alt::config::Node::Dict resourceConfigDict;
 	alt::IResource*		resource;
 	std::string			workingPath;
 
