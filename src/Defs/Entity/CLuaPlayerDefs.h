@@ -84,5 +84,7 @@ private:
 #ifdef ALT_SERVER_API
 	static int SetModel(lua_State* L);
 	static int GetModel(lua_State* L);
+
+	static int ClearBloodDamage(lua_State* L);
 #endif
 };

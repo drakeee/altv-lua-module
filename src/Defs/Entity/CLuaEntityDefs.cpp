@@ -12,12 +12,14 @@ void CLuaEntityDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setEntityRotation", SetRotation);
 	lua_globalfunction(L, "getEntityRotation", GetRotation);
 
+	lua_globalfunction(L, "getEntityVisible", GetVisible);
 	lua_globalfunction(L, "hasEntitySyncedMetaData", HasSyncedMetaData);
 	lua_globalfunction(L, "getEntitySyncedMetaData", GetSyncedMetaData);
 	lua_globalfunction(L, "hasEntityStreamSyncedMetaData", HasStreamSyncedMetaData);
 	lua_globalfunction(L, "getEntityStreamSyncedMetaData", GetStreamSyncedMetaData);
 
 #ifdef ALT_SERVER_API
+	lua_globalfunction(L, "setEntityVisible", SetVisible);
 	lua_globalfunction(L, "setEntitySyncedMetaData", SetSyncedMetaData);
 	lua_globalfunction(L, "deleteEntitySyncedMetaData", DeleteSyncedMetaData);
 	lua_globalfunction(L, "setEntityStreamSyncedMetaData", SetStreamSyncedMetaData);
@@ -36,6 +38,7 @@ void CLuaEntityDefs::Init(lua_State* L)
 		//lua_classfunction(L, "getPosition", GetPosition);
 		lua_classfunction(L, "setRotation", SetRotation);
 		lua_classfunction(L, "getRotation", GetRotation);
+		lua_classfunction(L, "getVisible", GetVisible);
 		lua_classfunction(L, "hasSyncedMetaData", HasSyncedMetaData);
 		lua_classfunction(L, "getSyncedMetaData", GetSyncedMetaData);
 		lua_classfunction(L, "hasStreamSyncedMetaData", HasStreamSyncedMetaData);
@@ -43,6 +46,7 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classfunction(L, "getAll", ipairs);
 
 #ifdef ALT_SERVER_API
+		lua_classfunction(L, "setVisible", SetVisible);
 		lua_classfunction(L, "setSyncedMetaData", SetSyncedMetaData);
 		lua_classfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
 		lua_classfunction(L, "setStreamSyncedMetaData", SetStreamSyncedMetaData);
@@ -406,5 +410,43 @@ int CLuaEntityDefs::DeleteStreamSyncedMetaData(lua_State* L)
 	entity->DeleteStreamSyncedMetaData(key);
 
 	return 0;
+}
+
+int CLuaEntityDefs::SetVisible(lua_State* L)
+{
+	alt::IEntity* entity;
+	bool state;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+	argReader.ReadBool(state);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	entity->SetVisible(state);
+
+	return 0;
+}
+
+int CLuaEntityDefs::GetVisible(lua_State* L)
+{
+	alt::IEntity* entity;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, entity->GetVisible());
+
+	return 1;
 }
 #endif

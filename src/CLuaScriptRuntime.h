@@ -111,11 +111,18 @@ private:
 		"checkpoint", //
 		"colshape", //done
 		"playerEnterVehicle", //done
+		"playerEnteringVehicle", //done
 		"playerLeaveVehicle", //done
 		"playerChangeVehicleSeat", //done
 		"playerWeaponChange",
 
+		"vehicleAttach", //done
+		"vehicleDetach", //done
+		"netOwnerChange", //done
+
 		"removeEntity", //done
+		"createBaseObject",
+		"removeBaseObject",
 
 		"dataNodeReceived",
 

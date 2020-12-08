@@ -24,6 +24,9 @@ private:
 	static int SetRotation(lua_State* L);
 	static int GetRotation(lua_State* L);
 
+	static int SetVisible(lua_State* L);
+	static int GetVisible(lua_State* L);
+
 	static int HasSyncedMetaData(lua_State* L);
 	static int GetSyncedMetaData(lua_State* L);
 	static int HasStreamSyncedMetaData(lua_State* L);

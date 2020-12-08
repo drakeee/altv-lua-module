@@ -34,6 +34,10 @@ static const char* preferred_separator = "/";
 #include <events/CFireEvent.h>
 #include <events/CStartProjectileEvent.h>
 #include <events/CPlayerWeaponChangeEvent.h>
+#include <events/CVehicleAttachEvent.h>
+#include <events/CVehicleDetachEvent.h>
+#include <events/CNetOwnerChangeEvent.h>
+#include <events/CPlayerEnteringVehicleEvent.h>
 
 //Include Lua
 #include <lua.hpp>
