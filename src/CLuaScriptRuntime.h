@@ -121,6 +121,8 @@ private:
 		"netOwnerChange", //done
 
 		"removeEntity", //done
+		"createBaseObject",
+		"removeBaseObject",
 
 		"dataNodeReceived",
 
