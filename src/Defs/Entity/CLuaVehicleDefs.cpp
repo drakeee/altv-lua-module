@@ -163,6 +163,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_globalfunction(L, "loadVehicleHealthDataFromBase64", LoadHealthDataFromBase64);
 
 	// vehicle damage
+	lua_classfunction(L, "repairVehicle", Repair);
 	lua_globalfunction(L, "getVehiclePartDamageLevel", GetPartDamageLevel);
 	lua_globalfunction(L, "setVehiclePartDamageLevel", SetPartDamageLevel);
 	lua_globalfunction(L, "getVehiclePartBulletHoles", GetPartBulletHoles);
@@ -192,6 +193,8 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_globalfunction(L, "loadVehicleScriptDataFromBase64", LoadScriptDataFromBase64);
 	//lua_globalfunction(L, "setVehiclePosition", SetVehiclePosition);
 	//lua_globalfunction(L, "getVehiclePosition", GetVehiclePosition);
+	lua_globalfunction(L, "getVehicleAttached", GetAttached);
+	lua_globalfunction(L, "getVehicleAttachedTo", GetAttachedTo);
 
 	lua_beginclass(L, ClassName, CLuaEntityDefs::ClassName);
 	{
@@ -308,6 +311,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classfunction(L, "setBodyAdditionalHealth", SetBodyAdditionalHealth);
 		lua_classfunction(L, "getHealthDataBase64", GetHealthDataBase64);
 		lua_classfunction(L, "loadHealthDataFromBase64", LoadHealthDataFromBase64);
+		lua_classfunction(L, "repair", Repair);
 		lua_classfunction(L, "getPartDamageLevel", GetPartDamageLevel);
 		lua_classfunction(L, "setPartDamageLevel", SetPartDamageLevel);
 		lua_classfunction(L, "getPartBulletHoles", GetPartBulletHoles);
@@ -331,6 +335,8 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classfunction(L, "isManualEngineControl", IsManualEngineControl);
 		lua_classfunction(L, "getScriptDataBase64", GetScriptDataBase64);
 		lua_classfunction(L, "loadScriptDataFromBase64", LoadScriptDataFromBase64);
+		lua_classfunction(L, "getAttached", GetAttached);
+		lua_classfunction(L, "getAttachedTo", GetAttachedTo);
 		lua_classfunction(L, "getAll", ipairs);
 
 		lua_classvariable(L, "destroyed", nullptr, "isDestroyed");
@@ -383,6 +389,8 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "damageDataBase64", "loadDamageDataFromBase64", "getDamageDataBase64");
 		lua_classvariable(L, "manualEngineControl", "setManualEngineControl", "isManualEngineControl");
 		lua_classvariable(L, "scriptDataBase64", "loadScriptDataFromBase64", "getScriptDataBase64");
+		lua_classvariable(L, "attached", nullptr, "getAttached");
+		lua_classvariable(L, "attachedTo", nullptr, "getAttachedTo");
 		lua_classvariable(L, "all", nullptr, "getAll");
 	}
 	lua_endclass(L);
@@ -3095,3 +3103,57 @@ int CLuaVehicleDefs::LoadScriptDataFromBase64(lua_State* L)
 //
 //	return 1;
 //}
+
+int CLuaVehicleDefs::Repair(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetFixed();
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetAttached(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, vehicle->GetAttached().Get());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::GetAttachedTo(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, vehicle->GetAttachedTo().Get());
+
+	return 1;
+}
