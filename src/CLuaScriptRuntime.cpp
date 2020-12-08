@@ -444,6 +444,25 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 	);
 
 	this->RegisterServerCallback(
+		alt::CEvent::Type::PLAYER_ENTERING_VEHICLE,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CPlayerEnteringVehicleEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetPlayer().Get());
+			lua_pushbaseobject(L, event->GetTarget().Get());
+			lua_pushnumber(L, event->GetSeat());
+
+			return 3;
+		}
+	);
+
+	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_LEAVE_VEHICLE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
@@ -496,6 +515,61 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_pushbaseobject(L, event->GetTarget().Get());
 			lua_pushnumber(L, event->GetOldWeapon());
 			lua_pushnumber(L, event->GetNewWeapon());
+
+			return 3;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::VEHICLE_ATTACH,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CVehicleAttachEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget().Get());
+			lua_pushbaseobject(L, event->GetAttached().Get());
+
+			return 2;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::VEHICLE_DETACH,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CVehicleDetachEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget().Get());
+			lua_pushbaseobject(L, event->GetDetached().Get());
+
+			return 2;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::NETOWNER_CHANGE,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CNetOwnerChangeEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget().Get());
+			lua_pushbaseobject(L, event->GetNewOwner().Get());
+			lua_pushbaseobject(L, event->GetOldOwner().Get());
 
 			return 3;
 		}

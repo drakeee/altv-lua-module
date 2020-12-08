@@ -163,6 +163,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_globalfunction(L, "loadVehicleHealthDataFromBase64", LoadHealthDataFromBase64);
 
 	// vehicle damage
+	lua_classfunction(L, "repairVehicle", Repair);
 	lua_globalfunction(L, "getVehiclePartDamageLevel", GetPartDamageLevel);
 	lua_globalfunction(L, "setVehiclePartDamageLevel", SetPartDamageLevel);
 	lua_globalfunction(L, "getVehiclePartBulletHoles", GetPartBulletHoles);
@@ -308,6 +309,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classfunction(L, "setBodyAdditionalHealth", SetBodyAdditionalHealth);
 		lua_classfunction(L, "getHealthDataBase64", GetHealthDataBase64);
 		lua_classfunction(L, "loadHealthDataFromBase64", LoadHealthDataFromBase64);
+		lua_classfunction(L, "repair", Repair);
 		lua_classfunction(L, "getPartDamageLevel", GetPartDamageLevel);
 		lua_classfunction(L, "setPartDamageLevel", SetPartDamageLevel);
 		lua_classfunction(L, "getPartBulletHoles", GetPartBulletHoles);
@@ -3095,3 +3097,21 @@ int CLuaVehicleDefs::LoadScriptDataFromBase64(lua_State* L)
 //
 //	return 1;
 //}
+
+int CLuaVehicleDefs::Repair(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetFixed();
+
+	return 0;
+}

@@ -55,6 +55,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 #ifdef ALT_SERVER_API
 	lua_globalfunction(L, "setPlayerModel", SetModel);
 	lua_globalfunction(L, "getPlayerModel", GetModel);
+	lua_globalfunction(L, "clearPlayerBloodDamage", ClearBloodDamage);
 #endif
 
 	lua_beginclass(L, ClassName, CLuaEntityDefs::ClassName);
@@ -115,6 +116,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 #ifdef ALT_SERVER_API
 		lua_classfunction(L, "setModel", SetModel);
 		lua_classfunction(L, "getModel", GetModel);
+		lua_classfunction(L, "clearBloodDamage", ClearBloodDamage);
 #endif
 
 		lua_classvariable(L, "connected", nullptr, "isConnected");
@@ -1163,6 +1165,24 @@ int CLuaPlayerDefs::GetModel(lua_State* L)
 	}
 
 	lua_pushnumber(L, player->GetModel());
+
+	return 0;
+}
+
+int CLuaPlayerDefs::ClearBloodDamage(lua_State* L)
+{
+	alt::IPlayer* player;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	player->ClearBloodDamage();
 
 	return 0;
 }

@@ -175,6 +175,7 @@ private:
 	static int LoadHealthDataFromBase64(lua_State* L);
 
 	// vehicle damage
+	static int Repair(lua_State* L);
 	static int GetPartDamageLevel(lua_State* L);
 	static int SetPartDamageLevel(lua_State* L);
 	static int GetPartBulletHoles(lua_State* L);
