@@ -3,6 +3,11 @@
 
 CLuaScriptRuntime::CLuaScriptRuntime()
 {
+
+#ifndef NDEBUG
+	Core->LogInfo("CLuaScriptRuntime::CLuaScriptRuntime");
+#endif
+
 	VehicleModels::Instance(); //instance class once for further usage
 
 	this->RegisterServerCallback(

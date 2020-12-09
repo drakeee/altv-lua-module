@@ -163,7 +163,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_globalfunction(L, "loadVehicleHealthDataFromBase64", LoadHealthDataFromBase64);
 
 	// vehicle damage
-	lua_classfunction(L, "repairVehicle", Repair);
+	lua_globalfunction(L, "repairVehicle", Repair);
 	lua_globalfunction(L, "getVehiclePartDamageLevel", GetPartDamageLevel);
 	lua_globalfunction(L, "setVehiclePartDamageLevel", SetPartDamageLevel);
 	lua_globalfunction(L, "getVehiclePartBulletHoles", GetPartBulletHoles);
