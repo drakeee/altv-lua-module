@@ -63,6 +63,10 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 	lua_newtable(L);
 	lua_rawset(L, -3);
 
+	lua_pushstring(L, "__data");
+	lua_newtable(L);
+	lua_rawset(L, -3);
+
 	//lua_stacktrace(L, "lua_beginclass");
 }
 
@@ -644,8 +648,10 @@ void lua_dumptable(lua_State* L, int idx, int level)
 		if (lua_istable(L, -2))
 		{
 			//make it beautifully aligned
-			Core->LogInfo(levelTab + lua_tostring(L, -1) + " => Table");
+			Core->LogInfo(levelTab + luaL_tolstring(L, -1, NULL) + " => Table");
 			Core->LogInfo(levelTab + "{");
+
+			lua_pop(L, 1);
 
 			//for some reason we need to pass the original table and not the referenced one (recursive call)
 			lua_dumptable(L, -3, level + 1);

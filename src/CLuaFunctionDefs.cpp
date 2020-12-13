@@ -72,6 +72,30 @@ int CLuaFunctionDefs::Index(lua_State* L)
 				return 1;
 			}
 		}
+
+		lua_pop(L, 1);
+	}
+
+	//Search in data container
+	{
+		lua_pushstring(L, "__data");
+		lua_rawget(L, -2);
+
+		if (lua_istable(L, -1))
+		{
+			lua_pushvalue(L, 1);
+			lua_rawget(L, -2);
+
+			if (lua_istable(L, -1))
+			{
+				lua_pushvalue(L, 2);
+				lua_rawget(L, -2);
+
+				return 1;
+			}
+		}
+
+		lua_pop(L, 1);
 	}
 
 #ifndef NDEBUG
@@ -95,7 +119,10 @@ int CLuaFunctionDefs::StaticIndex(lua_State* L)
 
 int CLuaFunctionDefs::NewIndex(lua_State* L)
 {
-	//Core->LogInfo("CLuaFunctionDefs::NewIndex1");
+
+#ifndef NDEBUG
+	Core->LogInfo("CLuaFunctionDefs::NewIndex");
+#endif
 
 	lua_pushvalue(L, lua_upvalueindex(1)); //meta table, value, variable, userdata
 
@@ -123,32 +150,68 @@ int CLuaFunctionDefs::NewIndex(lua_State* L)
 		lua_pop(L, 2);
 	}
 
-	lua_pushstring(L, "__base");
-	lua_rawget(L, -2);
-
-	if (lua_istable(L, -1))
+	//Search for __base functions
 	{
-		//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex2");
-
-		lua_pushstring(L, "__newindex");
+		lua_pushstring(L, "__base");
 		lua_rawget(L, -2);
 
-		if (lua_isfunction(L, -1))
+		if (lua_istable(L, -1))
 		{
-			//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex3");
+			//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex2");
 
+			lua_pushstring(L, "__newindex");
+			lua_rawget(L, -2);
+
+			if (lua_isfunction(L, -1))
+			{
+				//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex3");
+
+				lua_pushvalue(L, 1);
+				lua_pushvalue(L, 2);
+				lua_pushvalue(L, 3);
+
+				//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex4");
+
+				//Core->LogInfo("Call base shit");
+				//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex5");
+
+				lua_call(L, 3, 0);
+
+				lua_pop(L, 2);
+
+				return 0;
+			}
+		}
+
+		lua_pop(L, 1);
+	}
+
+	//Set custom data for userdata
+	{
+		lua_pushstring(L, "__data");
+		lua_rawget(L, -2);
+
+		if (lua_istable(L, -1))
+		{
 			lua_pushvalue(L, 1);
+			lua_rawget(L, -2);
+
+			if (!lua_istable(L, -1))
+			{
+				lua_pop(L, 1);
+				lua_pushvalue(L, 1);
+				lua_newtable(L);
+				lua_rawset(L, -3);
+
+				lua_pushvalue(L, 1);
+				lua_rawget(L, -2);
+			}
+
 			lua_pushvalue(L, 2);
 			lua_pushvalue(L, 3);
+			lua_rawset(L, -3);
 
-			//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex4");
-
-			//Core->LogInfo("Call base shit");
-			//lua_stacktrace(L, "CLuaFunctionDefs::NewIndex5");
-
-			lua_call(L, 3, 0);
-
-			lua_pop(L, 2);
+			lua_pop(L, 1);
 
 			return 0;
 		}
