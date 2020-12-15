@@ -14,6 +14,18 @@ void lua_globalfunction(lua_State* L, const char* functionName, lua_CFunction fu
 	lua_register(L, functionName, func);
 }
 
+void lua_mergetable(lua_State* L, int fromTable, int toTable)
+{
+	lua_pushnil(L);
+	while (lua_next(L, fromTable - 1))
+	{
+		lua_pushvalue(L, -2);
+		lua_insert(L, -3);
+
+		lua_rawset(L, toTable - 3);
+	}
+}
+
 int lua_setpath(lua_State* L, const char* path)
 {
 	lua_getglobal(L, "package");
@@ -41,16 +53,6 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 	lua_pushstring(L, className);
 	lua_rawset(L, -3);
 
-	lua_pushstring(L, "__base");
-	if (baseClass == nullptr)
-		lua_pushboolean(L, false);
-	else
-	{
-		lua_getclass(L, baseClass);
-		L_ASSERT(lua_istable(L, -1), "lua_beginclass: Implementing \"" + alt::String(className) + "\" class. Error: base class \"" + alt::String(baseClass) + "\" not found.");
-	}
-	lua_rawset(L, -3);
-
 	lua_pushstring(L, "__class");
 	lua_newtable(L);
 	lua_rawset(L, -3);
@@ -67,7 +69,34 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 	lua_newtable(L);
 	lua_rawset(L, -3);
 
-	//lua_stacktrace(L, "lua_beginclass");
+	lua_pushstring(L, "__base");
+	if (baseClass == nullptr)
+		lua_pushboolean(L, false);
+	else
+	{
+		lua_getclass(L, baseClass);
+		L_ASSERT(lua_istable(L, -1), "lua_beginclass: Implementing \"" + alt::String(className) + "\" class. Error: base class \"" + alt::String(baseClass) + "\" not found.");
+
+		lua_getfield(L, -1, "__get");
+		lua_getfield(L, -4, "__get");
+		lua_mergetable(L, -2, -1);
+		lua_pop(L, 2);
+
+		lua_getfield(L, -1, "__set");
+		lua_getfield(L, -4, "__set");
+		lua_mergetable(L, -2, -1);
+		lua_pop(L, 2);
+
+		lua_getfield(L, -1, "__class");
+		lua_getfield(L, -4, "__class");
+		lua_mergetable(L, -2, -1);
+		lua_pop(L, 2);
+
+		lua_pop(L, 1);
+		lua_pushstring(L, baseClass);
+	}
+
+	lua_rawset(L, -3);
 }
 
 void lua_endclass(lua_State* L)

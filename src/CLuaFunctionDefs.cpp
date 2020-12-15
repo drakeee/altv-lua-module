@@ -52,6 +52,7 @@ int CLuaFunctionDefs::Index(lua_State* L)
 
 	lua_pop(L, 2);
 
+	/*
 	//Search in base class
 	{
 		lua_pushstring(L, "__base");
@@ -75,6 +76,7 @@ int CLuaFunctionDefs::Index(lua_State* L)
 
 		lua_pop(L, 1);
 	}
+	*/
 
 	//Search in data container
 	{
@@ -150,6 +152,7 @@ int CLuaFunctionDefs::NewIndex(lua_State* L)
 		lua_pop(L, 2);
 	}
 
+	/*
 	//Search for __base functions
 	{
 		lua_pushstring(L, "__base");
@@ -184,7 +187,7 @@ int CLuaFunctionDefs::NewIndex(lua_State* L)
 		}
 
 		lua_pop(L, 1);
-	}
+	}*/
 
 	//Set custom data for userdata
 	{
