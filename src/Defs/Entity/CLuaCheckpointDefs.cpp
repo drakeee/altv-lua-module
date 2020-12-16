@@ -48,7 +48,12 @@ int CLuaCheckpointDefs::Create(lua_State* L)
 
 	auto checkpoint = Core->CreateCheckpoint(type, position, radius, height, color);
 	if (checkpoint)
+	{
 		lua_pushbaseobject(L, checkpoint.Get());
+
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		resourceImpl->AddEntity(checkpoint.Get());
+	}
 	else
 		lua_pushnil(L);
 

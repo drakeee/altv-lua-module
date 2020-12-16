@@ -598,6 +598,40 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 	);
 
 	this->RegisterServerCallback(
+		alt::CEvent::Type::CREATE_BASE_OBJECT_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+			[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CCreateBaseObjectEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetObject().Get());
+
+			return 1;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::REMOVE_BASE_OBJECT_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+			[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CRemoveBaseObjectEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetObject().Get());
+
+			return 1;
+		}
+	);
+
+	this->RegisterServerCallback(
 		alt::CEvent::Type::CONSOLE_COMMAND_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{

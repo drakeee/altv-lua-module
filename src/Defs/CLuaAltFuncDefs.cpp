@@ -688,16 +688,18 @@ int CLuaAltFuncDefs::RestartResource(lua_State* L)
 
 int CLuaAltFuncDefs::AltIndex(lua_State* L)
 {
-	//Route all index accessing to the default handler
-	int results = CLuaFunctionDefs::Index(L);
-	if (!lua_isnil(L, -1))
-	{
-		//return results
-		return results;
-	}
+	////Route all index accessing to the default handler
+	//lua_stacktrace(L, "AltIndex");
+
+	//int results = CLuaFunctionDefs::Index(L);
+	//if (!lua_isnil(L, -1))
+	//{
+	//	//return results
+	//	return results;
+	//}
 
 	//pop nil
-	lua_pop(L, 1);
+	//lua_pop(L, 1);
 
 	//string expected on top of the stack
 	L_ASSERT(lua_isstring(L, -1), "String expected");
@@ -712,6 +714,35 @@ int CLuaAltFuncDefs::AltIndex(lua_State* L)
 	//nothing found
 	return 0;
 }
+
+/*int CLuaAltFuncDefs::AltIndex(lua_State* L)
+{
+	//Route all index accessing to the default handler
+	int results = CLuaFunctionDefs::Index(L);
+	if (!lua_isnil(L, -1))
+	{
+		//return results
+		return results;
+	}
+
+	//pop nil
+	lua_pop(L, 1);
+
+	lua_stacktrace(L, "after pop");
+
+	//string expected on top of the stack
+	L_ASSERT(lua_isstring(L, -1), "String expected");
+
+	//check if global namespace has the function, or if its a class
+	lua_getglobal(L, luaL_checkstring(L, -1));
+	if (lua_isfunction(L, -1) || lua_istable(L, -1))
+	{
+		return 1;
+	}
+
+	//nothing found
+	return 0;
+}*/
 
 int CLuaAltFuncDefs::dofile(lua_State* L)
 {

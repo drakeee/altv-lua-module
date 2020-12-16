@@ -532,7 +532,12 @@ int CLuaVehicleDefs::CreateVehicle(lua_State* L)
 	);
 
 	if (vehicle.Get() != nullptr)
+	{
 		lua_pushbaseobject(L, vehicle.Get());
+
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		resourceImpl->AddEntity(vehicle.Get());
+	}
 	else
 		lua_pushnil(L);
 

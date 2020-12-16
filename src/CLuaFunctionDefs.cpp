@@ -2,40 +2,46 @@
 
 int CLuaFunctionDefs::Index(lua_State* L)
 {
-	lua_pushvalue(L, lua_upvalueindex(1));
+	return 0;
+}
+
+int Index(lua_State* L)
+{
+	//lua_pushvalue(L, lua_upvalueindex(1));
 
 	//Search for function or variable in own metatable
 	{
 		//Search for function
 		{
-			lua_pushstring(L, "__class");
-			lua_rawget(L, -2);
+			//lua_pushvalue(L, lua_upvalueindex(UPVALUE_CLASS));
 
-			L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Index: \"__class\" table not found in metatable");
-			L_ASSERT(lua_isstring(L, -3), "CLuaFunctionDefs::Index: Property name not found at index -2");
+			//L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Index: \"__class\" table not found in metatable");
+			//L_ASSERT(lua_isstring(L, -2), "CLuaFunctionDefs::Index: Property name not found at index -2");
 
-			lua_pushvalue(L, -3);
-			lua_rawget(L, -2);
-			//lua_getfield(L, -1, luaL_checkstring(L, -3));
+			lua_pushvalue(L, -1);
+			//lua_rawget(L, -2);
+			lua_rawget(L, lua_upvalueindex(UPVALUE_CLASS));
 
 			if (lua_isfunction(L, -1))
-			{	
+			{
 				return 1;
 			}
 		}
 
-		lua_pop(L, 2);
+		lua_pop(L, 1);
 
 		//Search for get variable
 		{
-			lua_pushstring(L, "__get");
-			lua_rawget(L, -2);
+			//lua_pushvalue(L, lua_upvalueindex(UPVALUE_GET));
+			//lua_pushstring(L, "__get");
+			//lua_rawget(L, -2);
 
-			L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Index: \"__get\" table not found in metatable");
-			L_ASSERT(lua_isstring(L, -3), "CLuaFunctionDefs::Index: Property name not found at index -2");
+			//L_ASSERT(lua_istable(L, -1), "CLuaFunctionDefs::Index: \"__get\" table not found in metatable");
+			//L_ASSERT(lua_isstring(L, -2), "CLuaFunctionDefs::Index: Property name not found at index -2");
 
-			lua_pushvalue(L, -3);
-			lua_rawget(L, -2);
+			lua_pushvalue(L, -1);
+			//lua_rawget(L, -2);
+			lua_rawget(L, lua_upvalueindex(UPVALUE_GET));
 
 			if (lua_isfunction(L, -1))
 			{
@@ -50,7 +56,7 @@ int CLuaFunctionDefs::Index(lua_State* L)
 		}
 	}
 
-	lua_pop(L, 2);
+	lua_pop(L, 1);
 
 	/*
 	//Search in base class
@@ -80,22 +86,32 @@ int CLuaFunctionDefs::Index(lua_State* L)
 
 	//Search in data container
 	{
-		lua_pushstring(L, "__data");
-		lua_rawget(L, -2);
+		//lua_pushvalue(L, lua_upvalueindex(UPVALUE_DATA));
+		//lua_pushstring(L, "__data");
+		//lua_rawget(L, -2);
+
+		//lua_stacktrace(L, "__data1");
+
+		//if (lua_istable(L, -1))
+		//{
+			//lua_stacktrace(L, "__data2");
+
+
+		lua_pushvalue(L, 1);
+		//lua_rawget(L, -2);
+		lua_rawget(L, lua_upvalueindex(UPVALUE_DATA));
+
+		//lua_pushvalue(L, 1);
+		//lua_rawget(L, -2);
 
 		if (lua_istable(L, -1))
 		{
-			lua_pushvalue(L, 1);
+			lua_pushvalue(L, 2);
 			lua_rawget(L, -2);
 
-			if (lua_istable(L, -1))
-			{
-				lua_pushvalue(L, 2);
-				lua_rawget(L, -2);
-
-				return 1;
-			}
+			return 1;
 		}
+		//}
 
 		lua_pop(L, 1);
 	}
@@ -104,7 +120,7 @@ int CLuaFunctionDefs::Index(lua_State* L)
 	//lua_stacktrace(L, "CLuaFunctionDefs::Index2");
 #endif
 
-	lua_pop(L, 2);
+	//lua_pop(L, 2);
 	lua_pushnil(L);
 
 	//lua_stacktrace(L, "CLuaFunctionDefs::Index::end");
@@ -123,7 +139,7 @@ int CLuaFunctionDefs::NewIndex(lua_State* L)
 {
 
 #ifndef NDEBUG
-	Core->LogInfo("CLuaFunctionDefs::NewIndex");
+	//Core->LogInfo("CLuaFunctionDefs::NewIndex");
 #endif
 
 	lua_pushvalue(L, lua_upvalueindex(1)); //meta table, value, variable, userdata
@@ -201,6 +217,8 @@ int CLuaFunctionDefs::NewIndex(lua_State* L)
 
 			if (!lua_istable(L, -1))
 			{
+				Core->LogInfo("CreateTable");
+
 				lua_pop(L, 1);
 				lua_pushvalue(L, 1);
 				lua_newtable(L);
@@ -210,11 +228,19 @@ int CLuaFunctionDefs::NewIndex(lua_State* L)
 				lua_rawget(L, -2);
 			}
 
-			lua_pushvalue(L, 2);
+			Core->LogInfo("SetData");
+
+			lua_insert(L, 2);
+			lua_pop(L, 2);
+			lua_rawset(L, -3);
+
+			//lua_stacktrace(L, "assign table");
+
+			/*lua_pushvalue(L, 2);
 			lua_pushvalue(L, 3);
 			lua_rawset(L, -3);
 
-			lua_pop(L, 1);
+			lua_pop(L, 1);*/
 
 			return 0;
 		}

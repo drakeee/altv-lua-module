@@ -72,7 +72,12 @@ int CLuaColShapeDefs::CreateCube(lua_State* L)
 
 	auto colshape = Core->CreateColShapeCube(position, position2);
 	if (colshape)
+	{
 		lua_pushbaseobject(L, colshape.Get());
+
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		resourceImpl->AddEntity(colshape.Get());
+	}
 	else
 		lua_pushnil(L);
 
@@ -98,7 +103,12 @@ int CLuaColShapeDefs::CreateCylinder(lua_State* L)
 
 	auto colshape = Core->CreateColShapeCylinder(position, radius, height);
 	if (colshape)
+	{
 		lua_pushbaseobject(L, colshape.Get());
+
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		resourceImpl->AddEntity(colshape.Get());
+	}
 	else
 		lua_pushnil(L);
 
@@ -126,7 +136,12 @@ int CLuaColShapeDefs::CreateRectangle(lua_State* L)
 
 	auto colshape = Core->CreateColShapeRectangle(x1, y1, x2, y2, z);
 	if (colshape)
+	{
 		lua_pushbaseobject(L, colshape.Get());
+
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		resourceImpl->AddEntity(colshape.Get());
+	}
 	else
 		lua_pushnil(L);
 
@@ -150,7 +165,12 @@ int CLuaColShapeDefs::CreateSphere(lua_State* L)
 
 	auto colshape = Core->CreateColShapeSphere(position, radius);
 	if (colshape)
+	{
 		lua_pushbaseobject(L, colshape.Get());
+
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		resourceImpl->AddEntity(colshape.Get());
+	}
 	else
 		lua_pushnil(L);
 

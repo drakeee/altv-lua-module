@@ -48,7 +48,12 @@ int CLuaVoiceChannelDefs::Create(lua_State* L)
 
 	auto voiceChannel = Core->CreateVoiceChannel(spatial, maxDistance);
 	if (voiceChannel)
+	{
 		lua_pushbaseobject(L, voiceChannel.Get());
+
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		resourceImpl->AddEntity(voiceChannel.Get());
+	}
 	else
 		lua_pushnil(L);
 

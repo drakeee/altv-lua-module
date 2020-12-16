@@ -78,6 +78,13 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 CLuaResourceImpl::~CLuaResourceImpl()
 {
 
+	for (auto entity : this->entities)
+	{
+		Core->DestroyBaseObject(entity);
+	}
+
+	this->entities.clear();
+
 #ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::~CLuaResourceImpl");
 #endif
@@ -245,13 +252,15 @@ void CLuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 {
 
 #ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::OnCreateBaseObject: " + std::to_string(static_cast<int>(object->GetType())));
+	Core->LogInfo(this->resource->GetName() + ":CLuaResourceImpl::OnCreateBaseObject: " + std::to_string(static_cast<int>(object->GetType())));
 #endif
 
 }
 
 void CLuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
 {
+
+	this->RemoveEntity(object.Get());
 
 #ifndef NDEBUG
 	Core->LogInfo("CLuaResourceImpl::OnRemoveBaseObject");

@@ -108,6 +108,24 @@ public:
 	{
 		return this->resourceConfigDict;
 	}
+	inline bool AddEntity(alt::IBaseObject* baseObject)
+	{
+		auto entityFound = std::find(this->entities.begin(), this->entities.end(), baseObject) != this->entities.end();
+		if (entityFound)
+			return false;
+		
+		this->entities.push_back(baseObject);
+		return true;
+	}
+	inline bool RemoveEntity(alt::IBaseObject* baseObject)
+	{
+		auto it = std::find(this->entities.begin(), this->entities.end(), baseObject);
+		if (it == this->entities.end())
+			return false;
+
+		this->entities.erase(it);
+		return true;
+	}
 
 private:
 	lua_State*			resourceState = nullptr;
@@ -121,4 +139,5 @@ private:
 	std::map<const void*, int>	functionReferences;
 	alt::MValueDict				exportFunction;
 	std::map<std::string, bool> loadedFiles;
+	std::list<alt::IBaseObject*> entities;
 };

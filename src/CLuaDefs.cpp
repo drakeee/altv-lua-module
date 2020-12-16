@@ -99,11 +99,70 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 	lua_rawset(L, -3);
 }
 
+const char* script = R"(
+local metaTable = {}
+metaTable.__index = function(t, k)
+	local meta = getmetatable(t)
+	if meta.__get[k] then
+		return meta.__get[k](t)
+	end
+
+	if meta.__data[t] == nil then
+		return nil
+	end
+
+	return meta.__data[t][k]
+end
+
+metaTable.__newindex = function(t, k, v)
+	local meta = getmetatable(t)
+	if meta.__set[k] then
+		meta.__set[k](t, v)
+		return
+	end
+
+	if meta.__data[t] == nil then
+		meta.__data[t] = {}
+	end
+
+	meta.__data[t][k] = v
+end
+
+return metaTable
+)";
+
 void lua_endclass(lua_State* L)
 {
 	lua_classmeta(L, "__call", CLuaFunctionDefs::Call);
-	lua_classmeta(L, "__index", CLuaFunctionDefs::Index, true);
-	lua_classmeta(L, "__newindex", CLuaFunctionDefs::NewIndex, true);
+	
+	luaL_dostring(L, script);
+	lua_getfield(L, -2, "__index");
+	if (lua_isnil(L, -1))
+	{
+		lua_pop(L, 1);
+		lua_getfield(L, -1, "__index");
+		lua_setfield(L, -3, "__index");
+	} else
+		lua_pop(L, 1);
+
+	lua_getfield(L, -2, "__newindex");
+	if (lua_isnil(L, -1))
+	{
+		lua_pop(L, 1);
+		lua_getfield(L, -1, "__newindex");
+		lua_setfield(L, -3, "__newindex");
+	}
+	else
+		lua_pop(L, 1);
+
+	/*lua_getfield(L, -1, "__index");
+	lua_setfield(L, -3, "__index");
+	lua_getfield(L, -1, "__newindex");
+	lua_setfield(L, -3, "__newindex");*/
+	lua_pop(L, 1);
+
+	//lua_classmeta(L, "__index", CLuaFunctionDefs::Index, true);
+	//lua_classmeta(L, "__newindex", CLuaFunctionDefs::NewIndex, true);
 
 	lua_newtable(L);
 	lua_pushvalue(L, -2);
@@ -200,8 +259,12 @@ void lua_classmeta(lua_State* L, const char* metaName, lua_CFunction metaFunctio
 	lua_pushstring(L, metaName);
 	if (useClosure)
 	{
-		lua_pushvalue(L, -2);
-		lua_pushcclosure(L, metaFunction, 1);
+		lua_pushvalue(L, -2); //1
+		lua_getfield(L, -1, "__set"); //2
+		lua_getfield(L, -2, "__get"); //3
+		lua_getfield(L, -3, "__class"); //4
+		lua_getfield(L, -4, "__data"); //5
+		lua_pushcclosure(L, metaFunction, 5);
 	} else
 		lua_pushcfunction(L, metaFunction);
 

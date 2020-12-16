@@ -9,6 +9,11 @@
 #define L_ASSERT(a,b) \
 	assert((!a?(Core->LogError(b),true):true)&&a)
 
+#define UPVALUE_METADATA 1
+#define UPVALUE_SET 2
+#define UPVALUE_GET 3
+#define UPVALUE_CLASS 4
+#define UPVALUE_DATA 5
 
 /*#define lua_globalfunction(a,b,c) \
 	lua_register(a,b,c)*/
