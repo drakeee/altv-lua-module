@@ -37,6 +37,10 @@ int CLuaBaseObjectDefs::Destroy(lua_State* L)
 		return 0;
 	}
 
+	lua_removedata(L, baseObject);
+
+	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	resourceImpl->RemoveEntity(baseObject);
 	Core->DestroyBaseObject(baseObject);
 
 	lua_pushboolean(L, true);

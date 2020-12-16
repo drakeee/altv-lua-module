@@ -198,7 +198,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 
 	lua_beginclass(L, ClassName, CLuaEntityDefs::ClassName);
 	{
-		lua_classmeta(L, "__gc", destroy);
+		//lua_classmeta(L, "__gc", destroy);
 		lua_classmeta(L, "__tostring", tostring);
 		lua_classmeta(L, "__pairs", pairs);
 		lua_classmeta(L, "__ipairs", ipairs);
@@ -409,7 +409,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_setglobal(L, "vehicleModel");
 }
 
-int CLuaVehicleDefs::destroy(lua_State* L)
+/*int CLuaVehicleDefs::destroy(lua_State* L)
 {
 	alt::IVehicle* vehicle = nullptr;
 
@@ -439,7 +439,7 @@ int CLuaVehicleDefs::destroy(lua_State* L)
 
 	lua_pushboolean(L, false);
 	return 1;
-}
+}*/
 
 int CLuaVehicleDefs::next(lua_State* L)
 {

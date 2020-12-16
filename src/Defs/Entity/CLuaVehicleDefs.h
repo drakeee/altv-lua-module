@@ -10,7 +10,7 @@ public:
 
 private:
 	static int tostring(lua_State* L);
-	static int destroy(lua_State* L);
+	//static int destroy(lua_State* L);
 	static int next(lua_State* L);
 	static int pairs(lua_State* L);
 	static int ipairs(lua_State* L);

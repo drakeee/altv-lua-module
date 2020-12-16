@@ -26,6 +26,19 @@ void lua_mergetable(lua_State* L, int fromTable, int toTable)
 	}
 }
 
+void lua_removedata(lua_State* L, alt::IBaseObject* baseObject)
+{
+	lua_pushbaseobject(L, baseObject);
+	lua_getmetatable(L, -1);
+
+	lua_getfield(L, -1, "__data");
+	lua_pushbaseobject(L, baseObject);
+	lua_pushnil(L);
+	lua_rawset(L, -3);
+
+	lua_pop(L, 3);
+}
+
 int lua_setpath(lua_State* L, const char* path)
 {
 	lua_getglobal(L, "package");
@@ -103,6 +116,10 @@ const char* script = R"(
 local metaTable = {}
 metaTable.__index = function(t, k)
 	local meta = getmetatable(t)
+	if meta.__class[k] then
+		return meta.__class[k]
+	end
+
 	if meta.__get[k] then
 		return meta.__get[k](t)
 	end
