@@ -48,6 +48,7 @@ static const char* preferred_separator = "/";
 //#include <Database/MariaDatabase.h>
 
 extern alt::ICore* Core;
+const alt::String p_s(preferred_separator);
 
 typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 

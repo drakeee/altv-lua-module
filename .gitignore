@@ -1,6 +1,7 @@
 /CMakeFiles
 /out
 /.vs
+/.vscode
 /build
 /lua-module
 /artifacts

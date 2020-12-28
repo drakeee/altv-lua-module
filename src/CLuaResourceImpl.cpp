@@ -39,7 +39,6 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 	this->IncludeModulesPath();
 
-	alt::String p_s(preferred_separator);
 	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
 	lua_setpath(this->resourceState, (modulePath + "?.lua").CStr());
 
@@ -48,7 +47,7 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 	//Parse the resource config here as well because RESOURCE_START event is called after the script is executed
 	{
-		alt::String resourceConfigPath = this->resource->GetPath() + preferred_separator + "resource.cfg";
+		alt::String resourceConfigPath = this->resource->GetPath() + p_s + "resource.cfg";
 		auto resourceNode = runtime->ParseConfig(resourceConfigPath.CStr());
 		runtime->resourceNodeDictMap[this->resource] = resourceNode;
 	}
@@ -93,7 +92,6 @@ CLuaResourceImpl::~CLuaResourceImpl()
 
 void CLuaResourceImpl::IncludeModulesPath()
 {
-	alt::String p_s(preferred_separator);
 	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
 
 #ifdef _WIN32
@@ -252,7 +250,7 @@ void CLuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 {
 
 #ifndef NDEBUG
-	Core->LogInfo(this->resource->GetName() + ":CLuaResourceImpl::OnCreateBaseObject: " + std::to_string(static_cast<int>(object->GetType())));
+	Core->LogInfo(this->resource->GetName() + alt::String(":CLuaResourceImpl::OnCreateBaseObject: ") + std::to_string(static_cast<int>(object->GetType())));
 #endif
 
 }

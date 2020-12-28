@@ -659,7 +659,8 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		}
 	);
 
-	alt::String serverConfigPath = Core->GetRootDirectory() + preferred_separator + "server.cfg";
+	alt::String serverConfigPath = Core->GetRootDirectory() + p_s + "server.cfg";
+	Core->LogInfo("serverConfigPath: " + serverConfigPath);
 	this->serverConfigDict = this->ParseConfig(serverConfigPath.CStr());
 
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_START, CLuaScriptRuntime::OnResourceStart, this);
@@ -674,7 +675,7 @@ bool CLuaScriptRuntime::OnResourceStart(const alt::CEvent* e, void* userData)
 	if (event->GetResource()->GetType() == "lua")
 		return true;
 
-	alt::String resourceConfigPath = event->GetResource()->GetPath() + preferred_separator + "resource.cfg";
+	alt::String resourceConfigPath = event->GetResource()->GetPath() + p_s + "resource.cfg";
 	auto resourceNode = runtime->ParseConfig(resourceConfigPath.CStr());
 
 	runtime->resourceNodeDictMap[event->GetResource()] = resourceNode;
