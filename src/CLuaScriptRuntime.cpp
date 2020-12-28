@@ -660,7 +660,6 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 	);
 
 	alt::String serverConfigPath = Core->GetRootDirectory() + p_s + "server.cfg";
-	Core->LogInfo("serverConfigPath: " + serverConfigPath);
 	this->serverConfigDict = this->ParseConfig(serverConfigPath.CStr());
 
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_START, CLuaScriptRuntime::OnResourceStart, this);
