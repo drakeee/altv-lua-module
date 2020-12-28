@@ -107,9 +107,9 @@ struct to_chars_result {
 };
 #endif
 
-inline constexpr std::string_view dev = {"-dev", 6};
-inline constexpr std::string_view rc  = {"-rc", 5};
-inline constexpr std::string_view release    = {"-release", 3};
+inline constexpr std::string_view dev = {"-dev", 4};
+inline constexpr std::string_view rc  = {"-rc", 3};
+inline constexpr std::string_view release    = {"-release", 8};
 
 // Min version string length = 1(<major>) + 1(.) + 1(<minor>) + 1(.) + 1(<patch>) = 5.
 inline constexpr auto min_version_string_length = 5;
