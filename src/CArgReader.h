@@ -20,6 +20,8 @@ public:
 
 	}
 
+#define SET_DEFAULT(A, B) if(A != nullptr) (*A) = B
+
 	const char* ToString()
 	{
 		return luaL_tolstring(m_luaVM, m_stackIndex++, NULL);
@@ -45,7 +47,24 @@ public:
 		return lua_type(m_luaVM, m_stackIndex);
 	}
 
-	void ReadBool(bool& state)
+	bool ReadBool(void)
+	{
+		bool tempBool;
+
+		ReadBool(tempBool);
+
+		return tempBool;
+	}
+
+	void ReadBoolDefault(bool& state, bool defaultValue)
+	{
+		bool tempBool, isDefault;
+		ReadBool(tempBool, &isDefault);
+
+		state = isDefault ? defaultValue : tempBool;
+	}
+
+	void ReadBool(bool& state, bool* isDefault = nullptr)
 	{
 		//check if argument is number
 		int argType = lua_type(m_luaVM, m_stackIndex);
@@ -56,28 +75,26 @@ public:
 
 			//fill the variable and increase argindex
 			state = static_cast<bool>(readNumber);
+			
+			SET_DEFAULT(isDefault, false);
+
 			m_stackIndex++;
 
 			return;
 		}
 
-		AddErrorMessage("bool");
+		if(isDefault == nullptr)
+			AddErrorMessage("bool");
 
 		state = false;
+
+		SET_DEFAULT(isDefault, true);
+
 		m_stackIndex++;
 	}
 
 	template <typename T>
-	T ReadNumber(void)
-	{
-		T tempNumber;
-		ReadNumber(tempNumber);
-
-		return tempNumber;
-	}
-
-	template <typename T>
-	void ReadNumber(T &number)
+	void ReadNumber(T &number, bool* isDefault = nullptr)
 	{
 		//check if argument is number
 		int argType = lua_type(m_luaVM, m_stackIndex);
@@ -93,14 +110,38 @@ public:
 			number = static_cast<T>(readNumber);
 			m_stackIndex++;
 
+			SET_DEFAULT(isDefault, false);
+
 			return;
 		}
 
-		AddErrorMessage("number");
+		if(isDefault == nullptr)
+			AddErrorMessage("number");
+
+		SET_DEFAULT(isDefault, true);
 
 		number = 0;
 		m_stackIndex++;
 	}
+
+	template <typename T>
+	T ReadNumber(void)
+	{
+		T tempNumber;
+		ReadNumber(tempNumber);
+
+		return tempNumber;
+	}
+
+	/*template <typename T>
+	void ReadNumberDefault(T& number, T defaultValue)
+	{
+		T tempNumber;
+		bool isDefault;
+		ReadNumber(tempNumber, &isDefault);
+
+		number = isDefault ? defaultValue : tempNumber;
+	}*/
 
 	void ReadMValue(alt::MValue& mValue)
 	{
@@ -225,8 +266,18 @@ public:
 		m_stackIndex += 4; //Skip 3 values because of Vector
 	}
 
+	template <class type, std::size_t size, class _Layout = alt::VectorLayout<type, size>>
+	void ReadVectorDefault(alt::Vector<type, size, _Layout>& number, alt::Vector<type, size, _Layout> defaultValue)
+	{
+		alt::Vector<type, size, _Layout> tempNumber;
+		bool isDefault;
+		ReadVector(tempNumber, &isDefault);
+
+		number = isDefault ? defaultValue : tempNumber;
+	}
+
 	template<class type, std::size_t size, class _Layout = alt::VectorLayout<type, size>>
-	void ReadVector(alt::Vector<type, size, _Layout> &number)
+	void ReadVector(alt::Vector<type, size, _Layout> &number, bool* isDefault = nullptr)
 	{
 		//check if argument is number
 		int argType = lua_type(m_luaVM, m_stackIndex);
@@ -247,6 +298,8 @@ public:
 				ReadNumber(number[i]);
 			}
 
+			SET_DEFAULT(isDefault, false);
+
 			/*ReadNumber(number.x);
 			ReadNumber(number.y);
 			ReadNumber(number.z);*/
@@ -261,16 +314,20 @@ public:
 			if(tempVector)
 			{
 				number = *tempVector;
+				SET_DEFAULT(isDefault, false);
 				return;
 			}
 		}
 
 		//TODO: Handle Vector3 object
 
-		AddErrorMessage("Vector3");
+		if(isDefault == nullptr)
+			AddErrorMessage("Vector3");
+
+		SET_DEFAULT(isDefault, true);
 
 		number = alt::Vector<type, size, _Layout>();
-		m_stackIndex += 3; //Skip 3 values because of Vector
+		m_stackIndex += 1; //Skip 3 values because of Vector
 	}
 
 	void ReadFunction(int& intVariable)

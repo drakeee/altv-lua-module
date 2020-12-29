@@ -23,11 +23,11 @@ EXPORT alt::IScriptRuntime *CreateJSScriptRuntime(alt::ICore *_core)
     alt::ICore::SetInstance(_core);
 	Core = _core;
 
-    auto runtime = CLuaScriptRuntime::Instance();
+    auto runtime = &CLuaScriptRuntime::Instance();
 
-	_core->LogInfo(alt::String("Lua client module. Version: v" + runtime.GetVersion().to_string()));
+	_core->LogInfo(alt::String("Lua client module. Version: v" + runtime->GetVersion().to_string()));
 
-    return &runtime;
+    return runtime;
 }
 #endif
 

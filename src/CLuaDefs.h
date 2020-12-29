@@ -39,7 +39,9 @@ void lua_classvariable(lua_State* L, const char* variableName, const char* setFu
 
 void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool refUserData = true);
 void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData = true);
+void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, bool refUserData = true);
 void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData = true);
+void lua_pushstring(lua_State* L, alt::String& str);
 
 template<class T, std::size_t W, class _Layout = alt::VectorLayout<T, W>>
 void lua_pushvector(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool refUserData = false)
@@ -50,6 +52,7 @@ void lua_pushvector(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool
 //void lua_pushvehicle(lua_State* L, alt::IVehicle* vehicle, bool refUserData = true);
 void lua_pushrgba(lua_State* L, const alt::RGBA &color, bool refUserData = false);
 void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool refUserData = false);
+void lua_pushwebview(lua_State* L, alt::IWebView* webView, bool refUserData = true);
 void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue);
 void lua_pushnode(lua_State* L, alt::config::Node& node);
 void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args);

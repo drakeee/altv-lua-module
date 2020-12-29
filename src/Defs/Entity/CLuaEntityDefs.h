@@ -39,5 +39,7 @@ private:
 	static int SetStreamSyncedMetaData(lua_State* L);
 	static int DeleteStreamSyncedMetaData(lua_State* L);
 	static int SetVisible(lua_State* L);
+#else
+	static int GetScriptGuid(lua_State* L);
 #endif
 };

@@ -55,6 +55,8 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classfunction(L, "setStreamSyncedMetaData", SetStreamSyncedMetaData);
 		lua_classfunction(L, "deleteStreamSyncedMetaData", DeleteStreamSyncedMetaData);
 		lua_classfunction(L, "setVisible", SetVisible);
+#else
+		lua_classfunction(L, "getScriptID", GetScriptGuid);
 #endif
 
 		lua_classvariable(L, "id", nullptr, "getId");
@@ -66,6 +68,7 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classvariable(L, "networkOwner", "setNetworkOwner", "getNetworkOwner");
 #else
 		lua_classvariable(L, "networkOwner", nullptr, "getNetworkOwner");
+		lua_classvariable(L, "scriptID", nullptr, "getScriptID");
 #endif
 	}
 	lua_endclass(L);
@@ -479,5 +482,23 @@ int CLuaEntityDefs::SetVisible(lua_State* L)
 	entity->SetVisible(state);
 
 	return 0;
+}
+#else
+int CLuaEntityDefs::GetScriptGuid(lua_State* L)
+{
+	alt::IEntity* entity;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, entity->GetScriptGuid());
+
+	return 1;
 }
 #endif

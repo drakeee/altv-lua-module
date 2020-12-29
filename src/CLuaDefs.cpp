@@ -401,9 +401,19 @@ void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUser
 	}
 }
 
+void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, bool refUserData)
+{
+	lua_pushbaseobject(L, baseObject.Get(), refUserData);
+}
+
 void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData)
 {
 	lua_pushuserdata(L, CLuaConfigDefs::ClassName, nodeDict, refUserData);
+}
+
+void lua_pushstring(lua_State* L, alt::String& str)
+{
+	lua_pushstring(L, str.CStr());
 }
 
 void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
@@ -415,6 +425,11 @@ void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
 void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool refUserData)
 {
 	lua_pushuserdata(L, CLuaHandlingDataDefs::ClassName, handlingData, refUserData);
+}
+
+void lua_pushwebview(lua_State* L, alt::IWebView* webView, bool refUserData)
+{
+	lua_pushuserdata(L, CLuaWebViewDefs::ClassName, webView, refUserData);
 }
 
 void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)

@@ -82,12 +82,19 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaBaseObjectDefs::Init(this->resourceState);
 	CLuaWorldObjectDefs::Init(this->resourceState);
 	CLuaEntityDefs::Init(this->resourceState);
+
+#ifdef ALT_CLIENT_API
 	CLuaHandlingDataDefs::Init(this->resourceState);
+	CLuaMapDataDefs::Init(this->resourceState);
+	CLuaDiscordManagerDefs::Init(this->resourceState);
+	CLuaWebViewDefs::Init(this->resourceState);
+#endif
+
 	CLuaPlayerDefs::Init(this->resourceState);
 	CLuaVehicleDefs::Init(this->resourceState);
+	CLuaBlipDefs::Init(this->resourceState);
 
 #ifdef ALT_SERVER_API
-	CLuaBlipDefs::Init(this->resourceState);
 	CLuaCheckpointDefs::Init(this->resourceState);
 	CLuaColShapeDefs::Init(this->resourceState);
 	CLuaVoiceChannelDefs::Init(this->resourceState);
