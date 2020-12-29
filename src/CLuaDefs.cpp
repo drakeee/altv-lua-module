@@ -412,6 +412,11 @@ void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
 	lua_pushuserdata(L, CLuaRGBADefs::ClassName, tempColor, refUserData);
 }
 
+void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool refUserData)
+{
+	lua_pushuserdata(L, CLuaHandlingDataDefs::ClassName, handlingData, refUserData);
+}
+
 void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 {
 	switch (mValue->GetType())

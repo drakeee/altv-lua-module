@@ -49,6 +49,7 @@ void lua_pushvector(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool
 }
 //void lua_pushvehicle(lua_State* L, alt::IVehicle* vehicle, bool refUserData = true);
 void lua_pushrgba(lua_State* L, const alt::RGBA &color, bool refUserData = false);
+void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool refUserData = false);
 void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue);
 void lua_pushnode(lua_State* L, alt::config::Node& node);
 void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args);

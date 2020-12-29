@@ -69,6 +69,15 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_globalfunction(L, "toggleVehicleExtra", ToggleExtra);
 	lua_globalfunction(L, "getVehicleAttached", GetAttached);
 	lua_globalfunction(L, "getVehicleAttachedTo", GetAttachedTo);
+#else
+	lua_globalfunction(L, "getVehicleWheelSpeed", GetWheelSpeed);
+	lua_globalfunction(L, "getVehicleCurrentGear", GetCurrentGear);
+	lua_globalfunction(L, "getVehicleCurrentRPM", GetCurrentRPM);
+	lua_globalfunction(L, "getVehicleSpeedVector", GetSpeedVector);
+
+	lua_globalfunction(L, "isVehicleHandlingModified", IsHandlingModified);
+	lua_globalfunction(L, "getVehicleHandling", GetHandling);
+	lua_globalfunction(L, "resetVehicleHandling", ResetHandling);
 #endif
 
 	lua_globalfunction(L, "getVehicleMod", GetMod);
@@ -387,6 +396,15 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "attached", nullptr, "getAttached");
 		lua_classvariable(L, "attachedTo", nullptr, "getAttachedTo");
 #else
+		lua_classfunction(L, "getWheelSpeed", GetWheelSpeed);
+		lua_classfunction(L, "getCurrentGear", GetCurrentGear);
+		lua_classfunction(L, "getCurrentRPM", GetCurrentRPM);
+		lua_classfunction(L, "getSpeedVector", GetSpeedVector);
+
+		lua_classfunction(L, "isHandlingModified", IsHandlingModified);
+		lua_classfunction(L, "getHandling", GetHandling);
+		lua_classfunction(L, "resetHandling", ResetHandling);
+
 		lua_classvariable(L, "modKit", nullptr, "getModKit");
 		lua_classvariable(L, "primaryColor", nullptr, "getPrimaryColor");
 		lua_classvariable(L, "secondaryColor", nullptr, "getSecondaryColor");
@@ -424,6 +442,13 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "healthDataBase64", nullptr, "getHealthDataBase64");
 		lua_classvariable(L, "damageDataBase64", nullptr, "getDamageDataBase64");
 		lua_classvariable(L, "scriptDataBase64", nullptr, "getScriptDataBase64");
+
+		lua_classvariable(L, "wheelSpeed", nullptr, "getWheelSpeed");
+		lua_classvariable(L, "currentGear", nullptr, "getCurrentGear");
+		lua_classvariable(L, "currentRPM", nullptr, "getCurrentRPM");
+		lua_classvariable(L, "speedVector", nullptr, "getSpeedVector");
+
+		lua_classvariable(L, "handling", nullptr, "getHandling");
 #endif
 
 		lua_classvariable(L, "destroyed", nullptr, "isDestroyed");
@@ -1913,7 +1938,7 @@ int CLuaVehicleDefs::GetHandling(lua_State* L)
 		return 0;
 	}
 
-	lua_pushboolean(L, vehicle->GetHandling());
+	lua_pushhandlingdata(L, vehicle->GetHandling().Get());
 
 	return 1;
 }
