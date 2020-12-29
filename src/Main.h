@@ -68,6 +68,7 @@ typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 #include <Defs/CLuaRGBADefs.h>
 #include <Defs/Entity/CLuaBaseObjectDefs.h>
 #include <Defs/Entity/CLuaWorldObjectDefs.h>
+#include <Defs/Entity/CLuaHandlingDataDefs.h>
 #include <Defs/Entity/CLuaEntityDefs.h>
 #include <Defs/Entity/CLuaPlayerDefs.h>
 #include <Defs/Entity/CLuaVehicleDefs.h>
