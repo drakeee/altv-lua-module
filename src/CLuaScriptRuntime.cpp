@@ -134,13 +134,19 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			auto runtime = &CLuaScriptRuntime::Instance();
 			lua_State* L = resource->GetLuaState();
 
+#ifdef ALT_SERVER_API
 			lua_pushbaseobject(L, event->GetTarget().Get());
+#endif
 			for (auto arg : event->GetArgs())
 			{
 				lua_pushmvalue(L, arg);
 			}
 
+#ifdef ALT_SERVER_API
 			return static_cast<int>(event->GetArgs().GetSize()) + 1;
+#else
+			return static_cast<int>(event->GetArgs().GetSize());
+#endif
 		}
 	);
 
@@ -659,8 +665,10 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		}
 	);
 
+#ifdef ALT_SERVER_API
 	alt::String serverConfigPath = Core->GetRootDirectory() + p_s + "server.cfg";
 	this->serverConfigDict = this->ParseConfig(serverConfigPath.CStr());
+#endif
 
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_START, CLuaScriptRuntime::OnResourceStart, this);
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_STOP, CLuaScriptRuntime::OnResourceStop, this);

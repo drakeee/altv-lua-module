@@ -24,7 +24,6 @@ private:
 	static int SetRotation(lua_State* L);
 	static int GetRotation(lua_State* L);
 
-	static int SetVisible(lua_State* L);
 	static int GetVisible(lua_State* L);
 
 	static int HasSyncedMetaData(lua_State* L);
@@ -33,9 +32,12 @@ private:
 	static int GetStreamSyncedMetaData(lua_State* L);
 
 #ifdef ALT_SERVER_API
+	static int SetNetworkOwner(lua_State* L);
+
 	static int SetSyncedMetaData(lua_State* L);
 	static int DeleteSyncedMetaData(lua_State* L);
 	static int SetStreamSyncedMetaData(lua_State* L);
 	static int DeleteStreamSyncedMetaData(lua_State* L);
+	static int SetVisible(lua_State* L);
 #endif
 };

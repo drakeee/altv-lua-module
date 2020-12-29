@@ -15,11 +15,13 @@ private:
 	static int pairs(lua_State* L);
 	static int ipairs(lua_State* L);
 
-	static int CreateVehicle(lua_State* L);
 	static int GetDriver(lua_State* L);
 	static int IsDestroyed(lua_State* L);
 
 #ifdef ALT_SERVER_API
+	static int CreateVehicle(lua_State* L);
+
+	static int Repair(lua_State* L);
 	static int SetMod(lua_State* L);
 	static int SetModKit(lua_State* L);
 	static int SetPrimaryColor(lua_State* L);
@@ -78,6 +80,15 @@ private:
 	static int LoadScriptDataFromBase64(lua_State* L);
 	static int GetAttached(lua_State* L);
 	static int GetAttachedTo(lua_State* L);
+#else
+	static int GetWheelSpeed(lua_State* L);
+	static int GetCurrentGear(lua_State* L);
+	static int GetCurrentRPM(lua_State* L);
+	static int GetSpeedVector(lua_State* L);
+
+	static int IsHandlingModified(lua_State* L);
+	static int GetHandling(lua_State* L);
+	static int ResetHandling(lua_State* L);
 #endif
 
 	static int GetMod(lua_State* L);
@@ -216,7 +227,6 @@ private:
 	static int GetHealthDataBase64(lua_State* L);
 
 	// vehicle damage
-	static int Repair(lua_State* L);
 	static int GetPartDamageLevel(lua_State* L);
 	
 	static int GetPartBulletHoles(lua_State* L);

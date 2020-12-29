@@ -19,11 +19,13 @@ void CLuaEntityDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getEntityStreamSyncedMetaData", GetStreamSyncedMetaData);
 
 #ifdef ALT_SERVER_API
-	lua_globalfunction(L, "setEntityVisible", SetVisible);
+	lua_globalfunction(L, "setEntityNetworkOwner", SetNetworkOwner);
+
 	lua_globalfunction(L, "setEntitySyncedMetaData", SetSyncedMetaData);
 	lua_globalfunction(L, "deleteEntitySyncedMetaData", DeleteSyncedMetaData);
 	lua_globalfunction(L, "setEntityStreamSyncedMetaData", SetStreamSyncedMetaData);
 	lua_globalfunction(L, "deleteEntityStreamSyncedMetaData", DeleteStreamSyncedMetaData);
+	lua_globalfunction(L, "setEntityVisible", SetVisible);
 #endif
 
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
@@ -46,18 +48,25 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classfunction(L, "getAll", ipairs);
 
 #ifdef ALT_SERVER_API
-		lua_classfunction(L, "setVisible", SetVisible);
+		lua_classfunction(L, "setNetworkOwner", SetNetworkOwner);
+
 		lua_classfunction(L, "setSyncedMetaData", SetSyncedMetaData);
 		lua_classfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
 		lua_classfunction(L, "setStreamSyncedMetaData", SetStreamSyncedMetaData);
 		lua_classfunction(L, "deleteStreamSyncedMetaData", DeleteStreamSyncedMetaData);
+		lua_classfunction(L, "setVisible", SetVisible);
 #endif
 
 		lua_classvariable(L, "id", nullptr, "getId");
-		lua_classvariable(L, "networkOwner", nullptr, "getNetworkOwner");
 		lua_classvariable(L, "model", nullptr, "getModel");
 		lua_classvariable(L, "rotation", "setRotation", "getRotation");
 		lua_classvariable(L, "all", nullptr, "getAll");
+
+#ifdef ALT_SERVER_API
+		lua_classvariable(L, "networkOwner", "setNetworkOwner", "getNetworkOwner");
+#else
+		lua_classvariable(L, "networkOwner", nullptr, "getNetworkOwner");
+#endif
 	}
 	lua_endclass(L);
 
@@ -247,6 +256,24 @@ int CLuaEntityDefs::GetRotation(lua_State* L)
 	return 1;
 }
 
+int CLuaEntityDefs::GetVisible(lua_State* L)
+{
+	alt::IEntity* entity;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, entity->GetVisible());
+
+	return 1;
+}
+
 int CLuaEntityDefs::HasSyncedMetaData(lua_State* L)
 {
 	alt::IEntity* entity;
@@ -328,6 +355,28 @@ int CLuaEntityDefs::GetStreamSyncedMetaData(lua_State* L)
 }
 
 #ifdef ALT_SERVER_API
+int CLuaEntityDefs::SetNetworkOwner(lua_State* L)
+{
+	alt::IEntity* entity;
+	alt::IPlayer* entityOwner;
+	bool disableMigration;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(entity);
+	argReader.ReadBaseObject(entityOwner);
+	argReader.ReadBool(disableMigration);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	entity->SetNetworkOwner(entityOwner, disableMigration);
+
+	return 0;
+}
+
 int CLuaEntityDefs::SetSyncedMetaData(lua_State* L)
 {
 	alt::IEntity* entity;
@@ -430,23 +479,5 @@ int CLuaEntityDefs::SetVisible(lua_State* L)
 	entity->SetVisible(state);
 
 	return 0;
-}
-
-int CLuaEntityDefs::GetVisible(lua_State* L)
-{
-	alt::IEntity* entity;
-
-	CArgReader argReader(L);
-	argReader.ReadBaseObject(entity);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushboolean(L, entity->GetVisible());
-
-	return 1;
 }
 #endif

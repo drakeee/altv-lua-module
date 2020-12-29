@@ -38,17 +38,11 @@ private:
 	static int GetMetaData(lua_State* L);
 	static int DeleteMetaData(lua_State* L);
 	static int HasMetaData(lua_State* L);
-	static int SetSyncedMetaData(lua_State* L);
 	static int GetSyncedMetaData(lua_State* L);
-	static int DeleteSyncedMetaData(lua_State* L);
 	static int HasSyncedMetaData(lua_State* L);
 
 	static int GetRequiredPermissions(lua_State* L);
 	static int GetOptionalPermissions(lua_State* L);
-
-	static int StartResource(lua_State* L);
-	static int StopResource(lua_State* L);
-	static int RestartResource(lua_State* L);
 
 	static int OnServer(lua_State* L);
 	static int OffServer(lua_State* L);
@@ -56,7 +50,6 @@ private:
 	static int OffClient(lua_State* L);
 
 	static int EmitServer(lua_State* L);
-	static int EmitClient(lua_State* L);
 
 	static int Export(lua_State* L);
 
@@ -64,13 +57,27 @@ private:
 	static int FileExists(lua_State* L);
 	static int FileRead(lua_State* L);
 	static int GetEntityByID(lua_State* L);
-	static int GetRootDirectory(lua_State* L);
-	static int GetPlayersByName(lua_State* L);
-	static int GetNetTime(lua_State* L);
 	static int GetVersion(lua_State* L);
 	static int GetBranch(lua_State* L);
 
 	static int Hash(lua_State* L);
+
+#ifdef ALT_SERVER_API
+	static int GetRootDirectory(lua_State* L);
+
+	static int StartResource(lua_State* L);
+	static int StopResource(lua_State* L);
+	static int RestartResource(lua_State* L);
+
+	static int EmitClient(lua_State* L);
+
+	static int SetSyncedMetaData(lua_State* L);
+	static int DeleteSyncedMetaData(lua_State* L);
+
+	static int GetPlayersByName(lua_State* L);
+
+	static int GetNetTime(lua_State* L);
+#endif
 
 	static int tostringtest(lua_State* L);
 };

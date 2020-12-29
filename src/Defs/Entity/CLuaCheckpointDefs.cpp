@@ -1,5 +1,6 @@
 #include <Main.h>
 
+#ifdef ALT_SERVER_API
 const char* CLuaCheckpointDefs::ClassName = "Checkpoint";
 void CLuaCheckpointDefs::Init(lua_State* L)
 {
@@ -131,3 +132,4 @@ int CLuaCheckpointDefs::GetColor(lua_State* L)
 
 	return 1;
 }
+#endif

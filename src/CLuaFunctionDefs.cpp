@@ -288,6 +288,15 @@ int CLuaFunctionDefs::Call(lua_State* L)
 	return 1;
 }
 
+int CLuaFunctionDefs::DisabledFunction(lua_State* L)
+{
+	Core->LogError("Unsafe function was called.");
+
+	lua_pushboolean(L, false);
+
+	return 1;
+}
+
 /*int CLuaDefs::Index(lua_State *L)
 {
 	//get the classname

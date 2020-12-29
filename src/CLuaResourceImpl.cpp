@@ -25,10 +25,30 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 	//Import default libraries into the state
 	luaL_openlibs(this->resourceState);
+
+#ifdef ALT_SERVER_API
 	luaopen_jit(this->resourceState);
 
 	//Pop LuaJIT information
 	lua_pop(this->resourceState, 4);
+#else
+	//Disable some libraries
+	lua_pushnil(this->resourceState);
+	lua_setglobal(this->resourceState, LUA_IOLIBNAME);
+	
+	lua_pushnil(this->resourceState);
+	lua_setglobal(this->resourceState, LUA_OSLIBNAME);
+
+	lua_pushnil(this->resourceState);
+	lua_setglobal(this->resourceState, LUA_JITLIBNAME);
+
+	lua_register(this->resourceState, "dofile", CLuaFunctionDefs::DisabledFunction);
+	lua_register(this->resourceState, "loadfile", CLuaFunctionDefs::DisabledFunction);
+	lua_register(this->resourceState, "require", CLuaFunctionDefs::DisabledFunction);
+	lua_register(this->resourceState, "loadlib", CLuaFunctionDefs::DisabledFunction);
+	lua_register(this->resourceState, "getfenv", CLuaFunctionDefs::DisabledFunction);
+	lua_register(this->resourceState, "newproxy", CLuaFunctionDefs::DisabledFunction);
+#endif
 
 	//Init "es" and "e_mt" table
 	lua_initclass(this->resourceState);

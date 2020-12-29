@@ -2,6 +2,7 @@
 
 #include <Main.h>
 
+#ifdef ALT_SERVER_API
 class CLuaColShapeDefs
 {
 public:
@@ -20,3 +21,4 @@ private:
 	static int IsEntityIn(lua_State* L);
 	static int IsPointIn(lua_State* L);
 };
+#endif

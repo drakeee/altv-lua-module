@@ -31,7 +31,6 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 
 	lua_globalfunction(L, "emit", EmitServer);
 	lua_globalfunction(L, "emitServer", EmitServer);
-	lua_globalfunction(L, "emitClient", EmitClient);
 
 	lua_globalfunction(L, "export", Export);
 	lua_globalfunction(L, "hash", Hash);
@@ -39,27 +38,42 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "fileExists", FileExists);
 	lua_globalfunction(L, "fileRead", FileRead);
 	lua_globalfunction(L, "getEntityByID", GetEntityByID);
-	lua_globalfunction(L, "getRootDirectory", GetRootDirectory);
-	lua_globalfunction(L, "getPlayersByName", GetPlayersByName);
-	lua_globalfunction(L, "getNetTime", GetNetTime);
 	lua_globalfunction(L, "getVersion", GetVersion);
 	lua_globalfunction(L, "getBranch", GetBranch);
-
-	lua_globalfunction(L, "startResource", StartResource);
-	lua_globalfunction(L, "stopResource", StopResource);
-	lua_globalfunction(L, "restartResource", RestartResource);
 
 	lua_globalfunction(L, "setMetaData", SetMetaData);
 	lua_globalfunction(L, "getMetaData", GetMetaData);
 	lua_globalfunction(L, "deleteMetaData", DeleteMetaData);
 	lua_globalfunction(L, "hasMetaData", HasMetaData);
-	lua_globalfunction(L, "setSyncedMetaData", SetSyncedMetaData);
 	lua_globalfunction(L, "getSyncedMetaData", GetSyncedMetaData);
-	lua_globalfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
 	lua_globalfunction(L, "hasSyncedMetaData", HasSyncedMetaData);
 
 	lua_globalfunction(L, "getRequiredPermissions", GetRequiredPermissions);
 	lua_globalfunction(L, "getOptionalPermissions", GetOptionalPermissions);
+
+#ifdef ALT_SERVER_API
+	lua_globalfunction(L, "getRootDirectory", GetRootDirectory);
+
+	lua_globalfunction(L, "startResource", StartResource);
+	lua_globalfunction(L, "stopResource", StopResource);
+	lua_globalfunction(L, "restartResource", RestartResource);
+
+	lua_globalfunction(L, "emitClient", EmitClient);
+
+	lua_globalfunction(L, "setSyncedMetaData", SetSyncedMetaData);
+	lua_globalfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
+
+	lua_globalfunction(L, "getPlayersByName", GetPlayersByName);
+
+	lua_globalfunction(L, "getNetTime", GetNetTime);
+
+
+	lua_pushnumber(L, alt::DEFAULT_DIMENSION);
+	lua_setglobal(L, "defaultDimension");
+
+	lua_pushnumber(L, alt::GLOBAL_DIMENSION);
+	lua_setglobal(L, "globalDimension");
+#endif
 
 	lua_beginclass(L, ClassName);
 	{
@@ -124,12 +138,6 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_getglobal(L, "ipairsaux");
 	lua_pushcclosure(L, CLuaAltFuncDefs::ipairs, 1);
 	lua_rawset(L, -3);
-
-	lua_pushnumber(L, alt::DEFAULT_DIMENSION);
-	lua_setglobal(L, "DEFAULT_DIMENSION");
-
-	lua_pushnumber(L, alt::GLOBAL_DIMENSION);
-	lua_setglobal(L, "GLOBAL_DIMENSION");
 
 	auto runtime = &CLuaScriptRuntime::Instance();
 	lua_pushconfig(L, &runtime->GetServerConfig());
@@ -216,6 +224,96 @@ int CLuaAltFuncDefs::HasMetaData(lua_State* L)
 	return 1;
 }
 
+#ifdef ALT_SERVER_API
+int CLuaAltFuncDefs::GetRootDirectory(lua_State* L)
+{
+	lua_pushstring(L, Core->GetRootDirectory().CStr());
+	return 1;
+}
+
+int CLuaAltFuncDefs::StartResource(lua_State* L)
+{
+	std::string resourceName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(resourceName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushresource(L, Core->StartResource(resourceName));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::StopResource(lua_State* L)
+{
+	std::string resourceName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(resourceName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->StopResource(resourceName);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::RestartResource(lua_State* L)
+{
+	std::string resourceName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(resourceName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushresource(L, Core->RestartResource(resourceName));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::EmitClient(lua_State* L)
+{
+	alt::IPlayer* player;
+	std::string eventName;
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+	if (argReader.IsCurrentType(LUA_TNIL))
+	{
+		player = nullptr;
+		argReader.SkipValue();
+	}
+	else
+		argReader.ReadBaseObject(player);
+
+	argReader.ReadString(eventName);
+	argReader.ReadArguments(args);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->TriggerClientEvent(player, eventName, args);
+
+	return 0;
+}
+
 int CLuaAltFuncDefs::SetSyncedMetaData(lua_State* L)
 {
 	std::string key;
@@ -236,24 +334,6 @@ int CLuaAltFuncDefs::SetSyncedMetaData(lua_State* L)
 	return 0;
 }
 
-int CLuaAltFuncDefs::GetSyncedMetaData(lua_State* L)
-{
-	std::string key;
-
-	CArgReader argReader(L);
-	argReader.ReadString(key);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushmvalue(L, Core->GetSyncedMetaData(key));
-
-	return 1;
-}
-
 int CLuaAltFuncDefs::DeleteSyncedMetaData(lua_State* L)
 {
 	std::string key;
@@ -270,6 +350,57 @@ int CLuaAltFuncDefs::DeleteSyncedMetaData(lua_State* L)
 	Core->DeleteSyncedMetaData(key);
 
 	return 0;
+}
+
+int CLuaAltFuncDefs::GetPlayersByName(lua_State* L)
+{
+	std::string playersName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(playersName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_newtable(L);
+	auto playersFound = Core->GetPlayersByName(playersName);
+	for (size_t i = 0; i < playersFound.GetSize(); i++)
+	{
+		lua_pushnumber(L, (int)(i + 1));
+		lua_pushbaseobject(L, playersFound[i].Get());
+		lua_rawset(L, -3);
+	}
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetNetTime(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetNetTime());
+	return 1;
+}
+
+#endif
+
+int CLuaAltFuncDefs::GetSyncedMetaData(lua_State* L)
+{
+	std::string key;
+
+	CArgReader argReader(L);
+	argReader.ReadString(key);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushmvalue(L, Core->GetSyncedMetaData(key));
+
+	return 1;
 }
 
 int CLuaAltFuncDefs::HasSyncedMetaData(lua_State* L)
@@ -411,43 +542,6 @@ int CLuaAltFuncDefs::GetEntityByID(lua_State* L)
 
 	lua_pushbaseobject(L, entity);
 
-	return 1;
-}
-
-int CLuaAltFuncDefs::GetRootDirectory(lua_State* L)
-{
-	lua_pushstring(L, Core->GetRootDirectory().CStr());
-	return 1;
-}
-
-int CLuaAltFuncDefs::GetPlayersByName(lua_State* L)
-{
-	std::string playersName;
-
-	CArgReader argReader(L);
-	argReader.ReadString(playersName);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_newtable(L);
-	auto playersFound = Core->GetPlayersByName(playersName);
-	for (size_t i = 0; i < playersFound.GetSize(); i++)
-	{
-		lua_pushnumber(L, (int)(i + 1));
-		lua_pushbaseobject(L, playersFound[i].Get());
-		lua_rawset(L, -3);
-	}
-
-	return 1;
-}
-
-int CLuaAltFuncDefs::GetNetTime(lua_State* L)
-{
-	lua_pushnumber(L, Core->GetNetTime());
 	return 1;
 }
 
@@ -601,89 +695,6 @@ int CLuaAltFuncDefs::EmitServer(lua_State* L)
 	Core->TriggerLocalEvent(eventName, args);
 
 	return 0;
-}
-
-int CLuaAltFuncDefs::EmitClient(lua_State* L)
-{
-	alt::IPlayer* player;
-	std::string eventName;
-	alt::MValueArgs args;
-
-	CArgReader argReader(L);
-	if (argReader.IsCurrentType(LUA_TNIL))
-	{
-		player = nullptr;
-		argReader.SkipValue();
-	}
-	else
-		argReader.ReadBaseObject(player);
-
-	argReader.ReadString(eventName);
-	argReader.ReadArguments(args);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	Core->TriggerClientEvent(player, eventName, args);
-
-	return 0;
-}
-
-int CLuaAltFuncDefs::StartResource(lua_State* L)
-{
-	std::string resourceName;
-
-	CArgReader argReader(L);
-	argReader.ReadString(resourceName);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushresource(L, Core->StartResource(resourceName));
-
-	return 1;
-}
-
-int CLuaAltFuncDefs::StopResource(lua_State* L)
-{
-	std::string resourceName;
-
-	CArgReader argReader(L);
-	argReader.ReadString(resourceName);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	Core->StopResource(resourceName);
-
-	return 0;
-}
-
-int CLuaAltFuncDefs::RestartResource(lua_State* L)
-{
-	std::string resourceName;
-
-	CArgReader argReader(L);
-	argReader.ReadString(resourceName);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushresource(L, Core->RestartResource(resourceName));
-
-	return 1;
 }
 
 int CLuaAltFuncDefs::AltIndex(lua_State* L)

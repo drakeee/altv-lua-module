@@ -1,5 +1,6 @@
 #include <Main.h>
 
+#ifdef ALT_SERVER_API
 const char* CLuaBlipDefs::ClassName = "Blip";
 void CLuaBlipDefs::Init(lua_State* L)
 {
@@ -277,3 +278,4 @@ int CLuaBlipDefs::GetBlipType(lua_State* L)
 //
 //	return 0;
 //}
+#endif
