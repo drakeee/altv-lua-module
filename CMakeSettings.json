@@ -1,36 +1,49 @@
 ﻿{
 	"configurations": [
 		{
-			"name": "x64-Debug",
+			"name": "Server - Debug",
 			"generator": "Ninja",
 			"configurationType": "Debug",
-			"inheritEnvironments": [ "msvc_x64" ],
+			"inheritEnvironments": [ "msvc_x64_x64" ],
 			"buildRoot": "${projectDir}\\out\\build\\${name}",
 			"installRoot": "${projectDir}\\out\\install\\${name}",
-			"cmakeCommandArgs": "",
-			"buildCommandArgs": "-v",
+			"cmakeCommandArgs": "-DMODULE_TYPE=SERVER",
+			"buildCommandArgs": "",
 			"ctestCommandArgs": "",
-			"variables": [
-				{
-					"name": "CMAKE_C_FLAGS_DEBUG",
-					"value": "/MD /Zi /Ob0 /Od /RTC1",
-					"type": "STRING"
-				},
-				{
-					"name": "CMAKE_CXX_FLAGS_DEBUG",
-					"value": "/MD /Zi /Ob0 /Od /RTC1",
-					"type": "STRING"
-				}
-			]
+			"variables": []
 		},
 		{
-			"name": "x64-Release",
+			"name": "Server - Release",
 			"generator": "Ninja",
-			"configurationType": "RelWithDebInfo",
+			"configurationType": "Release",
 			"buildRoot": "${projectDir}\\out\\build\\${name}",
 			"installRoot": "${projectDir}\\out\\install\\${name}",
-			"cmakeCommandArgs": "",
-			"buildCommandArgs": "-v",
+			"cmakeCommandArgs": "-DMODULE_TYPE=SERVER",
+			"buildCommandArgs": "",
+			"ctestCommandArgs": "",
+			"inheritEnvironments": [ "msvc_x64_x64" ],
+			"variables": []
+		},
+		{
+			"name": "Client - Debug",
+			"generator": "Ninja",
+			"configurationType": "Debug",
+			"buildRoot": "${projectDir}\\out\\build\\${name}",
+			"installRoot": "${projectDir}\\out\\install\\${name}",
+			"cmakeCommandArgs": "-DMODULE_TYPE=CLIENT",
+			"buildCommandArgs": "",
+			"ctestCommandArgs": "",
+			"inheritEnvironments": [ "msvc_x64_x64" ],
+			"variables": []
+		},
+		{
+			"name": "Client - Release",
+			"generator": "Ninja",
+			"configurationType": "Release",
+			"buildRoot": "${projectDir}\\out\\build\\${name}",
+			"installRoot": "${projectDir}\\out\\install\\${name}",
+			"cmakeCommandArgs": "-DMODULE_TYPE=CLIENT",
+			"buildCommandArgs": "",
 			"ctestCommandArgs": "",
 			"inheritEnvironments": [ "msvc_x64_x64" ],
 			"variables": []

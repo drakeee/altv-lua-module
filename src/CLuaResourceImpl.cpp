@@ -37,10 +37,12 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	lua_setpath(this->resourceState, (this->workingPath + "?.lua").c_str());
 	lua_setpath(this->resourceState, (resource->GetPath().ToString() + std::string(preferred_separator) + std::string("?.lua")).c_str());
 
-	this->IncludeModulesPath();
-
+#ifdef ALT_SERVER_API
 	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
+
+	this->IncludePath(modulePath.CStr());
 	lua_setpath(this->resourceState, (modulePath + "?.lua").CStr());
+#endif
 
 	lua_pushstring(this->resourceState, ADDITIONAL_MODULE_FOLDER);
 	lua_setglobal(this->resourceState, "MODULE_FOLDER");
@@ -62,10 +64,14 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaEntityDefs::Init(this->resourceState);
 	CLuaPlayerDefs::Init(this->resourceState);
 	CLuaVehicleDefs::Init(this->resourceState);
+
+#ifdef ALT_SERVER_API
 	CLuaBlipDefs::Init(this->resourceState);
 	CLuaCheckpointDefs::Init(this->resourceState);
 	CLuaColShapeDefs::Init(this->resourceState);
 	CLuaVoiceChannelDefs::Init(this->resourceState);
+#endif
+
 	CLuaMiscScripts::Init(this->resourceState);
 
 #ifndef NDEBUG
@@ -90,9 +96,9 @@ CLuaResourceImpl::~CLuaResourceImpl()
 
 }
 
-void CLuaResourceImpl::IncludeModulesPath()
+void CLuaResourceImpl::IncludePath(const char* path)
 {
-	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
+	alt::String modulePath(path);
 
 #ifdef _WIN32
 	std::filesystem::path directory(modulePath.CStr());
@@ -356,11 +362,13 @@ bool CLuaResourceImpl::RemoveClientEvent(std::string eventName, int functionRefe
 	return false;
 }
 
+#ifdef ALT_SERVER_API
 bool CLuaResourceImpl::MakeClient(alt::IResource::CreationInfo* info, alt::Array<alt::String> files)
 {
 	info->type = "js";
 	return true;
 }
+#endif
 
 alt::MValue CLuaResourceImpl::LuaFunction::Call(alt::MValueArgs args) const
 {

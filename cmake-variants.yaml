@@ -1,0 +1,25 @@
+buildType:
+  default: debug
+  choices:
+    debug:
+      short: Debug
+      long: Build with debugging information.
+      buildType: Debug
+    release:
+      short: Release
+      long: Optimize generated code.
+      buildType: Release
+
+moduletype:
+  default: server
+  choices:
+    server:
+      short: Server
+      long: Build server module.
+      settings:
+        MODULE_TYPE: "SERVER"
+    client:
+      short: Client
+      long: Build client module.
+      settings:
+        MODULE_TYPE: "CLIENT"

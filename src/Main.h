@@ -3,9 +3,9 @@
 #define MODULE_VERSION "0.1.0"
 #define ADDITIONAL_MODULE_FOLDER "modules"
 
-#ifndef ALT_SERVER_API
-	#define ALT_SERVER_API
-#endif
+// #ifndef ALT_SERVER_API
+// 	#define ALT_SERVER_API
+// #endif
 
 #ifdef _WIN32
 static const char* preferred_separator = "\\";

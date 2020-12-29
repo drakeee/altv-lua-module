@@ -1,5 +1,6 @@
 #include <Main.h>
 
+#ifdef ALT_SERVER_API
 const char* CLuaVoiceChannelDefs::ClassName = "VoiceChannel";
 void CLuaVoiceChannelDefs::Init(lua_State* L)
 {
@@ -215,3 +216,4 @@ int CLuaVoiceChannelDefs::UnmutePlayer(lua_State* L)
 
 	return 0;
 }
+#endif

@@ -2,6 +2,7 @@
 
 #include <Main.h>
 
+#ifdef ALT_SERVER_API
 class CLuaVoiceChannelDefs
 {
 public:
@@ -22,3 +23,4 @@ private:
 	static int MutePlayer(lua_State* L);
 	static int UnmutePlayer(lua_State* L);
 };
+#endif
