@@ -1,5 +1,6 @@
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 const char* CLuaWebViewDefs::ClassName = "WebView";
 void CLuaWebViewDefs::Init(lua_State* L)
 {
@@ -95,6 +96,57 @@ int CLuaWebViewDefs::CreateWebView(lua_State *L)
 	}
 
 	return 1;
+}
+
+int CLuaWebViewDefs::On(lua_State* L)
+{
+	alt::IWebView* webView;
+	std::string eventName;
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(webView);
+	argReader.ReadString(eventName);
+	argReader.ReadArguments(args);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve resource in WebView::On");
+		return 0;
+	}
+
+	webView->Trigger(eventName, args);
+
+	return 0;
+}
+
+int CLuaWebViewDefs::Off(lua_State* L)
+{
+	alt::IWebView* webView;
+	std::string eventName;
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(webView);
+	argReader.ReadString(eventName);
+	argReader.ReadArguments(args);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	webView->Trigger(eventName, args);
+
+	return 0;
 }
 
 int CLuaWebViewDefs::Trigger(lua_State *L)
@@ -286,3 +338,4 @@ int CLuaWebViewDefs::IsReady(lua_State *L)
 	return 1;
 }
 
+#endif

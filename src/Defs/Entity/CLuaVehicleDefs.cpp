@@ -414,7 +414,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "interiorColor", nullptr, "getInteriorColor");
 		lua_classvariable(L, "dashboardColor", nullptr, "getDashboardColor");
 		lua_classvariable(L, "tireSmokeColor", nullptr, "getTireSmokeColor");
-		lua_classvariable(L, "rearWheels", nullptr, nullptr);
+		//lua_classvariable(L, "rearWheels", nullptr, nullptr);
 		lua_classvariable(L, "customTires", nullptr, "getCustomTires");
 		lua_classvariable(L, "specialDarkness", nullptr, "getSpecialDarkness");
 		lua_classvariable(L, "numberplateIndex", nullptr, "getNumberplateIndex");
@@ -424,7 +424,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "neonColor", nullptr, "getNeonColor");
 		lua_classvariable(L, "livery", nullptr, "getLivery");
 		lua_classvariable(L, "roofLivery", nullptr, "getRoofLivery");
-		lua_classvariable(L, "engineOn", nullptr, nullptr);
+		//lua_classvariable(L, "engineOn", nullptr, nullptr);
 		lua_classvariable(L, "headlightColor", nullptr, "getHeadlightColor");
 		lua_classvariable(L, "radioStationIndex", nullptr, "getRadioStationIndex");
 		lua_classvariable(L, "sirenActive", nullptr, "isSirenActive");
@@ -1902,7 +1902,7 @@ int CLuaVehicleDefs::GetSpeedVector(lua_State* L)
 		return 0;
 	}
 
-	lua_pushvector(L, vehicle->GetSpeedVector());
+	lua_pushvector3(L, vehicle->GetSpeedVector());
 
 	return 1;
 }

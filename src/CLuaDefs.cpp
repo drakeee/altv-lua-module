@@ -292,6 +292,41 @@ void lua_classmeta(lua_State* L, const char* metaName, lua_CFunction metaFunctio
 	//lua_pop(L, 1);
 }
 
+void lua_classvariable(lua_State* L, const char* variableName, lua_CFunction setFunction, lua_CFunction getFunction)
+{
+	lua_pushstring(L, "__class");
+	lua_rawget(L, -2);
+	L_ASSERT(lua_istable(L, -1), "lua_classfunction: \"__class\" table not found");
+
+	if (setFunction != nullptr)
+	{
+		//lua_getfield(L, -2, "__set"); //__set, __class, class meta
+		lua_pushstring(L, "__set");
+		lua_rawget(L, -3);
+
+		lua_pushstring(L, variableName); //variable name, __set, __class, class meta
+		lua_pushcfunction(L, setFunction);
+
+		lua_rawset(L, -3); //__set, __class, class meta
+		lua_pop(L, 1); //__class, class meta
+	}
+
+	if (getFunction != nullptr)
+	{
+		//lua_getfield(L, -2, "__get"); //__get, __class, class meta
+		lua_pushstring(L, "__get");
+		lua_rawget(L, -3);
+
+		lua_pushstring(L, variableName); //variable name, __get, __class, class meta
+		lua_pushcfunction(L, getFunction);
+
+		lua_rawset(L, -3); //__get, __class, class meta
+		lua_pop(L, 1); //__class, class meta
+	}
+
+	lua_pop(L, 1); //class meta
+}
+
 void lua_classvariable(lua_State* L, const char* variableName, const char* setFunction, const char* getFunction)
 {
 	//class meta
@@ -406,20 +441,20 @@ void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, boo
 	lua_pushbaseobject(L, baseObject.Get(), refUserData);
 }
 
-void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData)
+#ifdef ALT_CLIENT_API
+void lua_pushmapdata(lua_State* L, alt::IMapData* mapData, bool refUserData)
 {
-	lua_pushuserdata(L, CLuaConfigDefs::ClassName, nodeDict, refUserData);
+	lua_pushuserdata(L, CLuaMapDataDefs::ClassName, mapData, refUserData);
 }
 
-void lua_pushstring(lua_State* L, alt::String& str)
+void lua_pushmapdata(lua_State* L, alt::Ref<alt::IMapData> mapData, bool refUserData)
 {
-	lua_pushstring(L, str.CStr());
+	lua_pushmapdata(L, mapData.Get(), refUserData);
 }
 
-void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
+void lua_pushhandlingdata(lua_State* L, alt::Ref<alt::IHandlingData> handlingData, bool refUserData)
 {
-	alt::RGBA* tempColor = new alt::RGBA(color);
-	lua_pushuserdata(L, CLuaRGBADefs::ClassName, tempColor, refUserData);
+	lua_pushhandlingdata(L, handlingData.Get(), refUserData);
 }
 
 void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool refUserData)
@@ -430,6 +465,45 @@ void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool r
 void lua_pushwebview(lua_State* L, alt::IWebView* webView, bool refUserData)
 {
 	lua_pushuserdata(L, CLuaWebViewDefs::ClassName, webView, refUserData);
+}
+#endif
+
+void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData)
+{
+	lua_pushuserdata(L, CLuaConfigDefs::ClassName, nodeDict, refUserData);
+}
+
+void lua_pushstring(lua_State* L, alt::String& str)
+{
+	lua_pushstring(L, str.CStr());
+}
+
+void lua_pushvector2(lua_State* L, Vector2fp* vector, bool refUserData)
+{
+	lua_pushuserdata(L, CLuaVector2Defs::ClassName, vector, refUserData);
+}
+
+void lua_pushvector2(lua_State* L, const Vector2fp& vector, bool refUserData)
+{
+	Vector2fp* vec = new Vector2fp(vector);
+	lua_pushvector2(L, vec, refUserData);
+}
+
+void lua_pushvector3(lua_State* L, Vector3fp* vector, bool refUserData)
+{
+	lua_pushuserdata(L, CLuaVector3Defs::ClassName, vector, refUserData);
+}
+
+void lua_pushvector3(lua_State* L, const Vector3fp& vector, bool refUserData)
+{
+	Vector3fp* vec = new Vector3fp(vector);
+	lua_pushvector3(L, vec, refUserData);
+}
+
+void lua_pushrgba(lua_State* L, const alt::RGBA& color, bool refUserData)
+{
+	alt::RGBA* tempColor = new alt::RGBA(color);
+	lua_pushuserdata(L, CLuaRGBADefs::ClassName, tempColor, refUserData);
 }
 
 void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)

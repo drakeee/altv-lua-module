@@ -2,7 +2,6 @@
 
 #include <Main.h>
 
-#ifdef ALT_SERVER_API
 class CLuaCheckpointDefs
 {
 public:
@@ -16,4 +15,3 @@ private:
 	static int GetRadius(lua_State* L);
 	static int GetColor(lua_State* L);
 };
-#endif

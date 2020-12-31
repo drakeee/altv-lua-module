@@ -9,8 +9,16 @@ public:
 	static void Init(lua_State* L);
 
 private:
+#ifdef ALT_SERVER_API
 	static int Create(lua_State* L);
 	static int CreateAttached(lua_State* L);
+#else
+	static int CreateAreaBlip(lua_State* L);
+	static int CreateRadiusBlip(lua_State* L);
+	static int CreatePointBlip(lua_State* L);
+	static int CreatePedBlip(lua_State* L);
+	static int CreateVehicleBlip(lua_State* L);
+#endif
 
 	static int IsGlobal(lua_State* L);
 	static int GetTarget(lua_State* L);

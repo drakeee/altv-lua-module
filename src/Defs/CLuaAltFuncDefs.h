@@ -77,6 +77,53 @@ private:
 	static int GetPlayersByName(lua_State* L);
 
 	static int GetNetTime(lua_State* L);
+#else
+	//virtual alt::IPackage::PathInfo Resolve(IResource* resource, alt::StringView path, StringView currentModulePath) const = 0; //TODO?
+	static int SetCharStat(lua_State* L);
+	static int GetCharStat(lua_State* L);
+	static int ResetCharStat(lua_State* L);
+
+	static int IsSandbox(lua_State* L);
+	static int IsKeyDown(lua_State* L);
+	static int IsKeyToggled(lua_State* L);
+	static int AreControlsEnabled(lua_State* L);
+	static int SetCursorPosition(lua_State* L);
+	static int GetCursorPosition(lua_State* L);
+	static int SetConfigFlag(lua_State* L);
+	static int GetConfigFlag(lua_State* L);
+	static int DoesConfigFlagExist(lua_State* L);
+
+	static int GetLicenseHash(lua_State* L);
+	static int GetLocale(lua_State* L);
+	static int IsInStreamerMode(lua_State* L);
+	static int IsMenuOpen(lua_State* L);
+	static int IsConsoleOpen(lua_State* L);
+
+	//virtual const Array<INative*> GetAllNatives() const = 0;
+	//virtual Ref<INative::Context> CreateNativesContext() const = 0;
+
+	static int GetTextureFromDrawable(lua_State* L);
+
+	static int RequestIPL(lua_State* L);
+	static int RemoveIPL(lua_State* L);
+
+	static int BeginScaleformMovieMethodMinimap(lua_State* L);
+
+	static int GetMsPerGameMinute(lua_State* L);
+	static int SetMsPerGameMinute(lua_State* L);
+	static int SetWeatherCycle(lua_State* L);
+	static int SetWeatherSyncActive(lua_State* L);
+
+	static int SetCamFrozen(lua_State* L);
+
+	static int GetPermissionState(lua_State* L);
+
+	static int TakeScreenshot(lua_State* L);
+	static int TakeScreenshotGameOnly(lua_State* L);
+	
+	static int SetAngularVelocity(lua_State* L);
+
+	static int IsGameFocused(lua_State* L);
 #endif
 
 	static int tostringtest(lua_State* L);

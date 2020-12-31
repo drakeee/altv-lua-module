@@ -50,7 +50,12 @@ static const char* preferred_separator = "/";
 extern alt::ICore* Core;
 const alt::String p_s(preferred_separator);
 
-typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
+//typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
+//typedef alt::Vector<float, 2, alt::PointLayout> Vector2fp;
+
+typedef alt::Vector3f Vector3fp;
+typedef alt::Vector2f Vector2fp;
+
 
 #include "VehicleModels.hpp"
 #include "LRGBA.h"
@@ -64,11 +69,13 @@ typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
 #include <Defs/CLuaAltFuncDefs.h>
 #include <Defs/CLuaConfigDefs.h>
 #include <Defs/CLuaResourceFuncDefs.h>
+#include <Defs/CLuaVector2Defs.h>
 #include <Defs/CLuaVector3Defs.h>
 #include <Defs/CLuaRGBADefs.h>
 #include <Defs/CLuaHandlingDataDefs.h>
 #include <Defs/CLuaMapDataDefs.h>
 #include <Defs/CLuaDiscordManagerDefs.h>
+#include <Defs/CLuaVoiceDefs.h>
 #include <Defs/CLuaWebViewDefs.h>
 #include <Defs/Entity/CLuaBaseObjectDefs.h>
 #include <Defs/Entity/CLuaWorldObjectDefs.h>

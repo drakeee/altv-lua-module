@@ -2,6 +2,7 @@
 
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 class CLuaHandlingDataDefs
 {
 public:
@@ -9,6 +10,7 @@ public:
 	static void Init(lua_State* L);
 
 private:
+    static int GetHandlingData(lua_State* L);
     static int GetHandlingNameHash(lua_State* L);
     static int GetMass(lua_State* L);
     static int GetInitialDragCoeff(lua_State* L);
@@ -142,3 +144,4 @@ private:
     static int SetHandlingFlags(lua_State* L);
     static int SetDamageFlags(lua_State* L);
 };
+#endif

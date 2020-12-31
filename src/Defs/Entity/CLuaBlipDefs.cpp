@@ -3,8 +3,81 @@
 const char* CLuaBlipDefs::ClassName = "Blip";
 void CLuaBlipDefs::Init(lua_State* L)
 {
+#ifdef ALT_SERVER_API
 	lua_globalfunction(L, "createBlip", Create);
 	lua_globalfunction(L, "createBlipAttached", CreateAttached);
+#else
+	lua_globalfunction(L, "createAreaBlip", CreateAreaBlip);
+	lua_globalfunction(L, "createRadiusBlip", CreateRadiusBlip);
+	lua_globalfunction(L, "createPointBlip", CreatePointBlip);
+	lua_globalfunction(L, "createPedBlip", CreatePedBlip);
+	lua_globalfunction(L, "createVehicleBlip", CreateVehicleBlip);
+
+	lua_globalfunction(L, "getBlipScaleXY", GetScaleXY);
+	lua_globalfunction(L, "getBlipDisplay", GetDisplay);
+	lua_globalfunction(L, "getBlipSprite", GetSprite);
+	lua_globalfunction(L, "getBlipColor", GetColor);
+	lua_globalfunction(L, "getBlipSecondaryColor", GetSecondaryColor);
+	lua_globalfunction(L, "getBlipAlpha", GetAlpha);
+	lua_globalfunction(L, "getBlipFlashTimer", GetFlashTimer);
+	lua_globalfunction(L, "getBlipFlashInterval", GetFlashInterval);
+	lua_globalfunction(L, "getBlipAsFriendly", GetAsFriendly);
+	lua_globalfunction(L, "getBlipRoute", GetRoute);
+	lua_globalfunction(L, "getBlipBright", GetBright);
+	lua_globalfunction(L, "getBlipNumber", GetNumber);
+	lua_globalfunction(L, "getBlipShowCone", GetShowCone);
+	lua_globalfunction(L, "getBlipFlashes", GetFlashes);
+	lua_globalfunction(L, "getBlipFlashesAlternate", GetFlashesAlternate);
+	lua_globalfunction(L, "getBlipAsShortRange", GetAsShortRange);
+	lua_globalfunction(L, "getBlipPriority", GetPriority);
+	lua_globalfunction(L, "getBlipRotation", GetRotation);
+	lua_globalfunction(L, "getBlipGxtName", GetGxtName);
+	lua_globalfunction(L, "getBlipName", GetName);
+	lua_globalfunction(L, "getBlipRouteColor", GetRouteColor);
+	lua_globalfunction(L, "getBlipPulse", GetPulse);
+	lua_globalfunction(L, "getBlipAsMissionCreator", GetAsMissionCreator);
+	lua_globalfunction(L, "getBlipTickVisible", GetTickVisible);
+	lua_globalfunction(L, "getBlipHeadingIndicatorVisible", GetHeadingIndicatorVisible);
+	lua_globalfunction(L, "getBlipOutlineIndicatorVisible", GetOutlineIndicatorVisible);
+	lua_globalfunction(L, "getBlipFriendIndicatorVisible", GetFriendIndicatorVisible);
+	lua_globalfunction(L, "getBlipCrewIndicatorVisible", GetCrewIndicatorVisible);
+	lua_globalfunction(L, "getBlipCategory", GetCategory);
+	lua_globalfunction(L, "getBlipAsHighDetail", GetAsHighDetail);
+	lua_globalfunction(L, "getBlipShrinked", GetShrinked);
+
+	lua_globalfunction(L, "setBlipDisplay", SetDisplay);
+	lua_globalfunction(L, "setBlipScaleXY", SetScaleXY);
+	lua_globalfunction(L, "setBlipSprite", SetSprite);
+	lua_globalfunction(L, "setBlipColor", SetColor);
+	lua_globalfunction(L, "setBlipRoute", SetRoute);
+	lua_globalfunction(L, "setBlipRouteColor", SetRouteColor);
+	lua_globalfunction(L, "setBlipSecondaryColor", SetSecondaryColor);
+	lua_globalfunction(L, "setBlipAlpha", SetAlpha);
+	lua_globalfunction(L, "setBlipFlashTimer", SetFlashTimer);
+	lua_globalfunction(L, "setBlipFlashInterval", SetFlashInterval);
+	lua_globalfunction(L, "setBlipAsFriendly", SetAsFriendly);
+	lua_globalfunction(L, "setBlipBright", SetBright);
+	lua_globalfunction(L, "setBlipNumber", SetNumber);
+	lua_globalfunction(L, "setBlipShowCone", SetShowCone);
+	lua_globalfunction(L, "setBlipFlashes", SetFlashes);
+	lua_globalfunction(L, "setBlipFlashesAlternate", SetFlashesAlternate);
+	lua_globalfunction(L, "setBlipAsShortRange", SetAsShortRange);
+	lua_globalfunction(L, "setBlipPriority", SetPriority);
+	lua_globalfunction(L, "setBlipRotation", SetRotation);
+	lua_globalfunction(L, "setBlipGxtName", SetGxtName);
+	lua_globalfunction(L, "setBlipName", SetName);
+	lua_globalfunction(L, "setBlipPulse", SetPulse);
+	lua_globalfunction(L, "setBlipAsMissionCreator", SetAsMissionCreator);
+	lua_globalfunction(L, "setBlipTickVisible", SetTickVisible);
+	lua_globalfunction(L, "setBlipHeadingIndicatorVisible", SetHeadingIndicatorVisible);
+	lua_globalfunction(L, "setBlipOutlineIndicatorVisible", SetOutlineIndicatorVisible);
+	lua_globalfunction(L, "setBlipFriendIndicatorVisible", SetFriendIndicatorVisible);
+	lua_globalfunction(L, "setBlipCrewIndicatorVisible", SetCrewIndicatorVisible);
+	lua_globalfunction(L, "setBlipCategory", SetCategory);
+	lua_globalfunction(L, "setBlipAsHighDetail", SetAsHighDetail);
+	lua_globalfunction(L, "setBlipShrinked", SetShrinked);
+	lua_globalfunction(L, "fadeBlip", Fade);
+#endif
 	lua_globalfunction(L, "isBlipGlobal", IsGlobal);
 	lua_globalfunction(L, "getBlipTarget", GetTarget);
 	lua_globalfunction(L, "isBlipAttached", IsAttached);
@@ -17,7 +90,9 @@ void CLuaBlipDefs::Init(lua_State* L)
 
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
 	{
+#ifdef ALT_SERVER_API
 		lua_classfunction(L, "new", Create);
+#endif
 		lua_classfunction(L, "isGlobal", IsGlobal);
 		lua_classfunction(L, "getTarget", GetTarget);
 		lua_classfunction(L, "isAttached", IsAttached);
@@ -141,13 +216,47 @@ void CLuaBlipDefs::Init(lua_State* L)
 	}
 	lua_endclass(L);
 
+#ifdef ALT_SERVER_API
 	lua_beginclass(L, "BlipAttached", CLuaBlipDefs::ClassName);
 	{
 		lua_classfunction(L, "new", CreateAttached);
 	}
+#else
+	lua_beginclass(L, "AreaBlip", CLuaBlipDefs::ClassName);
+	{
+		lua_classfunction(L, "new", CreateAreaBlip);
+	}
+	lua_endclass(L);
+
+	lua_beginclass(L, "RadiusBlip", CLuaBlipDefs::ClassName);
+	{
+		lua_classfunction(L, "new", CreateRadiusBlip);
+	}
+	lua_endclass(L);
+
+	lua_beginclass(L, "PointBlip", CLuaBlipDefs::ClassName);
+	{
+		lua_classfunction(L, "new", CreatePointBlip);
+	}
+	lua_endclass(L);
+
+	lua_beginclass(L, "PedBlip", CLuaBlipDefs::ClassName);
+	{
+		lua_classfunction(L, "new", CreatePedBlip);
+	}
+	lua_endclass(L);
+
+	lua_beginclass(L, "VehicleBlip", CLuaBlipDefs::ClassName);
+	{
+		lua_classfunction(L, "new", CreateVehicleBlip);
+	}
+	lua_endclass(L);
+#endif
+
 	lua_endclass(L);
 }
 
+#ifdef ALT_SERVER_API
 int CLuaBlipDefs::Create(lua_State* L)
 {
 
@@ -166,12 +275,7 @@ int CLuaBlipDefs::Create(lua_State* L)
 		return 0;
 	}
 
-#ifdef ALT_SERVER_API
-	auto blip = Core->CreateBlip(player, static_cast<alt::IBlip::BlipType>(type), position);
-#else
-	auto blip = Core->CreateBlip(static_cast<alt::IBlip::BlipType>(type), position);
-#endif
-	
+	auto blip = Core->CreateBlip(player, static_cast<alt::IBlip::BlipType>(type), position);	
 	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
 	resourceImpl->AddEntity(blip.Get());
 
@@ -198,16 +302,109 @@ int CLuaBlipDefs::CreateAttached(lua_State* L)
 		return 0;
 	}
 
-#ifdef ALT_SERVER_API
 	auto blip = Core->CreateBlip(player, static_cast<alt::IBlip::BlipType>(type), entity);
-#else
-	auto blip = Core->CreateBlip(static_cast<alt::IBlip::BlipType>(type), entity->GetScriptGuid());
-#endif
 
 	lua_pushbaseobject(L, blip.Get());
 
 	return 1;
 }
+#else
+int CLuaBlipDefs::CreateAreaBlip(lua_State* L)
+{
+	alt::Position position;
+	float width;
+	float height;
+
+	CArgReader argReader(L);
+	argReader.ReadVector(position);
+	argReader.ReadNumber(width);
+	argReader.ReadNumber(height);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, Core->CreateBlip(position, width, height));
+
+	return 1;
+}
+
+int CLuaBlipDefs::CreateRadiusBlip(lua_State* L)
+{
+	alt::Position position;
+	float radius;
+
+	CArgReader argReader(L);
+	argReader.ReadVector(position);
+	argReader.ReadNumber(radius);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, Core->CreateBlip(position, radius));
+
+	return 1;
+}
+
+int CLuaBlipDefs::CreatePointBlip(lua_State* L)
+{
+	alt::Position position;
+
+	CArgReader argReader(L);
+	argReader.ReadVector(position);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, Core->CreateBlip(alt::IBlip::BlipType::DESTINATION, position));
+
+	return 1;
+}
+
+int CLuaBlipDefs::CreatePedBlip(lua_State* L)
+{
+	int32_t pedId;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(pedId);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, Core->CreateBlip(alt::IBlip::BlipType::PED, pedId));
+
+	return 1;
+}
+
+int CLuaBlipDefs::CreateVehicleBlip(lua_State* L)
+{
+	int32_t vehicleId;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(vehicleId);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, Core->CreateBlip(alt::IBlip::BlipType::VEHICLE, vehicleId));
+
+	return 1;
+}
+#endif
 
 #define BLIP_GET_DEFINE(PUSH, GET) \
 int CLuaBlipDefs::GET(lua_State* L) { alt::IBlip* blip; CArgReader argReader(L); argReader.ReadBaseObject(blip); if (argReader.HasAnyError()) { argReader.GetErrorMessages(); return 0; } PUSH(L, blip->GET()); return 1;}
@@ -264,7 +461,7 @@ BLIP_GET_DEFINE(lua_pushbaseobject, GetTarget)
 BLIP_GET_DEFINE(lua_pushboolean, IsAttached)
 
 #ifdef ALT_CLIENT_API
-BLIP_GET_DEFINE(lua_pushvector, GetScaleXY)
+BLIP_GET_DEFINE(lua_pushvector2, GetScaleXY)
 BLIP_GET_DEFINE(lua_pushnumber, GetDisplay)
 BLIP_GET_DEFINE(lua_pushnumber, GetSprite)
 BLIP_GET_DEFINE(lua_pushnumber, GetColor)

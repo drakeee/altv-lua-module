@@ -2,6 +2,7 @@
 
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 class CLuaMapDataDefs
 {
 public:
@@ -9,6 +10,12 @@ public:
     static void Init(lua_State* L);
 
 private:
+    static int CreateMapZoom(lua_State* L);
+
+    static int Get(lua_State* L);
+    static int Reset(lua_State* L);
+    static int ResetAll(lua_State* L);
+
     static int GetZoomScale(lua_State* L);
     static int GetZoomSpeed(lua_State* L);
     static int GetScrollSpeed(lua_State* L);
@@ -21,3 +28,4 @@ private:
     static int SetTilesCountX(lua_State* L);
     static int SetTilesCountY(lua_State* L);
 };
+#endif

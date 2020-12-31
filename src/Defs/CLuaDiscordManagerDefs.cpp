@@ -1,5 +1,6 @@
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 const char* CLuaDiscordManagerDefs::ClassName = "Discord";
 void CLuaDiscordManagerDefs::Init(lua_State* L)
 {
@@ -40,3 +41,4 @@ int CLuaDiscordManagerDefs::GetCurrentUser(lua_State* L)
 
 	return 1;
 }
+#endif

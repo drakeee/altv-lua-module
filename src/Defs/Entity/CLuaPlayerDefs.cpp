@@ -121,6 +121,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "setWeather", SetWeather);
 		lua_classfunction(L, "kick", Kick);
 #else
+		lua_classfunction(L, "getLocalPlayer", GetLocalPlayer);
+
 		lua_classfunction(L, "isTalking", IsTalking);
 		lua_classfunction(L, "getMicLevel", GetMicLevel);
 #endif
@@ -171,6 +173,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "health", nullptr, "getHealth");
 		lua_classvariable(L, "maxHealth", nullptr, "getMaxHealth");
 		lua_classvariable(L, "micLevel", nullptr, "getMicLevel");
+		lua_classvariable(L, "local", nullptr, "getLocalPlayer");
 #endif
 	}
 	lua_endclass(L);
@@ -540,7 +543,7 @@ int CLuaPlayerDefs::GetAimPos(lua_State* L)
 		return 0;
 	}
 
-	lua_pushvector(L, player->GetAimPos());
+	lua_pushvector3(L, player->GetAimPos());
 
 	return 1;
 }
@@ -558,7 +561,7 @@ int CLuaPlayerDefs::GetHeadRotation(lua_State* L)
 		return 0;
 	}
 
-	lua_pushvector(L, player->GetHeadRotation());
+	lua_pushvector3(L, player->GetHeadRotation());
 
 	return 1;
 }
@@ -655,7 +658,7 @@ int CLuaPlayerDefs::GetEntityAimOffset(lua_State* L)
 		return 0;
 	}
 
-	lua_pushvector(L, player->GetEntityAimOffset());
+	lua_pushvector3(L, player->GetEntityAimOffset());
 
 	return 1;
 }
@@ -1204,6 +1207,12 @@ int CLuaPlayerDefs::Kick(lua_State* L)
 //	return 0;
 //}
 #else
+int CLuaPlayerDefs::GetLocalPlayer(lua_State* L)
+{
+	lua_pushbaseobject(L, Core->GetLocalPlayer());
+	return 1;
+}
+
 int CLuaPlayerDefs::IsTalking(lua_State* L)
 {
 	alt::IPlayer* player;

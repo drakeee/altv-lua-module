@@ -2,6 +2,7 @@
 
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 class CLuaWebViewDefs
 {
 public:
@@ -10,6 +11,8 @@ public:
 
 private:
     static int CreateWebView(lua_State* L);
+    static int On(lua_State* L);
+    static int Off(lua_State* L);
     static int Trigger(lua_State* L);
     static int Focus(lua_State* L);
     static int Unfocus(lua_State* L);
@@ -21,3 +24,4 @@ private:
     static int IsOverlay(lua_State* L);
     static int IsReady(lua_State* L);
 };
+#endif

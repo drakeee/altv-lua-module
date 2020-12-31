@@ -70,6 +70,8 @@ public:
 		if (!this->IsFunctionRefExists(ptr))
 			return false;
 
+		luaL_unref(this->resourceState, LUA_REGISTRYINDEX, this->GetFunctionRef(ptr));
+
 		this->functionReferences.erase(ptr);
 		return true;
 	}
@@ -84,6 +86,15 @@ public:
 
 		return this->functionReferences[ptr];
 	}
+	inline const void* GetFunctionRefByID(int functionRef)
+	{
+		for (auto it = this->functionReferences.begin(); it != this->functionReferences.end(); ++it)
+			if (it->second == functionRef)
+				return it->first;
+
+		return nullptr;
+	}
+
 	inline void				AddExport(std::string exportName, LuaFunction* func)
 	{
 		this->exportFunction->Set(exportName, Core->CreateMValueFunction(func));

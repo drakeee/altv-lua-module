@@ -313,7 +313,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 				lua_pushnumber(L, i + 1);
 				lua_newtable(L);
 				lua_pushstring(L, "position");
-				lua_pushvector(L, fire.position);
+				lua_pushvector3(L, fire.position);
 				lua_rawset(L, -3);
 
 				lua_pushstring(L, "weapon");
@@ -339,7 +339,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 
 			lua_pushbaseobject(L, event->GetSource().Get());
 			lua_pushnumber(L, static_cast<int>(event->GetExplosionType()));
-			lua_pushvector(L, event->GetPosition());
+			lua_pushvector3(L, event->GetPosition());
 			lua_pushnumber(L, event->GetExplosionFX());
 
 			return 4;
@@ -358,8 +358,8 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_State* L = resource->GetLuaState();
 
 			lua_pushbaseobject(L, event->GetSource().Get());
-			lua_pushvector(L, event->GetStartPosition());
-			lua_pushvector(L, event->GetDirection());
+			lua_pushvector3(L, event->GetStartPosition());
+			lua_pushvector3(L, event->GetDirection());
 			lua_pushnumber(L, event->GetAmmoHash());
 			lua_pushnumber(L, event->GetWeaponHash());
 
@@ -382,7 +382,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_pushbaseobject(L, event->GetTarget().Get());
 			lua_pushnumber(L, event->GetWeaponHash());
 			lua_pushnumber(L, event->GetDamageValue());
-			lua_pushvector(L, event->GetShotOffset());
+			lua_pushvector3(L, event->GetShotOffset());
 			lua_pushnumber(L, static_cast<int>(event->GetBodyPart()));
 
 			return 6;

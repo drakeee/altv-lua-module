@@ -41,5 +41,6 @@ private:
 	static int SetVisible(lua_State* L);
 #else
 	static int GetScriptGuid(lua_State* L);
+	static int GetEntityByScriptGuid(lua_State* L);
 #endif
 };

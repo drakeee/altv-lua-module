@@ -1,6 +1,5 @@
 #include <Main.h>
 
-#ifdef ALT_SERVER_API
 const char* CLuaCheckpointDefs::ClassName = "Checkpoint";
 void CLuaCheckpointDefs::Init(lua_State* L)
 {
@@ -30,6 +29,7 @@ int CLuaCheckpointDefs::Create(lua_State* L)
 {
 	uint8_t type;
 	alt::Position position;
+	alt::Position nextPosition;
 	float radius;
 	float height;
 	alt::RGBA color;
@@ -37,6 +37,9 @@ int CLuaCheckpointDefs::Create(lua_State* L)
 	CArgReader argReader(L);
 	argReader.ReadNumber(type);
 	argReader.ReadVector(position);
+#ifdef ALT_CLIENT_API
+	argReader.ReadVector(nextPosition);
+#endif
 	argReader.ReadNumber(radius);
 	argReader.ReadNumber(height);
 	argReader.ReadRGBA(color);
@@ -47,7 +50,11 @@ int CLuaCheckpointDefs::Create(lua_State* L)
 		return 0;
 	}
 
+#ifdef ALT_SERVER_API
 	auto checkpoint = Core->CreateCheckpoint(type, position, radius, height, color);
+#else
+	auto checkpoint = Core->CreateCheckpoint(type, position, nextPosition, radius, height, color);
+#endif
 	if (checkpoint)
 	{
 		lua_pushbaseobject(L, checkpoint.Get());
@@ -132,4 +139,3 @@ int CLuaCheckpointDefs::GetColor(lua_State* L)
 
 	return 1;
 }
-#endif

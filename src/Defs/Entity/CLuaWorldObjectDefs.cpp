@@ -63,7 +63,7 @@ int CLuaWorldObjectDefs::GetPosition(lua_State* L)
 
 	Core->LogInfo("CLuaWorldObjectDefs::GetPosition: " + std::to_string(worldObject->GetPosition().x));
 
-	lua_pushvector(L, worldObject->GetPosition());
+	lua_pushvector3(L, worldObject->GetPosition());
 
 	return 1;
 }

@@ -2,6 +2,7 @@
 
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 class CLuaDiscordManagerDefs
 {
 public:
@@ -11,3 +12,4 @@ public:
 private:
 	static int GetCurrentUser(lua_State* L);
 };
+#endif

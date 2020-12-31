@@ -1,8 +1,10 @@
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 const char* CLuaHandlingDataDefs::ClassName = "HandlingData";
 void CLuaHandlingDataDefs::Init(lua_State* L)
 {
+	lua_globalfunction(L, "getHandlingData", GetHandlingData);
 	lua_globalfunction(L, "getHandlingHandlingNameHash", GetHandlingNameHash);
 	lua_globalfunction(L, "getHandlingMass", GetMass);
 	lua_globalfunction(L, "getHandlingInitialDragCoeff", GetInitialDragCoeff);
@@ -138,6 +140,7 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 
 	lua_beginclass(L, CLuaHandlingDataDefs::ClassName);
 	{
+		lua_classfunction(L, "new", GetHandlingData);
 		lua_classfunction(L, "getHandlingNameHash", GetHandlingNameHash);
 		lua_classfunction(L, "getMass", GetMass);
 		lua_classfunction(L, "getInitialDragCoeff", GetInitialDragCoeff);
@@ -340,6 +343,31 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 	lua_endclass(L);
 }
 
+int CLuaHandlingDataDefs::GetHandlingData(lua_State* L)
+{
+	uint32_t modelHash;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(modelHash);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto handlingData = Core->GetHandlingData(modelHash);
+	if (handlingData.IsEmpty())
+	{
+		lua_pushnil(L);
+	}
+	else {
+		lua_pushhandlingdata(L, handlingData);
+	}
+
+	return 1;
+}
+
 #define HANDLING_GET_DEFINE(PUSH, GET) \
 int CLuaHandlingDataDefs::GET(lua_State* L) { alt::IHandlingData* handlingData; CArgReader argReader(L); argReader.ReadUserData(handlingData); if (argReader.HasAnyError()) { argReader.GetErrorMessages(); return 0; } PUSH(L, handlingData->GET()); return 1;}
 
@@ -352,8 +380,8 @@ HANDLING_GET_DEFINE(lua_pushnumber, GetInitialDragCoeff)
 HANDLING_GET_DEFINE(lua_pushnumber, GetDownforceModifier)
 HANDLING_GET_DEFINE(lua_pushnumber, GetunkFloat1)
 HANDLING_GET_DEFINE(lua_pushnumber, GetunkFloat2)
-HANDLING_GET_DEFINE(lua_pushvector, GetCentreOfMassOffset)
-HANDLING_GET_DEFINE(lua_pushvector, GetInertiaMultiplier)
+HANDLING_GET_DEFINE(lua_pushvector3, GetCentreOfMassOffset)
+HANDLING_GET_DEFINE(lua_pushvector3, GetInertiaMultiplier)
 HANDLING_GET_DEFINE(lua_pushnumber, GetPercentSubmerged)
 HANDLING_GET_DEFINE(lua_pushnumber, GetPercentSubmergedRatio)
 HANDLING_GET_DEFINE(lua_pushnumber, GetDriveBiasFront)
@@ -479,3 +507,4 @@ HANDLING_SET_DEFINE(float, ReadNumber, SetMonetaryValue)
 HANDLING_SET_DEFINE(float, ReadNumber, SetModelFlags)
 HANDLING_SET_DEFINE(float, ReadNumber, SetHandlingFlags)
 HANDLING_SET_DEFINE(float, ReadNumber, SetDamageFlags)
+#endif

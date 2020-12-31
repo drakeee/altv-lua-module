@@ -26,6 +26,9 @@ void CLuaEntityDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setEntityStreamSyncedMetaData", SetStreamSyncedMetaData);
 	lua_globalfunction(L, "deleteEntityStreamSyncedMetaData", DeleteStreamSyncedMetaData);
 	lua_globalfunction(L, "setEntityVisible", SetVisible);
+#else
+	lua_globalfunction(L, "getEntityByScriptID", GetEntityByScriptGuid);
+	lua_globalfunction(L, "getEntityScriptID", GetScriptGuid);
 #endif
 
 	lua_beginclass(L, ClassName, CLuaWorldObjectDefs::ClassName);
@@ -56,6 +59,7 @@ void CLuaEntityDefs::Init(lua_State* L)
 		lua_classfunction(L, "deleteStreamSyncedMetaData", DeleteStreamSyncedMetaData);
 		lua_classfunction(L, "setVisible", SetVisible);
 #else
+		lua_classfunction(L, "getByScriptID", GetEntityByScriptGuid);
 		lua_classfunction(L, "getScriptID", GetScriptGuid);
 #endif
 
@@ -254,7 +258,7 @@ int CLuaEntityDefs::GetRotation(lua_State* L)
 	}
 
 	//lua_pushuserdata(L, "Vector3", new alt::Rotation(entity->GetRotation()), false);
-	lua_pushvector(L, entity->GetRotation());
+	lua_pushvector3(L, entity->GetRotation());
 
 	return 1;
 }
@@ -498,6 +502,24 @@ int CLuaEntityDefs::GetScriptGuid(lua_State* L)
 	}
 
 	lua_pushnumber(L, entity->GetScriptGuid());
+
+	return 1;
+}
+
+int CLuaEntityDefs::GetEntityByScriptGuid(lua_State* L)
+{
+	int32_t scriptID;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(scriptID);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushbaseobject(L, Core->GetEntityByScriptGuid(scriptID));
 
 	return 1;
 }

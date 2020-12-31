@@ -73,6 +73,51 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 
 	lua_pushnumber(L, alt::GLOBAL_DIMENSION);
 	lua_setglobal(L, "globalDimension");
+#else
+	lua_globalfunction(L, "setCharStat", SetCharStat);
+	lua_globalfunction(L, "getCharStat", GetCharStat);
+	lua_globalfunction(L, "resetCharStat", ResetCharStat);
+
+	lua_globalfunction(L, "isSandbox", IsSandbox);
+
+	lua_globalfunction(L, "isKeyDown", IsKeyDown);
+	lua_globalfunction(L, "isKeyToggled", IsKeyToggled);
+	
+	lua_globalfunction(L, "gameControlsEnabled", AreControlsEnabled);
+	lua_globalfunction(L, "setCursorPos", SetCursorPosition);
+	lua_globalfunction(L, "getCursorPos", GetCursorPosition);
+
+	lua_globalfunction(L, "setConfigFlag", SetConfigFlag);
+	lua_globalfunction(L, "getConfigFlag", GetConfigFlag);
+	lua_globalfunction(L, "doesConfigFlagExist", DoesConfigFlagExist);
+
+	lua_globalfunction(L, "getLicenseHash", GetLicenseHash);
+	lua_globalfunction(L, "getLocale", GetLocale);
+	lua_globalfunction(L, "isInStreamerMode", IsInStreamerMode);
+	lua_globalfunction(L, "isMenuOpen", IsMenuOpen);
+	lua_globalfunction(L, "isConsoleOpen", IsConsoleOpen);
+	lua_globalfunction(L, "isTextureExistInArchetype", GetTextureFromDrawable);
+
+	lua_globalfunction(L, "requestIpl", RequestIPL);
+	lua_globalfunction(L, "removeIpl", RemoveIPL);
+
+	lua_globalfunction(L, "beginScaleformMovieMethodMinimap", BeginScaleformMovieMethodMinimap);
+
+	lua_globalfunction(L, "getMsPerGameMinute", GetMsPerGameMinute);
+	lua_globalfunction(L, "setMsPerGameMinute", SetMsPerGameMinute);
+	lua_globalfunction(L, "setWeatherCycle", SetWeatherCycle);
+	lua_globalfunction(L, "setWeatherSyncActive", SetWeatherSyncActive);
+
+	lua_globalfunction(L, "setCamFrozen", SetCamFrozen);
+
+	lua_globalfunction(L, "getPermissionState", GetPermissionState);
+
+	lua_globalfunction(L, "takeScreenshot", TakeScreenshot);
+	lua_globalfunction(L, "takeScreenshotGameOnly", TakeScreenshotGameOnly);
+
+	lua_globalfunction(L, "setAngularVelocity", SetAngularVelocity);
+
+	lua_globalfunction(L, "isGameFocused", IsGameFocused);
 #endif
 
 	lua_beginclass(L, ClassName);
@@ -382,7 +427,659 @@ int CLuaAltFuncDefs::GetNetTime(lua_State* L)
 	lua_pushnumber(L, Core->GetNetTime());
 	return 1;
 }
+#else
+int CLuaAltFuncDefs::SetCharStat(lua_State* L)
+{
+	std::string statName;
 
+	CArgReader argReader(L);
+	argReader.ReadString(statName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto targetStat = Core->GetStatData(statName);
+	L_ASSERT(targetStat != nullptr, "stat with this name not found");
+
+	L_ASSERT(strcmp(targetStat->GetStatType(), "NONE") != 0 && strcmp(targetStat->GetStatType(), "PROFILE_SETTING") != 0, "target stat can't be edited");
+
+	if (!strcmp(targetStat->GetStatType(), "INT") || !strcmp(targetStat->GetStatType(), "TEXTLABEL"))
+	{
+		int32_t value;
+		argReader.ReadNumber(value);
+		targetStat->SetInt32Value(value);
+		lua_pushboolean(L, true);
+	}
+	else if (!strcmp(targetStat->GetStatType(), "INT64"))
+	{
+		int32_t value;
+		argReader.ReadNumber(value);
+		targetStat->SetInt64Value(value);
+		lua_pushboolean(L, true);
+	}
+	else if (!strcmp(targetStat->GetStatType(), "FLOAT"))
+	{
+		float value;
+		argReader.ReadNumber(value);
+		targetStat->SetFloatValue(value);
+		lua_pushboolean(L, true);
+	}
+	else if (!strcmp(targetStat->GetStatType(), "BOOL"))
+	{
+		bool value;
+		argReader.ReadBool(value);
+		targetStat->SetBoolValue(value);
+		lua_pushboolean(L, true);
+	}
+	else if (!strcmp(targetStat->GetStatType(), "STRING"))
+	{
+		std::string value;
+		argReader.ReadString(value);
+		targetStat->SetStringValue(value.c_str());
+		lua_pushboolean(L, true);
+	}
+	else if (!strcmp(targetStat->GetStatType(), "UINT8"))
+	{
+		uint8_t value;
+		argReader.ReadNumber(value);
+		targetStat->SetUInt8Value(value);
+		lua_pushboolean(L, true);
+	}
+	else if (!strcmp(targetStat->GetStatType(), "UINT16"))
+	{
+		uint16_t value;
+		argReader.ReadNumber(value);
+		targetStat->SetUInt16Value(value);
+		lua_pushboolean(L, true);
+	}
+	else if (!strcmp(targetStat->GetStatType(), "UINT32"))
+	{
+		uint32_t value;
+		argReader.ReadNumber(value);
+		targetStat->SetUInt32Value(value);
+		lua_pushboolean(L, true);
+	}
+	else if (
+		!strcmp(targetStat->GetStatType(), "UINT64") ||
+		!strcmp(targetStat->GetStatType(), "POS") ||
+		!strcmp(targetStat->GetStatType(), "DATE") ||
+		!strcmp(targetStat->GetStatType(), "PACKED") ||
+		!strcmp(targetStat->GetStatType(), "USERID"))
+	{
+		uint32_t value;
+		argReader.ReadNumber(value);
+		targetStat->SetUInt64Value(value);
+		lua_pushboolean(L, true);
+	}
+	else {
+		lua_pushboolean(L, false);
+	}
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetCharStat(lua_State* L)
+{
+	std::string statName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(statName);
+
+	auto targetStat = Core->GetStatData(statName);
+	L_ASSERT(targetStat != nullptr, "stat with this name not found");
+
+	L_ASSERT(strcmp(targetStat->GetStatType(), "NONE") != 0 && strcmp(targetStat->GetStatType(), "PROFILE_SETTING") != 0, "target stat can't be readed");
+
+	if (!strcmp(targetStat->GetStatType(), "INT"))
+	{
+		lua_pushnumber(L, targetStat->GetInt32Value());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "INT64"))
+	{
+		lua_pushnumber(L, targetStat->GetInt64Value());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "TEXTLABEL"))
+	{
+		lua_pushnumber(L, targetStat->GetInt32Value());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "FLOAT"))
+	{
+		lua_pushnumber(L, targetStat->GetFloatValue());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "BOOL"))
+	{
+		lua_pushboolean(L, targetStat->GetBoolValue());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "STRING"))
+	{
+		lua_pushstring(L, targetStat->GetStringValue());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "UINT8"))
+	{
+		lua_pushnumber(L, targetStat->GetUInt8Value());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "UINT16"))
+	{
+		lua_pushnumber(L, targetStat->GetUInt16Value());
+	}
+	else if (!strcmp(targetStat->GetStatType(), "UINT32"))
+	{
+		lua_pushnumber(L, targetStat->GetUInt32Value());
+	}
+	else if (
+		!strcmp(targetStat->GetStatType(), "UINT64") ||
+		!strcmp(targetStat->GetStatType(), "POS") ||
+		!strcmp(targetStat->GetStatType(), "DATE") ||
+		!strcmp(targetStat->GetStatType(), "PACKED") ||
+		!strcmp(targetStat->GetStatType(), "USERID"))
+	{
+		lua_pushnumber(L, targetStat->GetUInt64Value());
+	}
+	else {
+		lua_pushnil(L);
+	}
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::ResetCharStat(lua_State* L)
+{
+	std::string statName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(statName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto targetStat = Core->GetStatData(statName);
+	L_ASSERT(targetStat != nullptr, "stat with this name not found");
+
+	L_ASSERT(strcmp(targetStat->GetStatType(), "NONE") != 0 && strcmp(targetStat->GetStatType(), "PROFILE_SETTING") != 0, "target stat can't be reseted");
+	targetStat->Reset();
+
+	lua_pushboolean(L, true);
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::IsSandbox(lua_State* L)
+{
+	lua_pushboolean(L, Core->IsSandbox());
+	return 1;
+}
+
+int CLuaAltFuncDefs::IsKeyDown(lua_State* L)
+{
+	uint32_t keyCode;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(keyCode);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->GetKeyState(keyCode).IsDown());
+	return 1;
+}
+
+int CLuaAltFuncDefs::IsKeyToggled(lua_State* L)
+{
+	uint32_t keyCode;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(keyCode);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->GetKeyState(keyCode).IsToggled());
+	return 1;
+}
+
+int CLuaAltFuncDefs::AreControlsEnabled(lua_State* L)
+{
+	lua_pushboolean(L, Core->AreControlsEnabled());
+	return 1;
+}
+
+int CLuaAltFuncDefs::SetCursorPosition(lua_State* L)
+{
+	alt::Vector2i position;
+
+	CArgReader argReader(L);
+	argReader.ReadVector(position);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetCursorPosition(position);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::GetCursorPosition(lua_State* L)
+{
+	lua_pushvector2(L, Core->GetCursorPosition());
+	return 1;
+}
+
+int CLuaAltFuncDefs::SetConfigFlag(lua_State* L)
+{
+	std::string flag;
+	bool state;
+
+	CArgReader argReader(L);
+	argReader.ReadString(flag);
+	argReader.ReadBool(state);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetConfigFlag(flag, state);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::GetConfigFlag(lua_State* L)
+{
+	std::string flag;
+
+	CArgReader argReader(L);
+	argReader.ReadString(flag);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->GetConfigFlag(flag));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::DoesConfigFlagExist(lua_State* L)
+{
+	std::string flag;
+
+	CArgReader argReader(L);
+	argReader.ReadString(flag);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->DoesConfigFlagExist(flag));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetLicenseHash(lua_State* L)
+{
+	lua_pushstring(L, Core->GetLicenseHash());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetLocale(lua_State* L)
+{
+	lua_pushstring(L, Core->GetLocale());
+	return 1;
+}
+
+int CLuaAltFuncDefs::IsInStreamerMode(lua_State* L)
+{
+	lua_pushboolean(L, Core->IsInStreamerMode());
+	return 1;
+}
+
+int CLuaAltFuncDefs::IsMenuOpen(lua_State* L)
+{
+	lua_pushboolean(L, Core->IsMenuOpen());
+	return 1;
+}
+
+int CLuaAltFuncDefs::IsConsoleOpen(lua_State* L)
+{
+	lua_pushboolean(L, Core->IsConsoleOpen());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetTextureFromDrawable(lua_State* L)
+{
+	uint32_t modelHash;
+	std::string targetTextureName;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(modelHash);
+	argReader.ReadString(targetTextureName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, nullptr != Core->GetTextureFromDrawable(modelHash, targetTextureName));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::RequestIPL(lua_State* L)
+{
+	std::string ipl;
+
+	CArgReader argReader(L);
+	argReader.ReadString(ipl);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->RequestIPL(ipl);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::RemoveIPL(lua_State* L)
+{
+	std::string ipl;
+
+	CArgReader argReader(L);
+	argReader.ReadString(ipl);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->RemoveIPL(ipl);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::BeginScaleformMovieMethodMinimap(lua_State* L)
+{
+	std::string methodName;
+
+	CArgReader argReader(L);
+	argReader.ReadString(methodName);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->BeginScaleformMovieMethodMinimap(methodName));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetMsPerGameMinute(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetMsPerGameMinute());
+	return 1;
+}
+
+int CLuaAltFuncDefs::SetMsPerGameMinute(lua_State* L)
+{
+	int32_t val;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(val);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetMsPerGameMinute(val);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::SetWeatherCycle(lua_State* L)
+{
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+	argReader.ReadArguments(args);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	L_ASSERT(args[0]->GetType() == alt::IMValue::Type::LIST, "weathers must be an array");
+	L_ASSERT(args[1]->GetType() == alt::IMValue::Type::LIST, "timeMultipliers must be an array");
+
+	auto weathers = args[0].As<alt::IMValueList>();
+	auto multipliers = args[1].As<alt::IMValueList>();
+
+	L_ASSERT(weathers->GetSize() <= 256, "weathers count must be <= 256");
+	L_ASSERT(multipliers->GetSize() <= 256, "multipliers count must be <= 256");
+	L_ASSERT(weathers->GetSize() == multipliers->GetSize(), "weathers count and multipliers count must be the same");
+
+	alt::Array<uint8_t> weathersVec;
+	alt::Array<uint8_t> multipliersVec;
+
+	for (int i = 0; i < weathers->GetSize(); ++i)
+	{
+		auto weatherVal = weathers->Get(i);
+		if (weathers->GetType() != alt::IMValue::Type::INT)
+			continue;
+
+		auto multiplierVal = multipliers->Get(i);
+		if (multiplierVal->GetType() != alt::IMValue::Type::INT)
+			continue;
+
+		uint32_t weatherNum = weatherVal.As<alt::IMValueInt>()->Value();
+		L_ASSERT(weatherNum >= 0 && weatherNum <= 14, "weather ids must be >= 0 && <= 14");
+		weathersVec.Push(weatherNum);
+
+		uint32_t multiplierNum = multiplierVal.As<alt::IMValueInt>()->Value();
+		L_ASSERT(multiplierNum > 0 && multiplierNum <= 720, "multipliers must be > 0 && <= 720");
+		multipliersVec.Push(multiplierNum);
+	}
+
+	Core->SetWeatherCycle(weathersVec, multipliersVec);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::SetWeatherSyncActive(lua_State* L)
+{
+	bool active;
+
+	CArgReader argReader(L);
+	argReader.ReadBool(active);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetWeatherSyncActive(active);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::SetCamFrozen(lua_State* L)
+{
+	bool frozen;
+
+	CArgReader argReader(L);
+	argReader.ReadBool(frozen);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetCamFrozen(frozen);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::GetPermissionState(lua_State* L)
+{
+	uint8_t permission;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(permission);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, static_cast<uint8_t>(Core->GetPermissionState((alt::Permission)permission)));
+
+	return 1;
+}
+
+struct ScreenshotHelper
+{
+	lua_State* L;
+	int functionIndex;
+};
+
+int CLuaAltFuncDefs::TakeScreenshot(lua_State* L)
+{
+	int functionIndex;
+
+	CArgReader argReader(L);
+	argReader.ReadFunction(functionIndex);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto state = Core->GetPermissionState(alt::Permission::ScreenCapture);
+	L_ASSERT(state != alt::PermissionState::Denied, "No permissions");
+	L_ASSERT(state != alt::PermissionState::Unspecified, "Permissions not specified");
+
+	auto args = new ScreenshotHelper;
+	args->L = L;
+	args->functionIndex = functionIndex;
+
+	Core->TakeScreenshot([](alt::StringView base64, const void* userData)
+	{
+		auto args = (ScreenshotHelper*)userData;
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
+		L_ASSERT(resourceImpl != nullptr, "lua state not found when executing TakeScreenshot");
+
+		auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
+
+		lua_rawgeti(args->L, LUA_REGISTRYINDEX, args->functionIndex);
+		lua_pushstring(args->L, base64.CStr());
+
+		lua_call(args->L, 1, 0);
+
+		resourceImpl->RemoveFunctionRef(voidPtr);
+		delete args;
+	}, args);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::TakeScreenshotGameOnly(lua_State* L)
+{
+	int functionIndex;
+
+	CArgReader argReader(L);
+	argReader.ReadFunction(functionIndex);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto state = Core->GetPermissionState(alt::Permission::ScreenCapture);
+	L_ASSERT(state != alt::PermissionState::Denied, "No permissions");
+	L_ASSERT(state != alt::PermissionState::Unspecified, "Permissions not specified");
+
+	auto args = new ScreenshotHelper;
+	args->L = L;
+	args->functionIndex = functionIndex;
+
+	Core->TakeScreenshotGameOnly([](alt::StringView base64, const void* userData)
+	{
+		auto args = (ScreenshotHelper*)userData;
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
+		L_ASSERT(resourceImpl != nullptr, "lua state not found when executing TakeScreenshot");
+
+		auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
+
+		lua_rawgeti(args->L, LUA_REGISTRYINDEX, args->functionIndex);
+		lua_pushstring(args->L, base64.CStr());
+
+		lua_call(args->L, 1, 0);
+
+		resourceImpl->RemoveFunctionRef(voidPtr);
+		delete args;
+	}, args);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::SetAngularVelocity(lua_State* L)
+{
+	uint32_t index;
+	alt::Vector4f velocity;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(index);
+	argReader.ReadVector(velocity);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetAngularVelocity(index, velocity);
+	
+	return 0;
+}
+
+int CLuaAltFuncDefs::IsGameFocused(lua_State* L)
+{
+	lua_pushboolean(L, Core->IsGameFocused());
+	return 1;
+}
 #endif
 
 int CLuaAltFuncDefs::GetSyncedMetaData(lua_State* L)
@@ -692,7 +1389,11 @@ int CLuaAltFuncDefs::EmitServer(lua_State* L)
 		return 0;
 	}
 
+#ifdef ALT_SERVER_API
 	Core->TriggerLocalEvent(eventName, args);
+#else
+	Core->TriggerServerEvent(eventName, args);
+#endif
 
 	return 0;
 }

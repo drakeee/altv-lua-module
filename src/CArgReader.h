@@ -308,7 +308,7 @@ public:
 		}
 		else if(argType == LUA_TUSERDATA)
 		{
-			alt::Vector3<float> *tempVector = nullptr;
+			alt::Vector<type, size, _Layout> *tempVector = nullptr;
 			ReadUserData(tempVector);
 
 			if(tempVector)
@@ -322,7 +322,7 @@ public:
 		//TODO: Handle Vector3 object
 
 		if(isDefault == nullptr)
-			AddErrorMessage("Vector3");
+			AddErrorMessage("Vector");
 
 		SET_DEFAULT(isDefault, true);
 

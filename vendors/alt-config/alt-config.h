@@ -284,7 +284,7 @@ namespace alt::config
 				{
 					return std::stod(val);
 				}
-				catch (const std::invalid_argument& e)
+				catch (const std::invalid_argument&)
 				{
 					throw Error{ "Not a number" };
 				}

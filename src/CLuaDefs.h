@@ -7,7 +7,7 @@
 #endif
 
 #define L_ASSERT(a,b) \
-	assert((!a?(Core->LogError(b),true):true)&&a)
+	assert((!(a)?(Core->LogError(b),true):true)&&a)
 
 #define UPVALUE_METADATA 1
 #define UPVALUE_SET 2
@@ -36,6 +36,7 @@ void lua_classfunction(lua_State* L, const char* functionName, const char* globa
 void lua_classfunction(lua_State* L, const char* functionName, lua_CFunction function);
 void lua_classmeta(lua_State* L, const char* metaName, lua_CFunction metaFunction, bool useClosure = false); //if useClosure set to true we store metatable in the upvalue
 void lua_classvariable(lua_State* L, const char* variableName, const char* setFunction, const char* getFunction);
+void lua_classvariable(lua_State* L, const char* variableName, lua_CFunction setFunction, lua_CFunction getFunction);
 
 void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool refUserData = true);
 void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData = true);
@@ -43,16 +44,27 @@ void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, boo
 void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData = true);
 void lua_pushstring(lua_State* L, alt::String& str);
 
-template<class T, std::size_t W, class _Layout = alt::VectorLayout<T, W>>
-void lua_pushvector(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool refUserData = false)
-{
-	alt::Vector<T, W, _Layout>* vec = new alt::Vector<T, W, _Layout>(vector);
-	lua_pushuserdata(L, CLuaVector3Defs::ClassName, vec, refUserData);
-}
+#ifdef ALT_CLIENT_API
+void lua_pushwebview(lua_State* L, alt::IWebView* webView, bool refUserData = true);
+
+void lua_pushmapdata(lua_State* L, alt::IMapData* mapData, bool refUserData = false);
+void lua_pushmapdata(lua_State* L, alt::Ref<alt::IMapData> mapData, bool refUserData = false);
+
+void lua_pushhandlingdata(lua_State* L, alt::Ref<alt::IHandlingData> handlingData, bool refUserData = false);
+void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool refUserData = false);
+#endif
+//template<class T, std::size_t W, class _Layout = alt::VectorLayout<T, W>>
+//void lua_pushvector3(lua_State* L, const alt::Vector<T, W, _Layout>& vector, bool refUserData = false)
+//{
+//	alt::Vector<T, W, _Layout>* vec = new alt::Vector<T, W, _Layout>(vector);
+//	lua_pushuserdata(L, CLuaVector3Defs::ClassName, vec, refUserData);
+//}
+void lua_pushvector2(lua_State* L, Vector2fp* vector, bool refUserData = false);
+void lua_pushvector2(lua_State* L, const Vector2fp& vector, bool refUserData = false);
+void lua_pushvector3(lua_State* L, Vector3fp* vector, bool refUserData = false);
+void lua_pushvector3(lua_State* L, const Vector3fp& vector, bool refUserData = false);
 //void lua_pushvehicle(lua_State* L, alt::IVehicle* vehicle, bool refUserData = true);
 void lua_pushrgba(lua_State* L, const alt::RGBA &color, bool refUserData = false);
-void lua_pushhandlingdata(lua_State* L, alt::IHandlingData* handlingData, bool refUserData = false);
-void lua_pushwebview(lua_State* L, alt::IWebView* webView, bool refUserData = true);
 void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue);
 void lua_pushnode(lua_State* L, alt::config::Node& node);
 void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args);

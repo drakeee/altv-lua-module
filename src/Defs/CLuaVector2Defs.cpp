@@ -1,7 +1,7 @@
 #include "Main.h"
 
-const char* CLuaVector3Defs::ClassName = "Vector3";
-void CLuaVector3Defs::Init(lua_State *L)
+const char* CLuaVector2Defs::ClassName = "Vector2";
+void CLuaVector2Defs::Init(lua_State *L)
 {
 	lua_beginclass(L, ClassName);
 	{
@@ -12,21 +12,18 @@ void CLuaVector3Defs::Init(lua_State *L)
 		lua_classfunction(L, "new", create);
 		lua_classfunction(L, "setX", SetX);
 		lua_classfunction(L, "setY", SetY);
-		lua_classfunction(L, "setZ", SetZ);
 		lua_classfunction(L, "getX", GetX);
 		lua_classfunction(L, "getY", GetY);
-		lua_classfunction(L, "getZ", GetZ);
 
 		lua_classvariable(L, "x", "setX", "getX");
 		lua_classvariable(L, "y", "setY", "getY");
-		lua_classvariable(L, "z", "setZ", "getZ");
 	}
 	lua_endclass(L);
 }
 
-int CLuaVector3Defs::create(lua_State *L)
+int CLuaVector2Defs::create(lua_State *L)
 {
-	Vector3fp vector(0.0, 0.0, 0.0);
+	Vector2fp vector(0.0, 0.0);
 
 	CArgReader argReader(L);
 	if(argReader.IsCurrentType(LUA_TTABLE))
@@ -67,24 +64,6 @@ int CLuaVector3Defs::create(lua_State *L)
 			lua_pop(L, 1);
 		}
 
-
-		lua_pushstring(L, "z");
-		lua_rawget(L, -2);
-
-		if(lua_isnumber(L, -1))
-		{
-			vector[2] = static_cast<float>(lua_tonumber(L, -1));
-			lua_pop(L, 1);
-		} else {
-			lua_pop(L, 1);
-			lua_rawgeti(L, -1, 3);
-
-			if(lua_isnumber(L, -1))
-				vector[2] = static_cast<float>(lua_tonumber(L, -1));
-
-			lua_pop(L, 1);
-		}
-
 		lua_pop(L, 1);
 	}else if(argReader.IsCurrentType(LUA_TNUMBER))
 	{
@@ -95,7 +74,7 @@ int CLuaVector3Defs::create(lua_State *L)
 	//Core->LogInfo("Vector3: x = "+ std::to_string(vector.x) +", y = "+ std::to_string(vector.y) +", z = "+ std::to_string(vector.z) +"");
 #endif
 
-	Vector3fp* tempVector = new Vector3fp(vector);
+	Vector2fp* tempVector = new Vector2fp(vector);
 
 #ifdef _DEBUG
 	/*printf("Create vector: %d\n", tempVector);*/
@@ -104,14 +83,14 @@ int CLuaVector3Defs::create(lua_State *L)
 	// in this case we don't want to store any reference in the Lua registry
 	// TODO (?): maybe store reference because we might need it (?) 
 
-	lua_pushuserdata(L, "Vector3", tempVector, false);
+	lua_pushvector2(L, tempVector);
 
 	return 1;
 }
 
-int CLuaVector3Defs::destroy(lua_State *L)
+int CLuaVector2Defs::destroy(lua_State *L)
 {
-	Vector3fp *vector = nullptr;
+	Vector2fp *vector = nullptr;
 
 	//lua_stacktrace(L, "destroy");
 
@@ -140,9 +119,9 @@ int CLuaVector3Defs::destroy(lua_State *L)
 	return 1;
 }
 
-int CLuaVector3Defs::tostring(lua_State *L)
+int CLuaVector2Defs::tostring(lua_State *L)
 {
-	Vector3fp *vector = nullptr;
+	Vector2fp *vector = nullptr;
 	//Vector3 vector;
 
 	CArgReader argReader(L);
@@ -156,7 +135,7 @@ int CLuaVector3Defs::tostring(lua_State *L)
 	}
 
 	char buffer[128];
-	sprintf_s(buffer, "Vector3(%.3f, %.3f, %.3f)", (*vector)[0], (*vector)[1], (*vector)[2]);
+	sprintf_s(buffer, "Vector2(%.3f, %.3f)", (*vector)[0], (*vector)[1]);
 
 	lua_pushstring(L, buffer);
 
@@ -165,12 +144,12 @@ int CLuaVector3Defs::tostring(lua_State *L)
 	return 1;
 }
 
-int CLuaVector3Defs::add(lua_State* L)
+int CLuaVector2Defs::add(lua_State* L)
 {
-	//lua_stacktrace(L, "CLuaVector3Defs::add");
+	//lua_stacktrace(L, "CLuaVector2Defs::add");
 
-	Vector3fp *leftVector;
-	Vector3fp *rightVector;
+	Vector2fp *leftVector;
+	Vector2fp *rightVector;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(leftVector);
@@ -185,10 +164,9 @@ int CLuaVector3Defs::add(lua_State* L)
 		return 1;
 	}
 
-	Vector3fp *temp = new Vector3fp(
+	Vector2fp *temp = new Vector2fp(
 		(*leftVector)[0] + (*rightVector)[0],
-		(*leftVector)[1] + (*rightVector)[1],
-		(*leftVector)[2] + (*rightVector)[2]
+		(*leftVector)[1] + (*rightVector)[1]
 	);
 
 	//lua_userdata(L, "Vector3", temp, false);
@@ -199,9 +177,9 @@ int CLuaVector3Defs::add(lua_State* L)
 	return 1;
 }
 
-int CLuaVector3Defs::SetX(lua_State* L)
+int CLuaVector2Defs::SetX(lua_State* L)
 {
-	Vector3fp* vector;
+	Vector2fp* vector;
 	float x;
 
 	CArgReader argReader(L);
@@ -219,9 +197,9 @@ int CLuaVector3Defs::SetX(lua_State* L)
 	return 0;
 }
 
-int CLuaVector3Defs::SetY(lua_State* L)
+int CLuaVector2Defs::SetY(lua_State* L)
 {
-	Vector3fp* vector;
+	Vector2fp* vector;
 	float y;
 
 	CArgReader argReader(L);
@@ -239,29 +217,9 @@ int CLuaVector3Defs::SetY(lua_State* L)
 	return 0;
 }
 
-int CLuaVector3Defs::SetZ(lua_State* L)
+int CLuaVector2Defs::GetX(lua_State* L)
 {
-	Vector3fp* vector;
-	float z;
-
-	CArgReader argReader(L);
-	argReader.ReadUserData(vector);
-	argReader.ReadNumber(z);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	(*vector)[2] = z;
-
-	return 0;
-}
-
-int CLuaVector3Defs::GetX(lua_State* L)
-{
-	Vector3fp* vector;
+	Vector2fp* vector;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(vector);
@@ -277,9 +235,9 @@ int CLuaVector3Defs::GetX(lua_State* L)
 	return 1;
 }
 
-int CLuaVector3Defs::GetY(lua_State* L)
+int CLuaVector2Defs::GetY(lua_State* L)
 {
-	Vector3fp* vector;
+	Vector2fp* vector;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(vector);
@@ -291,24 +249,6 @@ int CLuaVector3Defs::GetY(lua_State* L)
 	}
 
 	lua_pushnumber(L, (*vector)[1]);
-
-	return 1;
-}
-
-int CLuaVector3Defs::GetZ(lua_State* L)
-{
-	Vector3fp* vector;
-
-	CArgReader argReader(L);
-	argReader.ReadUserData(vector);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	lua_pushnumber(L, (*vector)[2]);
 
 	return 1;
 }
