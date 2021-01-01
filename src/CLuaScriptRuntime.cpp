@@ -668,12 +668,13 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 #ifdef ALT_SERVER_API
 	alt::String serverConfigPath = Core->GetRootDirectory() + p_s + "server.cfg";
 	this->serverConfigDict = this->ParseConfig(serverConfigPath.CStr());
-#endif
 
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_START, CLuaScriptRuntime::OnResourceStart, this);
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_STOP, CLuaScriptRuntime::OnResourceStop, this);
+#endif
 }
 
+#ifdef ALT_SERVER_API
 bool CLuaScriptRuntime::OnResourceStart(const alt::CEvent* e, void* userData)
 {
 	CLuaScriptRuntime *runtime = (CLuaScriptRuntime*)userData;
@@ -698,6 +699,7 @@ bool CLuaScriptRuntime::OnResourceStop(const alt::CEvent* e, void* userData)
 
 	return true;
 }
+#endif
 
 alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 {

@@ -6,7 +6,9 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "import", GetResourceByName);
 	lua_globalfunction(L, "getResourceByName", GetResourceByName);
 	lua_globalfunction(L, "isResourceStarted", IsStarted);
+#ifdef ALT_SERVER_API
 	lua_globalfunction(L, "getResourceConfig", GetConfig);
+#endif
 	lua_globalfunction(L, "getResourceType", GetType);
 	lua_globalfunction(L, "getResourceName", GetName);
 	lua_globalfunction(L, "getResourcePath", GetPath);
@@ -24,7 +26,9 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 
 		lua_classfunction(L, "getByName", GetResourceByName);
 		lua_classfunction(L, "isStarted", IsStarted);
+#ifdef ALT_SERVER_API
 		lua_classfunction(L, "getConfig", GetConfig);
+#endif
 		lua_classfunction(L, "getType", GetType);
 		lua_classfunction(L, "getName", GetName);
 		lua_classfunction(L, "getPath", GetPath);
@@ -36,7 +40,9 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 		lua_classfunction(L, "getOptionalPermissions", GetOptionalPermissions);
 
 		lua_classvariable(L, "started", nullptr, "isStarted");
+#ifdef ALT_SERVER_API
 		lua_classvariable(L, "config", nullptr, "getConfig");
+#endif
 		lua_classvariable(L, "type", nullptr, "getType");
 		lua_classvariable(L, "name", nullptr, "getName");
 		lua_classvariable(L, "path", nullptr, "getPath");
@@ -172,6 +178,7 @@ int CLuaResourceFuncDefs::IsStarted(lua_State* L)
 	return 1;
 }
 
+#ifdef ALT_SERVER_API
 int CLuaResourceFuncDefs::GetConfig(lua_State* L)
 {
 	alt::IResource* resource;
@@ -189,6 +196,7 @@ int CLuaResourceFuncDefs::GetConfig(lua_State* L)
 
 	return 1;
 }
+#endif
 
 int CLuaResourceFuncDefs::GetType(lua_State* L)
 {

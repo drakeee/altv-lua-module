@@ -27,27 +27,28 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	luaL_openlibs(this->resourceState);
 
 #ifdef ALT_SERVER_API
-	luaopen_jit(this->resourceState);
+	//luaL_openlibs load jit by default
+	//luaopen_jit(this->resourceState);
 
 	//Pop LuaJIT information
-	lua_pop(this->resourceState, 4);
+	//lua_pop(this->resourceState, 4);
 #else
 	//Disable some libraries
-	lua_pushnil(this->resourceState);
-	lua_setglobal(this->resourceState, LUA_IOLIBNAME);
-	
-	lua_pushnil(this->resourceState);
-	lua_setglobal(this->resourceState, LUA_OSLIBNAME);
+	lua_disablelib(this->resourceState, LUA_IOLIBNAME);
+	lua_disablelib(this->resourceState, LUA_OSLIBNAME);
+	lua_disablelib(this->resourceState, LUA_JITLIBNAME);
+	lua_disablelib(this->resourceState, LUA_LOADLIBNAME);
+	lua_disablelib(this->resourceState, LUA_DBLIBNAME);
 
-	lua_pushnil(this->resourceState);
-	lua_setglobal(this->resourceState, LUA_JITLIBNAME);
-
-	lua_register(this->resourceState, "dofile", CLuaFunctionDefs::DisabledFunction);
-	lua_register(this->resourceState, "loadfile", CLuaFunctionDefs::DisabledFunction);
-	lua_register(this->resourceState, "require", CLuaFunctionDefs::DisabledFunction);
-	lua_register(this->resourceState, "loadlib", CLuaFunctionDefs::DisabledFunction);
-	lua_register(this->resourceState, "getfenv", CLuaFunctionDefs::DisabledFunction);
-	lua_register(this->resourceState, "newproxy", CLuaFunctionDefs::DisabledFunction);
+	lua_disablefunction(this->resourceState, "dofile");
+	lua_disablefunction(this->resourceState, "load");
+	lua_disablefunction(this->resourceState, "loadfile");
+	lua_disablefunction(this->resourceState, "loadstring");
+	lua_disablefunction(this->resourceState, "require");
+	lua_disablefunction(this->resourceState, "loadlib");
+	lua_disablefunction(this->resourceState, "setfenv");
+	lua_disablefunction(this->resourceState, "getfenv");
+	lua_disablefunction(this->resourceState, "newproxy");
 #endif
 
 	//Init "es" and "e_mt" table
@@ -67,12 +68,14 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	lua_pushstring(this->resourceState, ADDITIONAL_MODULE_FOLDER);
 	lua_setglobal(this->resourceState, "MODULE_FOLDER");
 
+#ifdef ALT_SERVER_API
 	//Parse the resource config here as well because RESOURCE_START event is called after the script is executed
 	{
 		alt::String resourceConfigPath = this->resource->GetPath() + p_s + "resource.cfg";
 		auto resourceNode = runtime->ParseConfig(resourceConfigPath.CStr());
 		runtime->resourceNodeDictMap[this->resource] = resourceNode;
 	}
+#endif
 
 	//Init functions
 	CLuaVector3Defs::Init(this->resourceState);

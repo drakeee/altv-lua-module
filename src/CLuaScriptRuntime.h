@@ -12,7 +12,9 @@ public:
 	typedef std::map<std::string, FunctionCallback>					EventsCallbacks;
 	typedef std::map<std::string, CallbackGetter>					EventsGetter;
 
+#ifdef ALT_SERVER_API
 	std::map<alt::IResource*, alt::config::Node::Dict> resourceNodeDictMap;
+#endif
 
 	alt::IResource::Impl*	CreateImpl(alt::IResource* resource) override;
 	void					DestroyImpl(alt::IResource::Impl* impl) override;
@@ -41,6 +43,7 @@ public:
 	{
 		return this->version;
 	}
+#ifdef ALT_SERVER_API
 	inline alt::config::Node::Dict &GetServerConfig(void)
 	{
 		return this->serverConfigDict;
@@ -49,6 +52,7 @@ public:
 	{
 		return this->resourceNodeDictMap[resource];
 	}
+#endif
 
 
 	static CLuaScriptRuntime& Instance()
@@ -62,7 +66,9 @@ public:
 
 private:
 	const semver::version						version{ 0, 4, 5, semver::prerelease::dev };
+#ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;
+#endif
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;

@@ -39,6 +39,17 @@ void lua_removedata(lua_State* L, alt::IBaseObject* baseObject)
 	lua_pop(L, 3);
 }
 
+void lua_disablelib(lua_State* L, const char* libName)
+{
+	lua_pushnil(L);
+	lua_setglobal(L, libName);
+}
+
+void lua_disablefunction(lua_State* L, const char* functionName)
+{
+	lua_register(L, functionName, CLuaFunctionDefs::DisabledFunction);
+}
+
 int lua_setpath(lua_State* L, const char* path)
 {
 	lua_getglobal(L, "package");

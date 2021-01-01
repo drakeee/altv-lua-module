@@ -26,6 +26,8 @@ int lua_setpath(lua_State* L, const char* path);
 
 void lua_mergetable(lua_State* L, int fromTable, int toTable);
 void lua_removedata(lua_State* L, alt::IBaseObject* baseObject);
+void lua_disablelib(lua_State* L, const char* libName);
+void lua_disablefunction(lua_State* L, const char* functionName);
 
 void lua_initclass(lua_State* L);
 void lua_beginclass(lua_State* L, const char* className, const char* baseClass = nullptr);

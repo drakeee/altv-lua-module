@@ -115,10 +115,12 @@ public:
 	{
 		return this->loadedFiles;
 	}
+#ifdef ALT_SERVER_API
 	inline alt::config::Node::Dict& GetResourceConfig(void)
 	{
 		return this->resourceConfigDict;
 	}
+#endif
 	inline bool AddEntity(alt::IBaseObject* baseObject)
 	{
 		auto entityFound = std::find(this->entities.begin(), this->entities.end(), baseObject) != this->entities.end();
@@ -141,7 +143,9 @@ public:
 private:
 	lua_State*			resourceState = nullptr;
 	CLuaScriptRuntime*	runtime;
+#ifdef ALT_SERVER_API
 	alt::config::Node::Dict resourceConfigDict;
+#endif
 	alt::IResource*		resource;
 	std::string			workingPath;
 

@@ -184,9 +184,11 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_pushcclosure(L, CLuaAltFuncDefs::ipairs, 1);
 	lua_rawset(L, -3);
 
+#ifdef ALT_SERVER_API
 	auto runtime = &CLuaScriptRuntime::Instance();
 	lua_pushconfig(L, &runtime->GetServerConfig());
 	lua_setglobal(L, "serverConfig");
+#endif
 
 	/*lua_pushstring(L, "dofile");
 	lua_pushcfunction(L, dofile);
