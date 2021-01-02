@@ -36,7 +36,7 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	//Disable some libraries
 	lua_disablelib(this->resourceState, LUA_IOLIBNAME);
 	lua_disablelib(this->resourceState, LUA_OSLIBNAME);
-	lua_disablelib(this->resourceState, LUA_JITLIBNAME);
+	lua_disablelib(this->resourceState, LUA_FFILIBNAME);
 	lua_disablelib(this->resourceState, LUA_LOADLIBNAME);
 	lua_disablelib(this->resourceState, LUA_DBLIBNAME);
 
