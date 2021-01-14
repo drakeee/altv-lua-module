@@ -733,6 +733,40 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			return 1;
 		}
 	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::GAME_ENTITY_CREATE,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CGameEntityCreateEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget());
+
+			return 1;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::GAME_ENTITY_DESTROY,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CGameEntityDestroyEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget());
+
+			return 1;
+		}
+	);
 #endif
 
 #ifdef ALT_SERVER_API

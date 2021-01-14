@@ -137,27 +137,27 @@ private:
 		"playerEnteringVehicle", //done
 		"playerLeaveVehicle", //done
 		"playerChangeVehicleSeat", //done
-		"playerWeaponChange",
+		"playerWeaponChange", //done
 
 		"vehicleAttach", //done
 		"vehicleDetach", //done
 		"netOwnerChange", //done
 
 		"removeEntity", //done
-		"createBaseObject",
-		"removeBaseObject",
+		"createBaseObject", //done
+		"removeBaseObject", //done
 
 		"dataNodeReceived",
 
 		"consoleCommand", //done
 
 		// Client
-		"connectionComplete",
-		"disconnect",
-		"webView",
-		"keyboard",
-		"gameEntityCreate",
-		"gameEntityDestroy",
+		"connectionComplete", //done
+		"disconnect", //done
+		"webView", //done
+		"keyboard", //done
+		"gameEntityCreate", //done
+		"gameEntityDestroy", //done
 
 		"ALL",
 		"SIZE"

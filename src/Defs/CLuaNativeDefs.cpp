@@ -13,6 +13,9 @@ void CLuaNativeDefs::Init(lua_State* L)
 		}
 	}
 	lua_endclass(L);
+
+	lua_beginclass(L, "game", CLuaNativeDefs::ClassName);
+	lua_endclass(L);
 }
 
 struct Ptr {
