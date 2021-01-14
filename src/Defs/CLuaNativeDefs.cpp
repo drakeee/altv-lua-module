@@ -107,7 +107,7 @@ void GetReturn(lua_State* L, alt::INative::Context* ctx, alt::INative::Type retu
 			lua_pushstring(L, ctx->ResultString());
 		break;
 	case alt::INative::Type::ARG_VOID:
-		lua_pushnil(L);
+		//lua_pushnil(L);
 		break;
 	default:
 		Core->LogError("Unknown native return type" + std::to_string((int)returnType));
@@ -202,5 +202,5 @@ int CLuaNativeDefs::InvokeNative(lua_State* L)
 		pointers.clear();
 	}
 
-	return 1 + argsCount;
+	return ((uint8_t)(native->GetRetnType() != alt::INative::Type::ARG_VOID)) + argsCount;
 }
