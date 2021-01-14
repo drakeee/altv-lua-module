@@ -3,6 +3,8 @@
 const char* CLuaEntityDefs::ClassName = "Entity";
 void CLuaEntityDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaEntityDefs::Init");
+
 	lua_globalfunction(L, "getEntityID", GetID);
 
 	lua_globalfunction(L, "getEntityNetworkOwner", GetNetworkOwner);
@@ -77,6 +79,7 @@ void CLuaEntityDefs::Init(lua_State* L)
 	}
 	lua_endclass(L);
 
+	DEBUG_INFO("CLuaEntityDefs::Init ...done");
 }
 
 int CLuaEntityDefs::tostring(lua_State* L)

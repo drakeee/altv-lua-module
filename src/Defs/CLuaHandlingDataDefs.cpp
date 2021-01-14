@@ -4,6 +4,8 @@
 const char* CLuaHandlingDataDefs::ClassName = "HandlingData";
 void CLuaHandlingDataDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaHandlingDataDefs::Init");
+
 	lua_globalfunction(L, "getHandlingData", GetHandlingData);
 	lua_globalfunction(L, "getHandlingHandlingNameHash", GetHandlingNameHash);
 	lua_globalfunction(L, "getHandlingMass", GetMass);
@@ -40,7 +42,7 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getHandlingTractionSpringDeltaMax", GetTractionSpringDeltaMax);
 	lua_globalfunction(L, "getHandlingTractionSpringDeltaMaxRatio", GetTractionSpringDeltaMaxRatio);
 	lua_globalfunction(L, "getHandlingLowSpeedTractionLossMult", GetLowSpeedTractionLossMult);
-	lua_globalfunction(L, "getHandlingCamberStiffnesss", GetCamberStiffnesss);
+	lua_globalfunction(L, "getHandlingCamberStiffness", GetCamberStiffness);
 	lua_globalfunction(L, "getHandlingTractionBiasFront", GetTractionBiasFront);
 	lua_globalfunction(L, "getHandlingTractionBiasRear", GetTractionBiasRear);
 	lua_globalfunction(L, "getHandlingTractionLossMult", GetTractionLossMult);
@@ -106,7 +108,7 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setHandlingTractionSpringDeltaMax", SetTractionSpringDeltaMax);
 	lua_globalfunction(L, "setHandlingTractionSpringDeltaMaxRatio", SetTractionSpringDeltaMaxRatio);
 	lua_globalfunction(L, "setHandlingLowSpeedTractionLossMult", SetLowSpeedTractionLossMult);
-	lua_globalfunction(L, "setHandlingCamberStiffnesss", SetCamberStiffnesss);
+	lua_globalfunction(L, "setHandlingCamberStiffness", SetCamberStiffness);
 	lua_globalfunction(L, "setHandlingTractionBiasFront", SetTractionBiasFront);
 	lua_globalfunction(L, "setHandlingTractionBiasRear", SetTractionBiasRear);
 	lua_globalfunction(L, "setHandlingTractionLossMult", SetTractionLossMult);
@@ -176,7 +178,7 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 		lua_classfunction(L, "getTractionSpringDeltaMax", GetTractionSpringDeltaMax);
 		lua_classfunction(L, "getTractionSpringDeltaMaxRatio", GetTractionSpringDeltaMaxRatio);
 		lua_classfunction(L, "getLowSpeedTractionLossMult", GetLowSpeedTractionLossMult);
-		lua_classfunction(L, "getCamberStiffnesss", GetCamberStiffnesss);
+		lua_classfunction(L, "getCamberStiffness", GetCamberStiffness);
 		lua_classfunction(L, "getTractionBiasFront", GetTractionBiasFront);
 		lua_classfunction(L, "getTractionBiasRear", GetTractionBiasRear);
 		lua_classfunction(L, "getTractionLossMult", GetTractionLossMult);
@@ -242,7 +244,7 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 		lua_classfunction(L, "setTractionSpringDeltaMax", SetTractionSpringDeltaMax);
 		lua_classfunction(L, "setTractionSpringDeltaMaxRatio", SetTractionSpringDeltaMaxRatio);
 		lua_classfunction(L, "setLowSpeedTractionLossMult", SetLowSpeedTractionLossMult);
-		lua_classfunction(L, "setCamberStiffnesss", SetCamberStiffnesss);
+		lua_classfunction(L, "setCamberStiffness", SetCamberStiffness);
 		lua_classfunction(L, "setTractionBiasFront", SetTractionBiasFront);
 		lua_classfunction(L, "setTractionBiasRear", SetTractionBiasRear);
 		lua_classfunction(L, "setTractionLossMult", SetTractionLossMult);
@@ -308,7 +310,7 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 		lua_classvariable(L, "tractionSpringDeltaMax", "setTractionSpringDeltaMax", "getTractionSpringDeltaMax");
 		lua_classvariable(L, "tractionSpringDeltaMaxRatio", "setTractionSpringDeltaMaxRatio", "getTractionSpringDeltaMaxRatio");
 		lua_classvariable(L, "lowSpeedTractionLossMult", "setLowSpeedTractionLossMult", "getLowSpeedTractionLossMult");
-		lua_classvariable(L, "camberStiffnesss", "setCamberStiffnesss", "getCamberStiffnesss");
+		lua_classvariable(L, "camberStiffness", "setCamberStiffness", "getCamberStiffness");
 		lua_classvariable(L, "tractionBiasFront", "setTractionBiasFront", "getTractionBiasFront");
 		lua_classvariable(L, "tractionBiasRear", "setTractionBiasRear", "getTractionBiasRear");
 		lua_classvariable(L, "tractionLossMult", "setTractionLossMult", "getTractionLossMult");
@@ -341,6 +343,8 @@ void CLuaHandlingDataDefs::Init(lua_State* L)
 		lua_classvariable(L, "damageFlags", "setDamageFlags", "getDamageFlags");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaHandlingDataDefs::Init ...done");
 }
 
 int CLuaHandlingDataDefs::GetHandlingData(lua_State* L)
@@ -409,7 +413,7 @@ HANDLING_GET_DEFINE(lua_pushnumber, GetTractionCurveLateralRatio)
 HANDLING_GET_DEFINE(lua_pushnumber, GetTractionSpringDeltaMax)
 HANDLING_GET_DEFINE(lua_pushnumber, GetTractionSpringDeltaMaxRatio)
 HANDLING_GET_DEFINE(lua_pushnumber, GetLowSpeedTractionLossMult)
-HANDLING_GET_DEFINE(lua_pushnumber, GetCamberStiffnesss)
+HANDLING_GET_DEFINE(lua_pushnumber, GetCamberStiffness)
 HANDLING_GET_DEFINE(lua_pushnumber, GetTractionBiasFront)
 HANDLING_GET_DEFINE(lua_pushnumber, GetTractionBiasRear)
 HANDLING_GET_DEFINE(lua_pushnumber, GetTractionLossMult)
@@ -476,7 +480,7 @@ HANDLING_SET_DEFINE(float, ReadNumber, SetTractionCurveLateralRatio)
 HANDLING_SET_DEFINE(float, ReadNumber, SetTractionSpringDeltaMax)
 HANDLING_SET_DEFINE(float, ReadNumber, SetTractionSpringDeltaMaxRatio)
 HANDLING_SET_DEFINE(float, ReadNumber, SetLowSpeedTractionLossMult)
-HANDLING_SET_DEFINE(float, ReadNumber, SetCamberStiffnesss)
+HANDLING_SET_DEFINE(float, ReadNumber, SetCamberStiffness)
 HANDLING_SET_DEFINE(float, ReadNumber, SetTractionBiasFront)
 HANDLING_SET_DEFINE(float, ReadNumber, SetTractionBiasRear)
 HANDLING_SET_DEFINE(float, ReadNumber, SetTractionLossMult)

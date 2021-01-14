@@ -46,7 +46,7 @@ private:
     static int GetTractionSpringDeltaMax(lua_State* L);
     static int GetTractionSpringDeltaMaxRatio(lua_State* L);
     static int GetLowSpeedTractionLossMult(lua_State* L);
-    static int GetCamberStiffnesss(lua_State* L);
+    static int GetCamberStiffness(lua_State* L);
     static int GetTractionBiasFront(lua_State* L);
     static int GetTractionBiasRear(lua_State* L);
     static int GetTractionLossMult(lua_State* L);
@@ -112,7 +112,7 @@ private:
     static int SetTractionSpringDeltaMax(lua_State* L);
     static int SetTractionSpringDeltaMaxRatio(lua_State* L);
     static int SetLowSpeedTractionLossMult(lua_State* L);
-    static int SetCamberStiffnesss(lua_State* L);
+    static int SetCamberStiffness(lua_State* L);
     static int SetTractionBiasFront(lua_State* L);
     static int SetTractionBiasRear(lua_State* L);
     static int SetTractionLossMult(lua_State* L);

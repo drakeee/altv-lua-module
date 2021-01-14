@@ -4,6 +4,8 @@
 const char* CLuaColShapeDefs::ClassName = "ColShape";
 void CLuaColShapeDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaColShapeDefs::Init");
+
 	lua_globalfunction(L, "createColShapeCircle", CreateCircle);
 	lua_globalfunction(L, "createColShapeCube", CreateCube);
 	lua_globalfunction(L, "createColShapeCylinder", CreateCylinder);
@@ -30,6 +32,8 @@ void CLuaColShapeDefs::Init(lua_State* L)
 		lua_classvariable(L, "colshapeType", nullptr, "getColShapeType");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaColShapeDefs::Init ...done");
 }
 
 int CLuaColShapeDefs::CreateCircle(lua_State* L)

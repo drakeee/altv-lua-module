@@ -3,6 +3,8 @@
 const char* CLuaVehicleDefs::ClassName = "Vehicle";
 void CLuaVehicleDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaVehicleDefs::Init");
+
 	lua_globalfunction(L, "getVehicleDriver", GetDriver);
 	lua_globalfunction(L, "isVehicleDestroyed", IsDestroyed);
 
@@ -480,6 +482,8 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_rawset(L, -3);
 	}
 	lua_setglobal(L, "vehicleModel");
+
+	DEBUG_INFO("CLuaVehicleDefs::Init ...done");
 }
 
 /*int CLuaVehicleDefs::destroy(lua_State* L)
@@ -506,9 +510,7 @@ void CLuaVehicleDefs::Init(lua_State* L)
 
 	argReader.GetErrorMessages();
 
-#ifndef NDEBUG
-	Core->LogInfo("Vehicle failed to destroyed");
-#endif
+	DEBUG_INFO("Vehicle failed to destroyed");
 
 	lua_pushboolean(L, false);
 	return 1;

@@ -36,6 +36,7 @@ void lua_getclass(lua_State* L, const char* className);
 void lua_getclassmt(lua_State* L, const char* className);
 void lua_classfunction(lua_State* L, const char* functionName, const char* globalFuncName);
 void lua_classfunction(lua_State* L, const char* functionName, lua_CFunction function);
+void lua_classnative(lua_State* L, const char* functionName, lua_CFunction function, void* native);
 void lua_classmeta(lua_State* L, const char* metaName, lua_CFunction metaFunction, bool useClosure = false); //if useClosure set to true we store metatable in the upvalue
 void lua_classvariable(lua_State* L, const char* variableName, const char* setFunction, const char* getFunction);
 void lua_classvariable(lua_State* L, const char* variableName, lua_CFunction setFunction, lua_CFunction getFunction);

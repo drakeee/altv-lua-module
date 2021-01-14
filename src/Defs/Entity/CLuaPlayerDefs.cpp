@@ -3,6 +3,8 @@
 const char* CLuaPlayerDefs::ClassName = "Player";
 void CLuaPlayerDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaPlayerDefs::Init");
+
 	lua_globalfunction(L, "getPlayerName", GetName);
 	lua_globalfunction(L, "getPlayerHealth", GetHealth);
 	lua_globalfunction(L, "getPlayerMaxHealth", GetMaxHealth);
@@ -128,7 +130,6 @@ void CLuaPlayerDefs::Init(lua_State* L)
 #endif
 
 		lua_classvariable(L, "name", nullptr, "getName");
-		lua_classvariable(L, "weather", "setWeather", nullptr);
 		lua_classvariable(L, "currentWeaponComponents", nullptr, "getCurrentWeaponComponents");
 		lua_classvariable(L, "currentWeaponTintIndex", nullptr, "getCurrentWeaponTintIndex");
 		lua_classvariable(L, "dead", nullptr, "isDead");
@@ -151,6 +152,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "all", nullptr, "getAll");
 
 #ifdef ALT_SERVER_API
+		lua_classvariable(L, "weather", "setWeather", nullptr);
 		lua_classvariable(L, "connected", nullptr, "isConnected");
 		lua_classvariable(L, "ping", nullptr, "getPing");
 		lua_classvariable(L, "ip", nullptr, "getIP");
@@ -177,6 +179,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 #endif
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaPlayerDefs::Init ...done");
 }
 
 int CLuaPlayerDefs::tostring(lua_State* L)

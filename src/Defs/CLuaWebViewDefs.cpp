@@ -4,6 +4,8 @@
 const char* CLuaWebViewDefs::ClassName = "WebView";
 void CLuaWebViewDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaWebViewDefs::Init");
+
 	lua_globalfunction(L, "createWebView", CreateWebView);
 	lua_globalfunction(L, "emitWebView", Trigger);
 	lua_globalfunction(L, "focusWebView", Focus);
@@ -37,6 +39,8 @@ void CLuaWebViewDefs::Init(lua_State* L)
 		lua_classvariable(L, "ready", nullptr, "isReady");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaWebViewDefs::Init ...done");
 }
 
 int CLuaWebViewDefs::CreateWebView(lua_State *L)
@@ -49,7 +53,7 @@ int CLuaWebViewDefs::CreateWebView(lua_State *L)
 	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
 	if (resourceImpl == nullptr)
 	{
-		Core->LogError("Invalied resource when calling CreateWebView");
+		Core->LogError("Invalid resource when calling CreateWebView");
 		return 0;
 	}
 

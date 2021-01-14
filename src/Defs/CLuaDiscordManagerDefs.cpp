@@ -4,6 +4,8 @@
 const char* CLuaDiscordManagerDefs::ClassName = "Discord";
 void CLuaDiscordManagerDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaDiscordManagerDefs::Init");
+
 	lua_globalfunction(L, "getCurrentUser", GetCurrentUser);
 
 	lua_beginclass(L, CLuaDiscordManagerDefs::ClassName);
@@ -13,6 +15,8 @@ void CLuaDiscordManagerDefs::Init(lua_State* L)
 		lua_classvariable(L, "currentUser", nullptr, "getCurrentUser");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaDiscordManagerDefs::Init ...done");
 }
 
 int CLuaDiscordManagerDefs::GetCurrentUser(lua_State* L)

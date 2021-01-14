@@ -3,6 +3,9 @@
 const char* CLuaBlipDefs::ClassName = "Blip";
 void CLuaBlipDefs::Init(lua_State* L)
 {
+
+	DEBUG_INFO("CLuaBlipDefs::Init");
+
 #ifdef ALT_SERVER_API
 	lua_globalfunction(L, "createBlip", Create);
 	lua_globalfunction(L, "createBlipAttached", CreateAttached);
@@ -221,6 +224,7 @@ void CLuaBlipDefs::Init(lua_State* L)
 	{
 		lua_classfunction(L, "new", CreateAttached);
 	}
+	lua_endclass(L);
 #else
 	lua_beginclass(L, "AreaBlip", CLuaBlipDefs::ClassName);
 	{
@@ -253,7 +257,7 @@ void CLuaBlipDefs::Init(lua_State* L)
 	lua_endclass(L);
 #endif
 
-	lua_endclass(L);
+	DEBUG_INFO("CLuaBlipDefs::Init ...done");
 }
 
 #ifdef ALT_SERVER_API

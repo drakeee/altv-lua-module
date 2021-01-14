@@ -3,6 +3,8 @@
 const char* CLuaVector2Defs::ClassName = "Vector2";
 void CLuaVector2Defs::Init(lua_State *L)
 {
+	DEBUG_INFO("CLuaVector2Defs::Init");
+
 	lua_beginclass(L, ClassName);
 	{
 		lua_classmeta(L, "__gc", destroy);
@@ -19,6 +21,8 @@ void CLuaVector2Defs::Init(lua_State *L)
 		lua_classvariable(L, "y", "setY", "getY");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaVector2Defs::Init ...done");
 }
 
 int CLuaVector2Defs::create(lua_State *L)

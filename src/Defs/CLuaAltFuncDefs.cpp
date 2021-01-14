@@ -4,6 +4,7 @@
 const char* CLuaAltFuncDefs::ClassName = "alt";
 void CLuaAltFuncDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaAltFuncDefs::Init");
 	//lua_newtable(L);
 
 	lua_globalfunction(L, "log", LogInfo);
@@ -23,7 +24,11 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	}
 	lua_endclass(L);
 
+#ifdef ALT_SERVER_API
 	lua_globalfunction(L, "on", OnServer);
+#else
+	lua_globalfunction(L, "on", OnClient);
+#endif
 	lua_globalfunction(L, "onServer", OnServer);
 	lua_globalfunction(L, "offServer", OffServer);
 	lua_globalfunction(L, "onClient", OnClient);
@@ -195,6 +200,8 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_rawset(L, -3);*/
 
 	lua_pop(L, 1);
+
+	DEBUG_INFO("CLuaAltFuncDefs::Init ...done");
 }
 
 int CLuaAltFuncDefs::SetMetaData(lua_State* L)

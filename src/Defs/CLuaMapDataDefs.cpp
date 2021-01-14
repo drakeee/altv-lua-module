@@ -4,6 +4,8 @@
 const char* CLuaMapDataDefs::ClassName = "MapZoomData";
 void CLuaMapDataDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaMapDataDefs::Init");
+
 	lua_globalfunction(L, "getMapDataZoomScale", GetZoomScale);
 	lua_globalfunction(L, "getMapDataZoomSpeed", GetZoomSpeed);
 	lua_globalfunction(L, "getMapDataScrollSpeed", GetScrollSpeed);
@@ -48,6 +50,8 @@ void CLuaMapDataDefs::Init(lua_State* L)
 		lua_classvariable(L, "vTilesY", "setTilesCountY", "getTilesCountY");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaMapDataDefs::Init ...done");
 }
 
 int CLuaMapDataDefs::CreateMapZoom(lua_State* L)

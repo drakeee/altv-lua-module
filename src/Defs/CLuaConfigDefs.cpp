@@ -3,6 +3,8 @@
 const char* CLuaConfigDefs::ClassName = "Config";
 void CLuaConfigDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaConfigDefs::Init");
+
 	lua_beginclass(L, CLuaConfigDefs::ClassName);
 	{
 		lua_classmeta(L, "__tostring", tostring);
@@ -10,6 +12,8 @@ void CLuaConfigDefs::Init(lua_State* L)
 		lua_classfunction(L, "getKey", GetKey);
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaConfigDefs::Init ...done");
 }
 
 int CLuaConfigDefs::tostring(lua_State* L)

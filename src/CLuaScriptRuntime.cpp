@@ -8,7 +8,9 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 	Core->LogInfo("CLuaScriptRuntime::CLuaScriptRuntime");
 #endif
 
+#ifdef ALT_SERVER_API
 	VehicleModels::Instance(); //instance class once for further usage
+#endif
 
 	this->RegisterServerCallback(
 		alt::CEvent::Type::PLAYER_CONNECT,
@@ -626,7 +628,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		{
 			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
 		},
-			[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
 			auto event = static_cast<const alt::CRemoveBaseObjectEvent*>(ev);
 			lua_State* L = resource->GetLuaState();
@@ -664,6 +666,74 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			return 2;
 		}
 	);
+
+#ifdef ALT_CLIENT_API
+	this->RegisterServerCallback(
+		alt::CEvent::Type::CONNECTION_COMPLETE,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			return 0;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::DISCONNECT_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			return 0;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::WEB_VIEW_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			auto event = static_cast<const alt::CWebViewEvent*>(ev);
+			return &resource->GetWebEventReferences(event->GetName().ToString());
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CWebViewEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			for (auto arg : event->GetArgs())
+			{
+				lua_pushmvalue(L, arg);
+			}
+
+			return static_cast<int>(event->GetArgs().GetSize());
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::KEYBOARD_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			auto event = static_cast<const alt::CKeyboardEvent*>(ev);
+			if (event->GetKeyState() == alt::CKeyboardEvent::KeyState::UP)
+				return &resource->GetClientEventReferences("keyup");
+			else
+				return &resource->GetClientEventReferences("keydown");
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CKeyboardEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushnumber(L, event->GetKeyCode());
+
+			return 1;
+		}
+	);
+#endif
 
 #ifdef ALT_SERVER_API
 	alt::String serverConfigPath = Core->GetRootDirectory() + p_s + "server.cfg";
@@ -704,10 +774,14 @@ bool CLuaScriptRuntime::OnResourceStop(const alt::CEvent* e, void* userData)
 alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 {
 
+#ifndef NDEBUG
+	Core->LogInfo("Before::CLuaScriptRuntime::CreateImpl");
+#endif
+
 	CLuaResourceImpl* resourceImpl = new CLuaResourceImpl{ this, resource };
 
 #ifndef NDEBUG
-	Core->LogInfo("CLuaScriptRuntime::CreateImpl: " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
+	Core->LogInfo("After::CLuaScriptRuntime::CreateImpl: " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
 #endif
 
 	return resourceImpl;

@@ -47,6 +47,8 @@ public:
 	bool		RemoveEvent(std::string eventName, int functionReference);
 	bool		RegisterClientEvent(std::string eventName, int functionReference);
 	bool		RemoveClientEvent(std::string eventName, int functionReference);
+	bool		RegisterWebEvent(std::string eventName, int functionReference);
+	bool		RemoveWebEvent(std::string eventName, int functionReference);
 	void		TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args);
 	void		IncludePath(const char* path);
 	inline const std::vector<int>& GetEventReferences(std::string eventName)
@@ -56,6 +58,10 @@ public:
 	inline const std::vector<int>& GetClientEventReferences(std::string eventName)
 	{
 		return this->clientEventsReferences[eventName];
+	}
+	inline const std::vector<int>& GetWebEventReferences(std::string eventName)
+	{
+		return this->webEventsReferences[eventName];
 	}
 	inline bool				AddFunctionRef(const void* ptr, int functionRef)
 	{
@@ -151,6 +157,7 @@ private:
 
 	EventsReferences			eventsReferences;
 	EventsReferences			clientEventsReferences;
+	EventsReferences			webEventsReferences;
 	std::map<const void*, int>	functionReferences;
 	alt::MValueDict				exportFunction;
 	std::map<std::string, bool> loadedFiles;

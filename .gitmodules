@@ -1,3 +1,4 @@
 [submodule "src/vendors/cpp-sdk"]
 	path = vendors/cpp-sdk
 	url = https://github.com/altmp/cpp-sdk
+	branch = dev

@@ -266,6 +266,26 @@ void lua_classfunction(lua_State* L, const char* functionName, lua_CFunction fun
 	//lua_stacktrace(L, "lua_classfunction::CFunction");
 }
 
+void lua_classnative(lua_State* L, const char* functionName, lua_CFunction function, void* native)
+{
+	//lua_getfield(L, -1, "__class"); //__class table, class meta
+	lua_pushstring(L, "__class");
+	lua_rawget(L, -2);
+
+	L_ASSERT(lua_istable(L, -1), "lua_classfunction: \"__class\" table not found");
+
+	lua_pushstring(L, functionName);
+	lua_pushlightuserdata(L, native);
+	lua_pushcclosure(L, function, 1);
+
+	//lua_pushstring(L, functionName); //function name, __class table, class meta
+	//lua_pushcfunction(L, function); //cfunction, function name, __class table, class meta
+	lua_rawset(L, -3); //----------------------------------------------^
+
+	lua_pop(L, 1);
+	//lua_stacktrace(L, "lua_classfunction::CFunction");
+}
+
 void lua_classmeta(lua_State* L, const char* metaName, lua_CFunction metaFunction, bool useClosure)
 {
 	//lua_getfield(L, -1, "__meta");

@@ -3,6 +3,8 @@
 const char* CLuaResourceFuncDefs::ClassName = "Resource";
 void CLuaResourceFuncDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaResourceFuncDefs::Init");
+
 	lua_globalfunction(L, "import", GetResourceByName);
 	lua_globalfunction(L, "getResourceByName", GetResourceByName);
 	lua_globalfunction(L, "isResourceStarted", IsStarted);
@@ -59,6 +61,8 @@ void CLuaResourceFuncDefs::Init(lua_State* L)
 	auto resource = runtime->GetResourceImplFromState(L);
 	lua_pushresource(L, resource->GetResource());
 	lua_setglobal(L, "localResource");
+
+	DEBUG_INFO("CLuaResourceFuncDefs::Init ...done");
 }
 
 int CLuaResourceFuncDefs::Call(lua_State* L)

@@ -3,6 +3,8 @@
 const char* CLuaWorldObjectDefs::ClassName = "WorldObject";
 void CLuaWorldObjectDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaWorldObjectDefs::Init");
+
 	lua_globalfunction(L, "setEntityPosition", SetPosition);
 	lua_globalfunction(L, "getEntityPosition", GetPosition);
 
@@ -20,6 +22,8 @@ void CLuaWorldObjectDefs::Init(lua_State* L)
 		lua_classvariable(L, "dimension", "setDimension", "getDimension");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaWorldObjectDefs::Init ...done");
 }
 
 int CLuaWorldObjectDefs::SetPosition(lua_State* L)

@@ -3,6 +3,8 @@
 const char* CLuaRGBADefs::ClassName = "RGBA";
 void CLuaRGBADefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaRGBADefs::Init");
+
 	lua_beginclass(L, ClassName);
 	{
 		lua_classfunction(L, "new", CreateRGBA);
@@ -24,6 +26,8 @@ void CLuaRGBADefs::Init(lua_State* L)
 		lua_classvariable(L, "a", "setA", "getA");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaRGBADefs::Init ...done");
 }
 
 int CLuaRGBADefs::SetColor(lua_State* L)

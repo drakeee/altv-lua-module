@@ -2,6 +2,15 @@
 
 #include "Main.h"
 
+#ifndef NDEBUG
+#define DEBUG_HELPER(x) (alt::String("[Lua] ") + x)
+#define DEBUG_INFO(x) Core->LogInfo(DEBUG_HELPER(x))
+#define DEBUG_WARNING(x) Core->LogWarning(DEBUG_HELPER(x))
+#else
+#define DEBUG_INFO(x)
+#define DEBUG_WARNING(x)
+#endif
+
 class CLuaResourceImpl;
 class CLuaScriptRuntime : public alt::IScriptRuntime
 {
@@ -30,6 +39,14 @@ public:
 	{
 		this->eventsGetter[this->GetEventType(eventType)] = getter;
 		this->eventsCallbacks[this->GetEventType(eventType)] = func;
+	}
+	inline bool IsEventExists(const alt::CEvent* event)
+	{
+		return this->eventsGetter.find(this->GetEventType(event->GetType())) != this->eventsGetter.end();
+	}
+	inline bool IsEventExists(alt::CEvent::Type eventType)
+	{
+		return this->eventsGetter.find(this->GetEventType(eventType)) != this->eventsGetter.end();
 	}
 	inline CallbackGetter GetEventGetter(alt::CEvent::Type eventType)
 	{
@@ -65,7 +82,7 @@ public:
 	~CLuaScriptRuntime() { };
 
 private:
-	const semver::version						version{ 0, 4, 5, semver::prerelease::dev };
+	const semver::version						version{ 0, 4, 5, semver::branch::dev };
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;
 #endif

@@ -3,6 +3,9 @@
 const char* CLuaBaseObjectDefs::ClassName = "BaseObject";
 void CLuaBaseObjectDefs::Init(lua_State* L)
 {
+
+	DEBUG_INFO("CLuaBaseObjectDefs::Init");
+
 	lua_globalfunction(L, "getEntityType", GetType);
 	lua_globalfunction(L, "hasEntityMetaData", HasMetaData);
 	lua_globalfunction(L, "getEntityMetaData", GetMetaData);
@@ -22,6 +25,8 @@ void CLuaBaseObjectDefs::Init(lua_State* L)
 		lua_classvariable(L, "type", nullptr, "getType");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaBaseObjectDefs::Init ...done");
 }
 
 int CLuaBaseObjectDefs::Destroy(lua_State* L)

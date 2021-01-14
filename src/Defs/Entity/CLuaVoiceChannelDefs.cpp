@@ -4,6 +4,8 @@
 const char* CLuaVoiceChannelDefs::ClassName = "VoiceChannel";
 void CLuaVoiceChannelDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaVoiceChannelDefs::Init");
+
 	lua_globalfunction(L, "createVoiceChannel", Create);
 	lua_globalfunction(L, "isVoiceChannelSpatial", IsSpatial);
 	lua_globalfunction(L, "getVoiceChannelMaxDistance", GetMaxDistance);
@@ -30,6 +32,8 @@ void CLuaVoiceChannelDefs::Init(lua_State* L)
 		lua_classvariable(L, "maxDistance", nullptr, "getMaxDistance");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaVoiceChannelDefs::Init ...done");
 }
 
 int CLuaVoiceChannelDefs::Create(lua_State* L)

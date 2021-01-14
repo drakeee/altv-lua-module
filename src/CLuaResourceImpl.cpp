@@ -12,19 +12,27 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	exportFunction(Core->CreateMValueDict())
 {
 
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl1");
+
 	//Create new Lua state
 	this->resourceState = luaL_newstate();
 
 	//Add resource to runtime
 	runtime->AddResource(this->resourceState, this);
 
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl2");
+
 	this->workingPath.append(resource->GetPath().CStr());
 	this->workingPath.append(preferred_separator);
 	this->workingPath.append(resource->GetMain().CStr());
 	this->workingPath = this->workingPath.substr(0, this->workingPath.find_last_of("\\/") + 1);
 
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl3");
+
 	//Import default libraries into the state
 	luaL_openlibs(this->resourceState);
+
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl4");
 
 #ifdef ALT_SERVER_API
 	//luaL_openlibs load jit by default
@@ -33,12 +41,15 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	//Pop LuaJIT information
 	//lua_pop(this->resourceState, 4);
 #else
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl5");
 	//Disable some libraries
 	lua_disablelib(this->resourceState, LUA_IOLIBNAME);
 	lua_disablelib(this->resourceState, LUA_OSLIBNAME);
 	lua_disablelib(this->resourceState, LUA_FFILIBNAME);
 	lua_disablelib(this->resourceState, LUA_LOADLIBNAME);
 	lua_disablelib(this->resourceState, LUA_DBLIBNAME);
+
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl6");
 
 	lua_disablefunction(this->resourceState, "dofile");
 	lua_disablefunction(this->resourceState, "load");
@@ -49,16 +60,22 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	lua_disablefunction(this->resourceState, "setfenv");
 	lua_disablefunction(this->resourceState, "getfenv");
 	lua_disablefunction(this->resourceState, "newproxy");
+
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl7");
 #endif
 
 	//Init "es" and "e_mt" table
 	lua_initclass(this->resourceState);
 
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl8");
+
+#ifdef ALT_SERVER_API
 	//Set up working path
 	lua_setpath(this->resourceState, (this->workingPath + "?.lua").c_str());
 	lua_setpath(this->resourceState, (resource->GetPath().ToString() + std::string(preferred_separator) + std::string("?.lua")).c_str());
 
-#ifdef ALT_SERVER_API
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl9");
+
 	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
 
 	this->IncludePath(modulePath.CStr());
@@ -67,6 +84,8 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 	lua_pushstring(this->resourceState, ADDITIONAL_MODULE_FOLDER);
 	lua_setglobal(this->resourceState, "MODULE_FOLDER");
+
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl10");
 
 #ifdef ALT_SERVER_API
 	//Parse the resource config here as well because RESOURCE_START event is called after the script is executed
@@ -86,16 +105,23 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaWorldObjectDefs::Init(this->resourceState);
 	CLuaEntityDefs::Init(this->resourceState);
 
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl11");
+
 #ifdef ALT_CLIENT_API
+	CLuaNativeDefs::Init(this->resourceState);
 	CLuaHandlingDataDefs::Init(this->resourceState);
 	CLuaMapDataDefs::Init(this->resourceState);
 	CLuaDiscordManagerDefs::Init(this->resourceState);
 	CLuaWebViewDefs::Init(this->resourceState);
 #endif
 
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl12");
+
 	CLuaPlayerDefs::Init(this->resourceState);
 	CLuaVehicleDefs::Init(this->resourceState);
 	CLuaBlipDefs::Init(this->resourceState);
+
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl13");
 
 #ifdef ALT_SERVER_API
 	CLuaCheckpointDefs::Init(this->resourceState);
@@ -105,10 +131,7 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 	CLuaMiscScripts::Init(this->resourceState);
 
-#ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::CLuaResourceImpl");
-#endif
-
+	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl");
 }
 
 CLuaResourceImpl::~CLuaResourceImpl()
@@ -121,10 +144,7 @@ CLuaResourceImpl::~CLuaResourceImpl()
 
 	this->entities.clear();
 
-#ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::~CLuaResourceImpl");
-#endif
-
+	DEBUG_INFO("CLuaResourceImpl::~CLuaResourceImpl");
 }
 
 void CLuaResourceImpl::IncludePath(const char* path)
@@ -178,20 +198,16 @@ void CLuaResourceImpl::IncludePath(const char* path)
 
 bool CLuaResourceImpl::Start()
 {
+	DEBUG_INFO("CLuaResourceImpl::Start");
 
-#ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::Start");
-#endif
-
+#ifdef ALT_SERVER_API
 	//Add path separator to the end
 	alt::String workingDir(alt::String(resource->GetPath()) + alt::String(preferred_separator));
 	alt::String mainFile = workingDir + resource->GetMain();
 
-#ifndef NDEBUG
-	Core->LogInfo(alt::String("CLuaResourceImpl::CLuaResourceImpl::") + resource->GetMain());
-	Core->LogInfo(alt::String("ResourcePath: ") + workingDir);
-	Core->LogInfo(alt::String("MainFile: ") + mainFile);
-#endif
+	DEBUG_INFO(alt::String("CLuaResourceImpl::CLuaResourceImpl::") + resource->GetMain());
+	DEBUG_INFO(alt::String("ResourcePath: ") + workingDir);
+	DEBUG_INFO(alt::String("MainFile: ") + mainFile);
 
 	//Try to load file for testing purposes
 	if (luaL_dofile(this->resourceState, mainFile.CStr()))
@@ -209,16 +225,43 @@ bool CLuaResourceImpl::Start()
 	this->TriggerResourceLocalEvent("resourceStart", {});
 
 	resource->SetExports(this->exportFunction);
+#else
+
+	auto pkg = resource->GetPackage();
+	auto mainFile = resource->GetMain();
+
+	if (!pkg->FileExists(mainFile))
+	{
+		Core->LogError(" Client main \"" + mainFile + "\" is not found");
+		return true;
+	}
+
+	auto file = pkg->OpenFile(mainFile);
+	alt::String script{pkg->GetFileSize(file)};
+
+	pkg->ReadFile(file, script.GetData(), script.GetSize());
+	pkg->CloseFile(file);
+
+	if (luaL_dostring(this->resourceState, script.CStr()))
+	{
+		//Sadly far from perfect
+		Core->LogError(" Unable to load \"" + mainFile + "\"");
+
+		//Get the error from the top of the stack
+		if (lua_isstring(this->resourceState, -1))
+			Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+
+		return false;
+	}
+
+#endif
 
 	return true;
 }
 
 bool CLuaResourceImpl::Stop()
 {
-
-#ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::Stop");
-#endif
+	DEBUG_INFO("CLuaResourceImpl::Stop");
 
 	this->TriggerResourceLocalEvent("resourceStop", {});
 
@@ -229,12 +272,15 @@ bool CLuaResourceImpl::Stop()
 
 bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 {
-
-#ifndef NDEBUG
-	Core->LogInfo(alt::String("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev));
-#endif
+	DEBUG_INFO(alt::String("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev));
 
 	auto runtime = &CLuaScriptRuntime::Instance();
+	if (!runtime->IsEventExists(ev))
+	{
+		DEBUG_WARNING("Internally unhandled event \"" + runtime->GetEventType(ev) + "\"");
+		return true;
+	}
+
 	auto references = this->runtime->GetEventGetter(ev->GetType())(this, ev);
 	auto eventFunc = this->runtime->GetEventCallback(runtime->GetEventType(ev->GetType()));
 
@@ -261,10 +307,7 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 			{
 				ev->Cancel();
 
-#ifndef NDEBUG
-				Core->LogInfo(std::string("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev) + std::string("::Cancelled"));
-#endif
-
+				DEBUG_INFO(std::string("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev) + std::string("::Cancelled"));
 			}
 		}
 	}
@@ -285,11 +328,7 @@ void CLuaResourceImpl::OnTick()
 
 void CLuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 {
-
-#ifndef NDEBUG
-	Core->LogInfo(this->resource->GetName() + alt::String(":CLuaResourceImpl::OnCreateBaseObject: ") + std::to_string(static_cast<int>(object->GetType())));
-#endif
-
+	DEBUG_INFO(this->resource->GetName() + alt::String(":CLuaResourceImpl::OnCreateBaseObject: ") + std::to_string(static_cast<int>(object->GetType())));
 }
 
 void CLuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
@@ -297,10 +336,7 @@ void CLuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
 
 	this->RemoveEntity(object.Get());
 
-#ifndef NDEBUG
-	Core->LogInfo("CLuaResourceImpl::OnRemoveBaseObject");
-#endif
-
+	DEBUG_INFO("CLuaResourceImpl::OnRemoveBaseObject");
 }
 
 void CLuaResourceImpl::TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args)
@@ -331,10 +367,8 @@ bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReferenc
 {
 	auto& event = this->eventsReferences[eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
-
-#ifndef NDEBUG
-	Core->LogInfo("RegisterEvent: " + eventName + " - " + std::to_string(functionReference));
-#endif
+	
+	DEBUG_INFO("RegisterEvent: " + eventName + " - " + std::to_string(functionReference));
 
 	if (it != event.end())
 	{
@@ -350,9 +384,23 @@ bool CLuaResourceImpl::RegisterClientEvent(std::string eventName, int functionRe
 	auto& event = this->clientEventsReferences[eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
 
-#ifndef NDEBUG
-	Core->LogInfo("RegisterClientEvent: " + eventName + " - " + std::to_string(functionReference));
-#endif
+	DEBUG_INFO("RegisterClientEvent: " + eventName + " - " + std::to_string(functionReference));
+
+	if (it != event.end())
+	{
+		return false;
+	}
+
+	event.push_back(functionReference);
+	return true;
+}
+
+bool CLuaResourceImpl::RegisterWebEvent(std::string eventName, int functionReference)
+{
+	auto& event = this->webEventsReferences[eventName];
+	auto it = std::find(event.begin(), event.end(), functionReference);
+
+	DEBUG_INFO("RegisterWebEvent: " + eventName + " - " + std::to_string(functionReference));
 
 	if (it != event.end())
 	{
@@ -393,10 +441,25 @@ bool CLuaResourceImpl::RemoveClientEvent(std::string eventName, int functionRefe
 	return false;
 }
 
+bool CLuaResourceImpl::RemoveWebEvent(std::string eventName, int functionReference)
+{
+	auto& event = this->webEventsReferences[eventName];
+	auto it = std::find(event.begin(), event.end(), functionReference);
+
+	if (it != event.end())
+	{
+		event.erase(it);
+
+		return true;
+	}
+
+	return false;
+}
+
 #ifdef ALT_SERVER_API
 bool CLuaResourceImpl::MakeClient(alt::IResource::CreationInfo* info, alt::Array<alt::String> files)
 {
-	info->type = "js";
+	//info->type = "js";
 	return true;
 }
 #endif

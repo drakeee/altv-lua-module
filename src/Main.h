@@ -68,6 +68,7 @@ typedef alt::Vector2f Vector2fp;
 
 #include <Defs/CLuaAltFuncDefs.h>
 #include <Defs/CLuaConfigDefs.h>
+#include <Defs/CLuaNativeDefs.h>
 #include <Defs/CLuaResourceFuncDefs.h>
 #include <Defs/CLuaVector2Defs.h>
 #include <Defs/CLuaVector3Defs.h>

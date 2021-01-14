@@ -4,6 +4,8 @@
 const char* CLuaVoiceDefs::ClassName = "Voice";
 void CLuaVoiceDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaVoiceDefs::Init");
+
 	lua_globalfunction(L, "setVoiceInputMuted", SetVoiceInputMuted);
 	lua_globalfunction(L, "isVoiceInputMuted", IsVoiceInputMuted);
 	lua_globalfunction(L, "isVoiceActivationEnabled", IsVoiceActivationEnabled);
@@ -18,6 +20,8 @@ void CLuaVoiceDefs::Init(lua_State* L)
 		//lua_classvariable(L, "activationKey", nullptr, GetVoiceActivationKey);
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaVoiceDefs::Init ...done");
 }
 
 int CLuaVoiceDefs::SetVoiceInputMuted(lua_State* L)

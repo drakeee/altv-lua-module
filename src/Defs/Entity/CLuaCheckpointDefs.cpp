@@ -3,6 +3,8 @@
 const char* CLuaCheckpointDefs::ClassName = "Checkpoint";
 void CLuaCheckpointDefs::Init(lua_State* L)
 {
+	DEBUG_INFO("CLuaCheckpointDefs::Init");
+
 	lua_globalfunction(L, "createCheckpoint", Create);
 	lua_globalfunction(L, "getCheckpointType", GetCheckpointType);
 	lua_globalfunction(L, "getCheckpointHeight", GetHeight);
@@ -23,6 +25,8 @@ void CLuaCheckpointDefs::Init(lua_State* L)
 		lua_classvariable(L, "color", nullptr, "getColor");
 	}
 	lua_endclass(L);
+
+	DEBUG_INFO("CLuaCheckpointDefs::Init ...done");
 }
 
 int CLuaCheckpointDefs::Create(lua_State* L)

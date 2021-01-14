@@ -6,6 +6,9 @@ cmake_minimum_required (VERSION 3.8)
 project ("altv-lua-module")
 
 set(PROJECT_MODULE_NAME "lua-module")
+if("${MODULE_TYPE}" STREQUAL "CLIENT")
+	set(PROJECT_MODULE_NAME "altv-client-lua")
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
