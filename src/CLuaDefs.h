@@ -46,6 +46,7 @@ void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUser
 void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, bool refUserData = true);
 void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData = true);
 void lua_pushstring(lua_State* L, alt::String& str);
+void lua_pushstring(lua_State* L, alt::StringView& str);
 
 #ifdef ALT_CLIENT_API
 void lua_pushwebview(lua_State* L, alt::IWebView* webView, bool refUserData = true);

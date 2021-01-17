@@ -1,5 +1,6 @@
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
 #include <list>
 
 const char* CLuaNativeDefs::ClassName = "native";
@@ -204,3 +205,4 @@ int CLuaNativeDefs::InvokeNative(lua_State* L)
 
 	return ((uint8_t)(native->GetRetnType() != alt::INative::Type::ARG_VOID)) + argsCount;
 }
+#endif

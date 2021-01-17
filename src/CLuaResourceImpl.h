@@ -6,6 +6,14 @@ class CLuaScriptRuntime;
 class CLuaResourceImpl : public alt::IResource::Impl
 {
 public:
+	struct LuaTimer
+	{
+		uint32_t functionIndex;
+		uint32_t interval;
+		bool repeat;
+		int64_t lastTime;
+	};
+
 	class LuaFunction : public alt::IMValueFunction::Impl
 	{
 	public:
@@ -43,25 +51,34 @@ public:
 	void OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object) override;
 
 	lua_State*	GetLuaState(void) { return this->resourceState; }
-	bool		RegisterEvent(std::string eventName, int functionReference);
-	bool		RemoveEvent(std::string eventName, int functionReference);
-	bool		RegisterClientEvent(std::string eventName, int functionReference);
-	bool		RemoveClientEvent(std::string eventName, int functionReference);
-	bool		RegisterWebEvent(std::string eventName, int functionReference);
-	bool		RemoveWebEvent(std::string eventName, int functionReference);
+	bool		RegisterLocalEvent(std::string eventName, int functionReference);
+	bool		RemoveLocalEvent(std::string eventName, int functionReference);
+	bool		RegisterRemoteEvent(std::string eventName, int functionReference);
+	bool		RemoveRemoteEvent(std::string eventName, int functionReference);
+#ifdef ALT_CLIENT_API
+	bool		RegisterWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
+	bool		RemoveWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
+	inline const std::vector<int>& GetWebEventReferences(alt::IWebView* webView, std::string eventName)
+	{
+		return this->webEventsReferences[webView][eventName];
+	}
+
+	bool		RegisterWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
+	bool		RemoveWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
+	inline const std::vector<int>& GetWebSocketEventReferences(alt::IWebSocketClient* webSocket, std::string eventName)
+	{
+		return this->webSocketEventsReferences[webSocket][eventName];
+	}
+#endif
 	void		TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args);
 	void		IncludePath(const char* path);
-	inline const std::vector<int>& GetEventReferences(std::string eventName)
+	inline const std::vector<int>& GetLocalEventReferences(std::string eventName)
 	{
-		return this->eventsReferences[eventName];
+		return this->localEventsReferences[eventName];
 	}
-	inline const std::vector<int>& GetClientEventReferences(std::string eventName)
+	inline const std::vector<int>& GetRemoteEventReferences(std::string eventName)
 	{
-		return this->clientEventsReferences[eventName];
-	}
-	inline const std::vector<int>& GetWebEventReferences(std::string eventName)
-	{
-		return this->webEventsReferences[eventName];
+		return this->remoteEventsReferences[eventName];
 	}
 	inline bool				AddFunctionRef(const void* ptr, int functionRef)
 	{
@@ -136,6 +153,7 @@ public:
 		this->entities.push_back(baseObject);
 		return true;
 	}
+
 	inline bool RemoveEntity(alt::IBaseObject* baseObject)
 	{
 		auto it = std::find(this->entities.begin(), this->entities.end(), baseObject);
@@ -144,6 +162,20 @@ public:
 
 		this->entities.erase(it);
 		return true;
+	}
+
+	uint32_t CreateTimer(uint32_t functionIndex, uint32_t interval, bool repeat);
+	inline bool DestroyTimer(uint32_t timerIndex)
+	{
+		return (this->timerReferences.erase(timerIndex) > 0);
+	}
+
+	//Source: https://github.com/altmp/v8-helpers/blob/f4e4c2cacff229df022e68af99756b6f6ef1f6eb/V8ResourceImpl.h#L229
+	static int64_t GetTime()
+	{
+		return std::chrono::duration_cast<std::chrono::milliseconds>(
+			std::chrono::steady_clock::now().time_since_epoch())
+			.count();
 	}
 
 private:
@@ -155,9 +187,17 @@ private:
 	alt::IResource*		resource;
 	std::string			workingPath;
 
-	EventsReferences			eventsReferences;
-	EventsReferences			clientEventsReferences;
-	EventsReferences			webEventsReferences;
+	EventsReferences			localEventsReferences;
+	EventsReferences			remoteEventsReferences;
+
+	uint32_t timerIndex = -1;
+	std::map<uint32_t, LuaTimer>	timerReferences;
+
+#ifdef ALT_CLIENT_API
+	std::map<alt::IWebView*, EventsReferences> webEventsReferences;
+	std::map<alt::IWebSocketClient*, EventsReferences> webSocketEventsReferences;
+#endif
+
 	std::map<const void*, int>	functionReferences;
 	alt::MValueDict				exportFunction;
 	std::map<std::string, bool> loadedFiles;

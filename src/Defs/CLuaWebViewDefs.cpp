@@ -20,7 +20,11 @@ void CLuaWebViewDefs::Init(lua_State* L)
 
 	lua_beginclass(L, CLuaWebViewDefs::ClassName);
 	{
+		lua_classmeta(L, "__tostring", tostring);
+
 		lua_classfunction(L, "new", CreateWebView);
+		lua_classfunction(L, "on", On);
+		lua_classfunction(L, "off", Off);
 		lua_classfunction(L, "emit", Trigger);
 		lua_classfunction(L, "focus", Focus);
 		lua_classfunction(L, "unfocus", Unfocus);
@@ -41,6 +45,25 @@ void CLuaWebViewDefs::Init(lua_State* L)
 	lua_endclass(L);
 
 	DEBUG_INFO("CLuaWebViewDefs::Init ...done");
+}
+
+int CLuaWebViewDefs::tostring(lua_State* L)
+{
+	alt::IWebView* resource;
+
+	CArgReader argReader(L);
+	argReader.ReadUserData(resource);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	alt::StringView type(alt::String("userdata:WebView"));
+	lua_pushstring(L, type.CStr());
+
+	return 1;
 }
 
 int CLuaWebViewDefs::CreateWebView(lua_State *L)
@@ -90,7 +113,7 @@ int CLuaWebViewDefs::CreateWebView(lua_State *L)
 
 		argReader.ReadVectorDefault(position, Vector3fp(0, 0, 0));
 		argReader.ReadVectorDefault(size, Vector3fp(0, 0, 0));
-		argReader.ReadBoolDefault(isVisible, false);
+		argReader.ReadBoolDefault(isVisible, true);
 		argReader.ReadBoolDefault(isOverlay, false);
 
 		lua_pushwebview(L, Core->CreateWebView(resourceImpl->GetResource(), url, position, size, isVisible, isOverlay).Get());
@@ -106,12 +129,12 @@ int CLuaWebViewDefs::On(lua_State* L)
 {
 	alt::IWebView* webView;
 	std::string eventName;
-	alt::MValueArgs args;
+	int functionIndex;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(webView);
 	argReader.ReadString(eventName);
-	argReader.ReadArguments(args);
+	argReader.ReadFunction(functionIndex);
 
 	if (argReader.HasAnyError())
 	{
@@ -126,21 +149,21 @@ int CLuaWebViewDefs::On(lua_State* L)
 		return 0;
 	}
 
-	webView->Trigger(eventName, args);
+	lua_pushboolean(L, resourceImpl->RegisterWebEvent(webView, eventName, functionIndex));
 
-	return 0;
+	return 1;
 }
 
 int CLuaWebViewDefs::Off(lua_State* L)
 {
 	alt::IWebView* webView;
 	std::string eventName;
-	alt::MValueArgs args;
+	int functionIndex;
 
 	CArgReader argReader(L);
 	argReader.ReadUserData(webView);
 	argReader.ReadString(eventName);
-	argReader.ReadArguments(args);
+	argReader.ReadFunction(functionIndex);
 
 	if (argReader.HasAnyError())
 	{
@@ -148,9 +171,16 @@ int CLuaWebViewDefs::Off(lua_State* L)
 		return 0;
 	}
 
-	webView->Trigger(eventName, args);
+	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve resource in WebView::On");
+		return 0;
+	}
 
-	return 0;
+	lua_pushboolean(L, resourceImpl->RemoveWebEvent(webView, eventName, functionIndex));
+
+	return 1;
 }
 
 int CLuaWebViewDefs::Trigger(lua_State *L)

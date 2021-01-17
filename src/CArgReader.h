@@ -450,7 +450,6 @@ public:
 
 		int argType = lua_type(m_luaVM, m_stackIndex);
 
-		Core->LogInfo("Shit: " + alt::String(debugInfo.source));
 		sprintf_s(buffer, "Bad Argument (%s:%d) Expected argument at index %d: '%s', got '%s' instead.", debugInfo.name, debugInfo.currentline, m_stackIndex, expectedType, lua_typename(m_luaVM, argType));
 
 		AddMessage(buffer);

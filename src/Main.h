@@ -78,6 +78,7 @@ typedef alt::Vector2f Vector2fp;
 #include <Defs/CLuaDiscordManagerDefs.h>
 #include <Defs/CLuaVoiceDefs.h>
 #include <Defs/CLuaWebViewDefs.h>
+#include <Defs/CLuaWebSocketDefs.h>
 #include <Defs/Entity/CLuaBaseObjectDefs.h>
 #include <Defs/Entity/CLuaWorldObjectDefs.h>
 #include <Defs/Entity/CLuaEntityDefs.h>

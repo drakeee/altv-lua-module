@@ -97,6 +97,7 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 #endif
 
 	//Init functions
+	CLuaVector2Defs::Init(this->resourceState);
 	CLuaVector3Defs::Init(this->resourceState);
 	CLuaConfigDefs::Init(this->resourceState);
 	CLuaAltFuncDefs::Init(this->resourceState);
@@ -104,6 +105,7 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaBaseObjectDefs::Init(this->resourceState);
 	CLuaWorldObjectDefs::Init(this->resourceState);
 	CLuaEntityDefs::Init(this->resourceState);
+	CLuaRGBADefs::Init(this->resourceState);
 
 	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl11");
 
@@ -112,7 +114,9 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	CLuaHandlingDataDefs::Init(this->resourceState);
 	CLuaMapDataDefs::Init(this->resourceState);
 	CLuaDiscordManagerDefs::Init(this->resourceState);
+	CLuaWebSocketDefs::Init(this->resourceState);
 	CLuaWebViewDefs::Init(this->resourceState);
+	CLuaVoiceDefs::Init(this->resourceState);
 #endif
 
 	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl12");
@@ -222,9 +226,6 @@ bool CLuaResourceImpl::Start()
 		return false;
 	}
 
-	this->TriggerResourceLocalEvent("resourceStart", {});
-
-	resource->SetExports(this->exportFunction);
 #else
 
 	auto pkg = resource->GetPackage();
@@ -255,6 +256,10 @@ bool CLuaResourceImpl::Start()
 	}
 
 #endif
+
+	this->TriggerResourceLocalEvent("resourceStart", {});
+
+	resource->SetExports(this->exportFunction);
 
 	return true;
 }
@@ -306,7 +311,6 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 			if (!lua_toboolean(this->resourceState, -1))
 			{
 				ev->Cancel();
-
 				DEBUG_INFO(std::string("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev) + std::string("::Cancelled"));
 			}
 		}
@@ -319,6 +323,30 @@ void CLuaResourceImpl::OnTick()
 {
 
 	this->TriggerResourceLocalEvent("tick", {});
+
+	for (auto& timer : this->timerReferences)
+	{
+		uint64_t timeNow = GetTime();
+		if ((timeNow - timer.second.lastTime) > timer.second.interval)
+		{
+			lua_rawgeti(this->resourceState, LUA_REGISTRYINDEX, timer.second.functionIndex);
+
+			if (lua_pcall(this->resourceState, 0, 0, 0) != 0)
+			{
+				//Sadly far from perfect
+				Core->LogError(" Unable to execute timer function at index \"" + std::to_string(timer.first) + "\"");
+
+				//Get the error from the top of the stack
+				if (lua_isstring(this->resourceState, -1))
+					Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+			}
+
+			timer.second.lastTime = timeNow;
+
+			if (!timer.second.repeat)
+				this->timerReferences.erase(timer.first);
+		}
+	}
 
 #ifndef NDEBUG
 	//this->_core->LogInfo("CLuaResourceImpl::OnTick");
@@ -341,7 +369,7 @@ void CLuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
 
 void CLuaResourceImpl::TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args)
 {
-	auto references = &this->GetEventReferences(eventName);
+	auto references = &this->GetLocalEventReferences(eventName);
 
 	for (auto& functionReference : (*references))
 	{
@@ -363,12 +391,12 @@ void CLuaResourceImpl::TriggerResourceLocalEvent(std::string eventName, alt::MVa
 	}
 }
 
-bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReference)
+bool CLuaResourceImpl::RegisterLocalEvent(std::string eventName, int functionReference)
 {
-	auto& event = this->eventsReferences[eventName];
+	auto& event = this->localEventsReferences[eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
 	
-	DEBUG_INFO("RegisterEvent: " + eventName + " - " + std::to_string(functionReference));
+	DEBUG_INFO("RegisterLocalEvent: " + eventName + " - " + std::to_string(functionReference));
 
 	if (it != event.end())
 	{
@@ -379,12 +407,12 @@ bool CLuaResourceImpl::RegisterEvent(std::string eventName, int functionReferenc
 	return true;
 }
 
-bool CLuaResourceImpl::RegisterClientEvent(std::string eventName, int functionReference)
+bool CLuaResourceImpl::RegisterRemoteEvent(std::string eventName, int functionReference)
 {
-	auto& event = this->clientEventsReferences[eventName];
+	auto& event = this->remoteEventsReferences[eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
 
-	DEBUG_INFO("RegisterClientEvent: " + eventName + " - " + std::to_string(functionReference));
+	DEBUG_INFO("RegisterRemoteEvent: " + eventName + " - " + std::to_string(functionReference));
 
 	if (it != event.end())
 	{
@@ -395,9 +423,10 @@ bool CLuaResourceImpl::RegisterClientEvent(std::string eventName, int functionRe
 	return true;
 }
 
-bool CLuaResourceImpl::RegisterWebEvent(std::string eventName, int functionReference)
+#ifdef ALT_CLIENT_API
+bool CLuaResourceImpl::RegisterWebEvent(alt::IWebView* webView, std::string eventName, int functionReference)
 {
-	auto& event = this->webEventsReferences[eventName];
+	auto& event = this->webEventsReferences[webView][eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
 
 	DEBUG_INFO("RegisterWebEvent: " + eventName + " - " + std::to_string(functionReference));
@@ -411,9 +440,9 @@ bool CLuaResourceImpl::RegisterWebEvent(std::string eventName, int functionRefer
 	return true;
 }
 
-bool CLuaResourceImpl::RemoveEvent(std::string eventName, int functionReference)
+bool CLuaResourceImpl::RemoveWebEvent(alt::IWebView* webView, std::string eventName, int functionReference)
 {
-	auto &event = this->eventsReferences[eventName];
+	auto& event = this->webEventsReferences[webView][eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
 
 	if (it != event.end())
@@ -426,9 +455,41 @@ bool CLuaResourceImpl::RemoveEvent(std::string eventName, int functionReference)
 	return false;
 }
 
-bool CLuaResourceImpl::RemoveClientEvent(std::string eventName, int functionReference)
+bool CLuaResourceImpl::RegisterWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference)
 {
-	auto& event = this->clientEventsReferences[eventName];
+	auto& event = this->webSocketEventsReferences[webSocket][eventName];
+	auto it = std::find(event.begin(), event.end(), functionReference);
+
+	DEBUG_INFO("RegisterWebEvent: " + eventName + " - " + std::to_string(functionReference));
+
+	if (it != event.end())
+	{
+		return false;
+	}
+
+	event.push_back(functionReference);
+	return true;
+}
+
+bool CLuaResourceImpl::RemoveWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference)
+{
+	auto& event = this->webSocketEventsReferences[webSocket][eventName];
+	auto it = std::find(event.begin(), event.end(), functionReference);
+
+	if (it != event.end())
+	{
+		event.erase(it);
+
+		return true;
+	}
+
+	return false;
+}
+#endif
+
+bool CLuaResourceImpl::RemoveLocalEvent(std::string eventName, int functionReference)
+{
+	auto &event = this->localEventsReferences[eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
 
 	if (it != event.end())
@@ -441,9 +502,9 @@ bool CLuaResourceImpl::RemoveClientEvent(std::string eventName, int functionRefe
 	return false;
 }
 
-bool CLuaResourceImpl::RemoveWebEvent(std::string eventName, int functionReference)
+bool CLuaResourceImpl::RemoveRemoteEvent(std::string eventName, int functionReference)
 {
-	auto& event = this->webEventsReferences[eventName];
+	auto& event = this->remoteEventsReferences[eventName];
 	auto it = std::find(event.begin(), event.end(), functionReference);
 
 	if (it != event.end())
@@ -454,6 +515,14 @@ bool CLuaResourceImpl::RemoveWebEvent(std::string eventName, int functionReferen
 	}
 
 	return false;
+}
+
+uint32_t CLuaResourceImpl::CreateTimer(uint32_t functionIndex, uint32_t interval, bool repeat)
+{
+	this->timerIndex++;
+	this->timerReferences[timerIndex] = LuaTimer{functionIndex, interval, repeat, GetTime()};
+	
+	return timerIndex;
 }
 
 #ifdef ALT_SERVER_API

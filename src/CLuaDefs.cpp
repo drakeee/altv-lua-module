@@ -509,6 +509,11 @@ void lua_pushstring(lua_State* L, alt::String& str)
 	lua_pushstring(L, str.CStr());
 }
 
+void lua_pushstring(lua_State* L, alt::StringView& str)
+{
+	lua_pushstring(L, str.CStr());
+}
+
 void lua_pushvector2(lua_State* L, Vector2fp* vector, bool refUserData)
 {
 	lua_pushuserdata(L, CLuaVector2Defs::ClassName, vector, refUserData);

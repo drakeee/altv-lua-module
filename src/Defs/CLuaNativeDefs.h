@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef ALT_CLIENT_API
 #include <Main.h>
 
 class CLuaNativeDefs
@@ -11,3 +12,4 @@ public:
 private:
 	static int InvokeNative(lua_State* L);
 };
+#endif

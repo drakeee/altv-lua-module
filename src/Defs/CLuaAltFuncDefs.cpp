@@ -34,8 +34,23 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "onClient", OnClient);
 	lua_globalfunction(L, "offClient", OffClient);
 
+#ifdef ALT_SERVER_API
 	lua_globalfunction(L, "emit", EmitServer);
+#else
+	lua_globalfunction(L, "emit", EmitClient);
+#endif
 	lua_globalfunction(L, "emitServer", EmitServer);
+	lua_globalfunction(L, "emitClient", EmitClient);
+
+	lua_globalfunction(L, "nextTick", NextTick);
+	lua_globalfunction(L, "everyTick", EveryTick);
+	lua_globalfunction(L, "setTimeout", SetTimeout);
+	lua_globalfunction(L, "setInterval", SetInterval);
+	lua_globalfunction(L, "clearTimer", ClearTimer);
+	lua_globalfunction(L, "clearNextTick", ClearTimer);
+	lua_globalfunction(L, "clearEveryTick", ClearTimer);
+	lua_globalfunction(L, "clearTimeout", ClearTimer);
+	lua_globalfunction(L, "clearInterval", ClearTimer);
 
 	lua_globalfunction(L, "export", Export);
 	lua_globalfunction(L, "hash", Hash);
@@ -62,8 +77,6 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "startResource", StartResource);
 	lua_globalfunction(L, "stopResource", StopResource);
 	lua_globalfunction(L, "restartResource", RestartResource);
-
-	lua_globalfunction(L, "emitClient", EmitClient);
 
 	lua_globalfunction(L, "setSyncedMetaData", SetSyncedMetaData);
 	lua_globalfunction(L, "deleteSyncedMetaData", DeleteSyncedMetaData);
@@ -123,6 +136,12 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setAngularVelocity", SetAngularVelocity);
 
 	lua_globalfunction(L, "isGameFocused", IsGameFocused);
+
+	lua_globalfunction(L, "loadModel", LoadModel);
+	lua_globalfunction(L, "loadModelAsync", LoadModelAsync);
+
+	lua_globalfunction(L, "loadYtyp", LoadYtyp);
+	lua_globalfunction(L, "unloadYtyp", UnloadYtyp);
 #endif
 
 	lua_beginclass(L, ClassName);
@@ -337,35 +356,6 @@ int CLuaAltFuncDefs::RestartResource(lua_State* L)
 	lua_pushresource(L, Core->RestartResource(resourceName));
 
 	return 1;
-}
-
-int CLuaAltFuncDefs::EmitClient(lua_State* L)
-{
-	alt::IPlayer* player;
-	std::string eventName;
-	alt::MValueArgs args;
-
-	CArgReader argReader(L);
-	if (argReader.IsCurrentType(LUA_TNIL))
-	{
-		player = nullptr;
-		argReader.SkipValue();
-	}
-	else
-		argReader.ReadBaseObject(player);
-
-	argReader.ReadString(eventName);
-	argReader.ReadArguments(args);
-
-	if (argReader.HasAnyError())
-	{
-		argReader.GetErrorMessages();
-		return 0;
-	}
-
-	Core->TriggerClientEvent(player, eventName, args);
-
-	return 0;
 }
 
 int CLuaAltFuncDefs::SetSyncedMetaData(lua_State* L)
@@ -1089,6 +1079,78 @@ int CLuaAltFuncDefs::IsGameFocused(lua_State* L)
 	lua_pushboolean(L, Core->IsGameFocused());
 	return 1;
 }
+
+int CLuaAltFuncDefs::LoadModel(lua_State* L)
+{
+	uint32_t hash;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(hash);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->LoadModel(hash);
+	Core->LogWarning("loadModel is deprecated and it will be removed in the future. Please use the native requestModel.");
+	return 0;
+}
+
+int CLuaAltFuncDefs::LoadModelAsync(lua_State* L)
+{
+	uint32_t hash;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(hash);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->LoadModelAsync(hash);
+	Core->LogWarning("loadModelAsync is deprecated and it will be removed in the future. Please use the native requestModel.");
+	return 0;
+}
+
+int CLuaAltFuncDefs::LoadYtyp(lua_State* L)
+{
+	std::string path;
+
+	CArgReader argReader(L);
+	argReader.ReadString(path);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->LoadYtyp(path));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::UnloadYtyp(lua_State* L)
+{
+	std::string path;
+
+	CArgReader argReader(L);
+	argReader.ReadString(path);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, Core->UnloadYtyp(path));
+
+	return 1;
+}
 #endif
 
 int CLuaAltFuncDefs::GetSyncedMetaData(lua_State* L)
@@ -1303,7 +1365,11 @@ int CLuaAltFuncDefs::OnServer(lua_State* L)
 	auto runtime = &CLuaScriptRuntime::Instance();
 	auto resource = runtime->GetResourceImplFromState(L);
 
-	lua_pushboolean(L, resource->RegisterEvent(eventName, functionRef));
+#ifdef ALT_SERVER_API
+	lua_pushboolean(L, resource->RegisterLocalEvent(eventName, functionRef));
+#else
+	lua_pushboolean(L, resource->RegisterRemoteEvent(eventName, functionRef));
+#endif
 
 	return 1;
 }
@@ -1327,7 +1393,11 @@ int CLuaAltFuncDefs::OffServer(lua_State* L)
 	auto runtime = &CLuaScriptRuntime::Instance();
 	auto resource = runtime->GetResourceImplFromState(L);
 
-	lua_pushboolean(L, resource->RemoveEvent(eventName, functionRef));
+#ifdef ALT_SERVER_API
+	lua_pushboolean(L, resource->RemoveLocalEvent(eventName, functionRef));
+#else
+	lua_pushboolean(L, resource->RemoveRemoteEvent(eventName, functionRef));
+#endif
 
 	return 1;
 }
@@ -1354,7 +1424,11 @@ int CLuaAltFuncDefs::OnClient(lua_State* L)
 	auto runtime = &CLuaScriptRuntime::Instance();
 	auto resource = runtime->GetResourceImplFromState(L);
 
-	lua_pushboolean(L, resource->RegisterClientEvent(eventName, functionRef));
+#ifdef ALT_SERVER_API
+	lua_pushboolean(L, resource->RegisterRemoteEvent(eventName, functionRef));
+#else
+	lua_pushboolean(L, resource->RegisterLocalEvent(eventName, functionRef));
+#endif
 
 	return 1;
 }
@@ -1378,7 +1452,11 @@ int CLuaAltFuncDefs::OffClient(lua_State* L)
 	auto runtime = &CLuaScriptRuntime::Instance();
 	auto resource = runtime->GetResourceImplFromState(L);
 
-	lua_pushboolean(L, resource->RemoveClientEvent(eventName, functionRef));
+#ifdef ALT_SERVER_API
+	lua_pushboolean(L, resource->RemoveRemoteEvent(eventName, functionRef));
+#else
+	lua_pushboolean(L, resource->RemoveLocalEvent(eventName, functionRef));
+#endif
 
 	return 1;
 }
@@ -1402,6 +1480,43 @@ int CLuaAltFuncDefs::EmitServer(lua_State* L)
 	Core->TriggerLocalEvent(eventName, args);
 #else
 	Core->TriggerServerEvent(eventName, args);
+#endif
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::EmitClient(lua_State* L)
+{
+#ifdef ALT_SERVER_API
+	alt::IPlayer* player;
+#endif
+	std::string eventName;
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+#ifdef ALT_SERVER_API
+	if (argReader.IsCurrentType(LUA_TNIL))
+	{
+		player = nullptr;
+		argReader.SkipValue();
+	}
+	else
+		argReader.ReadBaseObject(player);
+#endif
+
+	argReader.ReadString(eventName);
+	argReader.ReadArguments(args);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+#ifdef ALT_SERVER_API
+	Core->TriggerClientEvent(player, eventName, args);
+#else
+	Core->TriggerLocalEvent(eventName, args);
 #endif
 
 	return 0;
@@ -1581,11 +1696,133 @@ int CLuaAltFuncDefs::ipairs(lua_State* L)
 	return 3;
 }
 
-int CLuaAltFuncDefs::tostringtest(lua_State* L)
+int CLuaAltFuncDefs::NextTick(lua_State* L)
 {
-	//Core->LogInfo("CLuaAltFuncDefs::tostringtest");
+	int functionReference;
 
-	return 2;
+	CArgReader argReader(L);
+	argReader.ReadFunction(functionReference);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	CLuaResourceImpl *resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in NextTick");
+		return 0;
+	}
+
+	lua_pushnumber(L, resourceImpl->CreateTimer(functionReference, 0, false));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::EveryTick(lua_State* L)
+{
+	int functionReference;
+
+	CArgReader argReader(L);
+	argReader.ReadFunction(functionReference);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in EveryTick");
+		return 0;
+	}
+
+	lua_pushnumber(L, resourceImpl->CreateTimer(functionReference, 0, true));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::SetTimeout(lua_State* L)
+{
+	int functionReference;
+	uint32_t time;
+
+	CArgReader argReader(L);
+	argReader.ReadFunction(functionReference);
+	argReader.ReadNumber(time);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in SetTimeout");
+		return 0;
+	}
+
+	lua_pushnumber(L, resourceImpl->CreateTimer(functionReference, time, false));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::SetInterval(lua_State* L)
+{
+	int functionReference;
+	uint32_t time;
+
+	CArgReader argReader(L);
+	argReader.ReadFunction(functionReference);
+	argReader.ReadNumber(time);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in SetInterval");
+		return 0;
+	}
+
+	lua_pushnumber(L, resourceImpl->CreateTimer(functionReference, time, true));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::ClearTimer(lua_State* L)
+{
+	uint32_t timerIndex;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(timerIndex);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in NextTick");
+		return 0;
+	}
+
+	lua_pushboolean(L, resourceImpl->DestroyTimer(timerIndex));
+
+	return 1;
 }
 
 int CLuaAltFuncDefs::Log(lua_State* L, LogType logType)

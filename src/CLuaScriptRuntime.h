@@ -158,6 +158,8 @@ private:
 		"keyboard", //done
 		"gameEntityCreate", //done
 		"gameEntityDestroy", //done
+		"render", //done
+		"WEB_SOCKET_CLIENT_EVENT", //done
 
 		"ALL",
 		"SIZE"

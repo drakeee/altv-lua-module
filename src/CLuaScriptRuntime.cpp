@@ -1,9 +1,13 @@
-#include "CLuaScriptRuntime.h"
+#include <Main.h>
 #include <fstream>
+
+#include <events/CRenderEvent.h>
+#include <events/CWebSocketClientEvent.h>
 
 CLuaScriptRuntime::CLuaScriptRuntime()
 {
 
+#if false
 #ifndef NDEBUG
 	Core->LogInfo("CLuaScriptRuntime::CLuaScriptRuntime");
 #endif
@@ -16,7 +20,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_CONNECT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -33,7 +37,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_DISCONNECT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -51,7 +55,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::RESOURCE_START,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -69,7 +73,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::RESOURCE_STOP,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -87,7 +91,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::RESOURCE_ERROR,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -106,7 +110,12 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> const std::vector<int>*
 		{
 			auto event = static_cast<const alt::CServerScriptEvent*>(ev);
-			return &resource->GetEventReferences(event->GetName().CStr());
+
+#ifdef ALT_SERVER_API
+			return &resource->GetLocalEventReferences(event->GetName().CStr());
+#else
+			return &resource->GetRemoteEventReferences(event->GetName().CStr());
+#endif
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -128,7 +137,12 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> const std::vector<int>*
 		{
 			auto event = static_cast<const alt::CClientScriptEvent*>(ev);
-			return &resource->GetClientEventReferences(event->GetName().CStr());
+
+#ifdef ALT_SERVER_API
+			return &resource->GetRemoteEventReferences(event->GetName().CStr());
+#else
+			return &resource->GetLocalEventReferences(event->GetName().CStr());
+#endif
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -158,7 +172,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> const std::vector<int>*
 		{
 			auto event = static_cast<const alt::CServerScriptEvent*>(ev);
-			return &resource->GetEventReferences(event->GetName().CStr());
+			return &resource->GetLocalEventReferences(event->GetName().CStr());
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -170,7 +184,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::SYNCED_META_CHANGE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -190,7 +204,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::STREAM_SYNCED_META_CHANGE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -210,7 +224,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::GLOBAL_META_CHANGE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -229,7 +243,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::GLOBAL_SYNCED_META_CHANGE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -248,7 +262,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_DAMAGE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -273,7 +287,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_DEATH,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -297,7 +311,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::FIRE_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -332,7 +346,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::EXPLOSION_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -352,7 +366,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::START_PROJECTILE_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -373,7 +387,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::WEAPON_DAMAGE_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -395,7 +409,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::VEHICLE_DESTROY,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -420,7 +434,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::COLSHAPE_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -441,7 +455,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_ENTER_VEHICLE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -460,7 +474,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_ENTERING_VEHICLE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -479,7 +493,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_LEAVE_VEHICLE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -498,7 +512,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_CHANGE_VEHICLE_SEAT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -518,7 +532,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::PLAYER_WEAPON_CHANGE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -537,7 +551,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::VEHICLE_ATTACH,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -555,7 +569,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::VEHICLE_DETACH,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -573,7 +587,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::NETOWNER_CHANGE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -592,7 +606,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::REMOVE_ENTITY_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -609,7 +623,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::CREATE_BASE_OBJECT_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 			[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -626,7 +640,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::REMOVE_BASE_OBJECT_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -643,7 +657,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::CONSOLE_COMMAND_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -666,13 +680,14 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			return 2;
 		}
 	);
+#endif
 
 #ifdef ALT_CLIENT_API
 	this->RegisterServerCallback(
 		alt::CEvent::Type::CONNECTION_COMPLETE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -684,7 +699,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::DISCONNECT_EVENT,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -697,7 +712,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
 			auto event = static_cast<const alt::CWebViewEvent*>(ev);
-			return &resource->GetWebEventReferences(event->GetName().ToString());
+			return &resource->GetWebEventReferences(event->GetTarget().Get(), event->GetName().ToString());
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -719,9 +734,9 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		{
 			auto event = static_cast<const alt::CKeyboardEvent*>(ev);
 			if (event->GetKeyState() == alt::CKeyboardEvent::KeyState::UP)
-				return &resource->GetClientEventReferences("keyup");
+				return &resource->GetRemoteEventReferences("keyup");
 			else
-				return &resource->GetClientEventReferences("keydown");
+				return &resource->GetRemoteEventReferences("keydown");
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -738,7 +753,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::GAME_ENTITY_CREATE,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -755,7 +770,7 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		alt::CEvent::Type::GAME_ENTITY_DESTROY,
 		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
 		{
-			return &resource->GetEventReferences(this->GetEventType(ev->GetType()));
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -765,6 +780,39 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_pushbaseobject(L, event->GetTarget());
 
 			return 1;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::GAME_ENTITY_DESTROY,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			return 0;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::WEB_SOCKET_CLIENT_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			auto event = static_cast<const alt::CWebSocketClientEvent*>(ev);
+			return &resource->GetWebSocketEventReferences(event->GetTarget().Get(), event->GetName().ToString());
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CWebSocketClientEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			for (auto arg : event->GetArgs())
+			{
+				lua_pushmvalue(L, arg);
+			}
+
+			return static_cast<int>(event->GetArgs().GetSize());
 		}
 	);
 #endif

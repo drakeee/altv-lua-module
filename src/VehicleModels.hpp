@@ -89,12 +89,19 @@ private:
 					fread(&count, sizeof(uint8_t), 1, this->filePtr);
 
 					std::vector<uint16_t>& comps = modKit->mods[modCat];
+
+					//std::string modIDBuilder("[");
 					for (uint8_t j = 0; j < count; ++j)
 					{
 						uint16_t compId = 0;
 						fread(&compId, sizeof(uint16_t), 1, this->filePtr);
 						comps.push_back(compId);
+
+						//modIDBuilder.append(std::to_string(compId) + ", ");
 					}
+					//modIDBuilder.append("]");
+
+					//this->core->LogInfo(modKit->name + " -> " + std::to_string(modsCount) + " -> " + std::to_string(modCat) + " -> " + std::to_string(count) + " -> " + modIDBuilder);
 				}
 
 				this->modKits[modKit->id] = modKit;
