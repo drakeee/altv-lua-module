@@ -20,7 +20,7 @@ xcopy build\win64\Release\lua-client-module-static.lib artifacts\ /Y
 
 cd artifacts
 REM if not exist "lua-client-module\modules" mkdir "lua-client-module\modules"
-7z a -tzip "lua-client-module-windows.zip" -r lua-client-module
-7z a -tzip "lua-client-module-static-windows.zip" lua-client-module-static.lib
+7z a -tzip "lua-client-module.zip" -r lua-client-module
+7z a -tzip "lua-client-module-static.zip" lua-client-module-static.lib
 
 cd ..
