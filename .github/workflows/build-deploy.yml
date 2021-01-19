@@ -2,9 +2,8 @@ name: Build & deploy
 on:
   push:
     tags:
-      - "server/*.*-dev*"
-      - "server/*.*-rc*"
       - "server/*.*"
+      - "client/*.*"
 
 jobs:
   create_release:
