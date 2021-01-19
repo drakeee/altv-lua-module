@@ -81,7 +81,7 @@ jobs:
       - name: Build
         shell: cmd
         run: build_client_win.bat
-      - name: Upload Windows artifacts
+      - name: Upload Windows client module
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,6 +90,14 @@ jobs:
           asset_path: artifacts/lua-client-module-windows.zip
           asset_name: lua-client-module-windows.zip
           asset_content_type: application/zip
+      - name: Upload Windows client library
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: artifacts/lua-client-module-static.lib
+          asset_name: lua-client-module-static.lib
   publish-artifacts:
     name: Publish Lua modules
     runs-on: windows-2019
