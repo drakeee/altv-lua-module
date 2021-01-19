@@ -1,10 +1,10 @@
 name: Build & deploy
 on:
-  create:
+  push:
     tags:
-      - "dev/*.*-dev*"
-      - "rc/*.*-rc*"
-      - "release/*.*"
+      - "server/*.*-dev*"
+      - "server/*.*-rc*"
+      - "server/*.*"
 
 jobs:
   create_release:
@@ -23,10 +23,11 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-  build-windows:
-    name: Build windows release
+  build-windows-server:
+    name: Build Windows server release
     runs-on: windows-2019
     needs: [create_release]
+    if: startsWith(github.ref, 'refs/tags/server')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -35,20 +36,21 @@ jobs:
           lfs: true
       - name: Build
         shell: cmd
-        run: build.bat
-      - name: Upload windows artifacts
+        run: build_server_win.bat
+      - name: Upload Windows artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: artifacts/lua-module-windows.zip
-          asset_name: lua-module-windows.zip
+          asset_path: artifacts/lua-server-module-windows.zip
+          asset_name: lua-server-module-windows.zip
           asset_content_type: application/zip
-  build-linux:
-    name: Build linux release
+  build-linux-server:
+    name: Build Linux server release
     runs-on: ubuntu-18.04
     needs: [create_release]
+    if: startsWith(github.ref, 'refs/tags/server')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -56,15 +58,38 @@ jobs:
           submodules: recursive
           lfs: true
       - name: Build
-        run: ./build.sh
+        run: ./build_server_linux.sh
       - name: Upload linux artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: artifacts/lua-module-linux.zip
-          asset_name: lua-module-linux.zip
+          asset_path: artifacts/lua-server-module-linux.zip
+          asset_name: lua-server-module-linux.zip
+          asset_content_type: application/zip
+  build-windows-client:
+    name: Build Windows client release
+    runs-on: windows-2019
+    needs: [create_release]
+    if: startsWith(github.ref, 'refs/tags/client')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          lfs: true
+      - name: Build
+        shell: cmd
+        run: build_client_win.bat
+      - name: Upload Windows artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: artifacts/lua-client-module-windows.zip
+          asset_name: lua-client-module-windows.zip
           asset_content_type: application/zip
   publish-artifacts:
     name: Publish Lua modules

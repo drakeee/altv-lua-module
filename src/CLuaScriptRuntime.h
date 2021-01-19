@@ -82,7 +82,7 @@ public:
 	~CLuaScriptRuntime() { };
 
 private:
-	const semver::version						version{ 0, 4, 5, semver::branch::dev };
+	const semver::version						version{ 1, 0, 3, alt::ICore::SDK_VERSION, semver::branch::dev };
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;
 #endif

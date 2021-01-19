@@ -7,7 +7,6 @@
 CLuaScriptRuntime::CLuaScriptRuntime()
 {
 
-#if false
 #ifndef NDEBUG
 	Core->LogInfo("CLuaScriptRuntime::CLuaScriptRuntime");
 #endif
@@ -680,7 +679,6 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			return 2;
 		}
 	);
-#endif
 
 #ifdef ALT_CLIENT_API
 	this->RegisterServerCallback(
