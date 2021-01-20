@@ -56,6 +56,8 @@ jobs:
         with:
           submodules: recursive
           lfs: true
+      - name: Make it executeable
+        run: chmod +x ./build_server_linux.sh
       - name: Build
         run: ./build_server_linux.sh
       - name: Upload linux artifacts
