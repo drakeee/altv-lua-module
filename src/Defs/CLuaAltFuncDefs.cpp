@@ -85,6 +85,8 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 
 	lua_globalfunction(L, "getNetTime", GetNetTime);
 
+	lua_globalfunction(L, "setPassword", SetPassword);
+
 
 	lua_pushnumber(L, alt::DEFAULT_DIMENSION);
 	lua_setglobal(L, "defaultDimension");
@@ -425,6 +427,24 @@ int CLuaAltFuncDefs::GetNetTime(lua_State* L)
 {
 	lua_pushnumber(L, Core->GetNetTime());
 	return 1;
+}
+
+int CLuaAltFuncDefs::SetPassword(lua_State* L)
+{
+	std::string password;
+
+	CArgReader argReader(L);
+	argReader.ReadString(password);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetPassword(password);
+
+	return 0;
 }
 #else
 int CLuaAltFuncDefs::SetCharStat(lua_State* L)
