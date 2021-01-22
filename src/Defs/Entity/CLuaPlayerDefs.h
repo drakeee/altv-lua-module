@@ -59,6 +59,7 @@ private:
 	static int GetHwidHash(lua_State* L);
 	static int GetHwidExHash(lua_State* L);
 	static int GetAuthToken(lua_State* L);
+	static int GetClothes(lua_State* L);
 
 	static int Spawn(lua_State* L);
 	static int Despawn(lua_State* L);
@@ -77,6 +78,7 @@ private:
 	static int RemoveAllWeapons(lua_State* L);
 	static int SetDateTime(lua_State* L);
 	static int SetWeather(lua_State* L);
+	static int SetClothes(lua_State* L);
 	static int Kick(lua_State* L);
 #else
 	static int GetLocalPlayer(lua_State* L);

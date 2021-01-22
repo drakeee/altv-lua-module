@@ -82,6 +82,8 @@ private:
 	static int GetPlayersByName(lua_State* L);
 
 	static int GetNetTime(lua_State* L);
+
+	static int SetPassword(lua_State* L);
 #else
 	//virtual alt::IPackage::PathInfo Resolve(IResource* resource, alt::StringView path, StringView currentModulePath) const = 0; //TODO?
 	static int SetCharStat(lua_State* L); //done

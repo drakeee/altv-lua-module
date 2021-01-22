@@ -39,6 +39,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getPlayerHwidHash", GetHwidHash);
 	lua_globalfunction(L, "getPlayerHwidExHash", GetHwidExHash);
 	lua_globalfunction(L, "getPlayerAuthToken", GetAuthToken);
+	lua_globalfunction(L, "getPlayerClothes", GetClothes);
 
 	lua_globalfunction(L, "spawnPlayer", Spawn);
 	lua_globalfunction(L, "despawnPlayer", Despawn);
@@ -57,6 +58,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "removePlayerAllWeapons", RemoveAllWeapons);
 	lua_globalfunction(L, "setPlayerDateTime", SetDateTime);
 	lua_globalfunction(L, "setPlayerWeather", SetWeather);
+	lua_globalfunction(L, "setPlayerClothes", SetClothes);
 	lua_globalfunction(L, "kickPlayer", Kick);
 #else
 	lua_globalfunction(L, "isPlayerTalking", IsTalking);
@@ -103,6 +105,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getHwidHash", GetHwidHash);
 		lua_classfunction(L, "getHwidExHash", GetHwidExHash);
 		lua_classfunction(L, "getAuthToken", GetAuthToken);
+		lua_classfunction(L, "getClothes", GetClothes);
 
 		lua_classfunction(L, "spawn", Spawn);
 		lua_classfunction(L, "despawn", Despawn);
@@ -121,6 +124,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "removeAllWeapons", RemoveAllWeapons);
 		lua_classfunction(L, "setDateTime", SetDateTime);
 		lua_classfunction(L, "setWeather", SetWeather);
+		lua_classfunction(L, "setClothes", SetClothes);
 		lua_classfunction(L, "kick", Kick);
 #else
 		lua_classfunction(L, "getLocalPlayer", GetLocalPlayer);
@@ -812,6 +816,34 @@ int CLuaPlayerDefs::GetAuthToken(lua_State* L)
 	return 1;
 }
 
+int CLuaPlayerDefs::GetClothes(lua_State* L)
+{
+	alt::IPlayer* player;
+	uint8_t component;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(component);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto clothes = player->GetClothes(component);
+
+	lua_newtable(L);
+	lua_pushnumber(L, clothes.drawableId);
+	lua_setfield(L, -2, "drawable");
+	lua_pushnumber(L, clothes.textureId);
+	lua_setfield(L, -2, "texture");
+	lua_pushnumber(L, clothes.paletteId);
+	lua_setfield(L, -2, "palette");
+
+	return 1;
+}
+
 int CLuaPlayerDefs::Spawn(lua_State* L)
 {
 	alt::IPlayer* player;
@@ -1169,6 +1201,32 @@ int CLuaPlayerDefs::SetWeather(lua_State* L)
 	}
 
 	player->SetWeather(weather);
+
+	return 0;
+}
+
+int CLuaPlayerDefs::SetClothes(lua_State* L)
+{
+	alt::IPlayer* player;
+	uint8_t component;
+	uint16_t drawable;
+	uint8_t texture;
+	uint8_t palette;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(component);
+	argReader.ReadNumber(drawable);
+	argReader.ReadNumber(texture);
+	argReader.ReadNumber(palette);
+
+	if(argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	player->SetClothes(component, drawable, texture, palette);
 
 	return 0;
 }
