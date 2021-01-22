@@ -69,6 +69,30 @@ public:
 	{
 		return this->webSocketEventsReferences[webSocket][eventName];
 	}
+
+	inline bool IsScriptExists(alt::String path)
+	{
+		auto pkg = resource->GetPackage();
+		return pkg->FileExists(path);
+	}
+
+	inline alt::String GetScript(alt::String path)
+	{
+		auto pkg = resource->GetPackage();
+		if (!pkg->FileExists(path))
+		{
+			Core->LogError(" Client main \"" + path + "\" is not found");
+			return true;
+		}
+
+		auto file = pkg->OpenFile(path);
+		alt::String script{ pkg->GetFileSize(file) };
+
+		pkg->ReadFile(file, script.GetData(), script.GetSize());
+		pkg->CloseFile(file);
+
+		return script;
+	}
 #endif
 	void		TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args);
 	void		IncludePath(const char* path);

@@ -20,6 +20,7 @@
 
 //#define lua_endstaticclass(a) \
 //	lua_endclass(L,true)
+extern const char* lua_meta_script;
 void lua_globalfunction(lua_State* L, const char* functionName, lua_CFunction func);
 
 int lua_setpath(lua_State* L, const char* path);

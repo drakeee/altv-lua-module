@@ -7,6 +7,11 @@ void lua_initclass(lua_State* L)
 
 	lua_newtable(L);
 	lua_setfield(L, LUA_REGISTRYINDEX, "e_mt"); //entity metatable -> this will store all entities functions, metaevents, etc
+
+#ifdef ALT_CLIENT_API
+	lua_newtable(L);
+	lua_setfield(L, LUA_REGISTRYINDEX, "_LOADED_PACKAGE");
+#endif
 }
 
 void lua_globalfunction(lua_State* L, const char* functionName, lua_CFunction func)
@@ -123,7 +128,7 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 	lua_rawset(L, -3);
 }
 
-const char* script = R"(
+const char* lua_meta_script = R"(
 local metaTable = {}
 metaTable.__index = function(t, k)
 	local meta = getmetatable(t)
@@ -163,7 +168,7 @@ void lua_endclass(lua_State* L)
 {
 	lua_classmeta(L, "__call", CLuaFunctionDefs::Call);
 	
-	luaL_dostring(L, script);
+	luaL_dostring(L, lua_meta_script);
 	lua_getfield(L, -2, "__index");
 	if (lua_isnil(L, -1))
 	{
@@ -596,6 +601,17 @@ void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 
 		break;
 	}
+	case alt::IMValue::Type::FUNCTION:
+	{
+		lua_newtable(L);
+		lua_newtable(L);
+		lua_pushlightuserdata(L, (void*)mValue.As<alt::IMValueFunction>().Get());
+		lua_pushcclosure(L, CLuaFunctionDefs::FunctionCallback, 1);
+		lua_setfield(L, -2, "__call");
+		lua_setmetatable(L, -2);
+
+		break;
+	}
 	default:
 		Core->LogError("lua_pushmvalue: Unhandled IMValue type: " + std::to_string(static_cast<int>(mValue->GetType())));
 		break;
@@ -790,13 +806,13 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 		break;
 	}
 	case LUA_TFUNCTION:
-		//Core->CreateMValueFunction()
-		//auto dict = Core->CreateMValueDict();
+	{
+		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto functionRef = lua_functionref(L, idx);
+		mValue = Core->CreateMValueFunction(new CLuaResourceImpl::LuaFunction(resourceImpl, functionRef));
 
-		Core->LogError("Error: Function save not yet implemented.");
-		luaL_error(L, "Function save not yet implemented.");
-		mValue = Core->CreateMValueNil();
 		break;
+	}
 	case LUA_TNIL:
 		mValue = Core->CreateMValueNil();
 		break;

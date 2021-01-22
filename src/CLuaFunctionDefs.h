@@ -12,6 +12,7 @@ public:
 	static int StaticIndex(lua_State* L);
 	static int NewIndex(lua_State *L);
 	static int Call(lua_State* L);
+	static int FunctionCallback(lua_State* L);
 	static int GarbageCollect(lua_State* L);
 	static int DisabledFunction(lua_State* L);
 };

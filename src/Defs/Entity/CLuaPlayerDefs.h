@@ -80,6 +80,8 @@ private:
 	static int SetWeather(lua_State* L);
 	static int SetClothes(lua_State* L);
 	static int Kick(lua_State* L);
+
+	static int IsEntityInStreamingRange(lua_State* L);
 #else
 	static int GetLocalPlayer(lua_State* L);
 

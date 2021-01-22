@@ -12,12 +12,12 @@ void CLuaRGBADefs::Init(lua_State* L)
 		lua_classfunction(L, "getColor", GetColor);
 		lua_classfunction(L, "setR", SetR);
 		lua_classfunction(L, "getR", GetR);
-		lua_classfunction(L, "setR", SetG);
-		lua_classfunction(L, "getR", GetG);
-		lua_classfunction(L, "setR", SetB);
-		lua_classfunction(L, "getR", GetB);
-		lua_classfunction(L, "setR", SetA);
-		lua_classfunction(L, "getR", GetA);
+		lua_classfunction(L, "setG", SetG);
+		lua_classfunction(L, "getG", GetG);
+		lua_classfunction(L, "setB", SetB);
+		lua_classfunction(L, "getB", GetB);
+		lua_classfunction(L, "setA", SetA);
+		lua_classfunction(L, "getA", GetA);
 
 		lua_classvariable(L, "color", "setColor", "getColor");
 		lua_classvariable(L, "r", "setR", "getR");

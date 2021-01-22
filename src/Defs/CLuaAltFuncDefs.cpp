@@ -27,6 +27,8 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 #ifdef ALT_SERVER_API
 	lua_globalfunction(L, "on", OnServer);
 #else
+	lua_globalfunction(L, "require", require);
+
 	lua_globalfunction(L, "on", OnClient);
 #endif
 	lua_globalfunction(L, "onServer", OnServer);
@@ -447,6 +449,69 @@ int CLuaAltFuncDefs::SetPassword(lua_State* L)
 	return 0;
 }
 #else
+int CLuaAltFuncDefs::require(lua_State* L)
+{
+	std::string path;
+
+	CArgReader argReader(L);
+	argReader.ReadString(path);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in require");
+		return 0;
+	}
+
+	std::replace(path.begin(), path.end(), '.', '/');
+	path.append(".lua");
+
+	lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED_PACKAGE");
+	lua_getfield(L, 2, path.c_str());
+
+	lua_stacktrace(L, "require");
+
+	if (lua_isnil(L, -1))
+	{
+		if (!resourceImpl->IsScriptExists(path))
+		{
+			Core->LogError(" Unable to load file \"" + path + "\": not exists");
+			return 0;
+		}
+
+		alt::String script{ resourceImpl->GetScript(path) };
+		if (luaL_dostring(L, script.CStr()))
+		{
+			//Sadly far from perfect
+			Core->LogError(" Unable to script \"" + path + "\"");
+
+			//Get the error from the top of the stack
+			if (lua_isstring(L, -1))
+				Core->LogError(" Error: " + alt::String(luaL_checkstring(L, -1)));
+
+			return false;
+		}
+
+		if (lua_isnil(L, -1))
+		{
+			lua_pushboolean(L, true);
+			lua_setfield(L, 2, path.c_str());
+		}
+		else
+			lua_setfield(L, 2, path.c_str());
+	}
+
+	lua_getfield(L, 2, path.c_str());
+
+	return 1;
+}
+
 int CLuaAltFuncDefs::SetCharStat(lua_State* L)
 {
 	std::string statName;

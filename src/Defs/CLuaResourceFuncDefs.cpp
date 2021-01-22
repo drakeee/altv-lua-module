@@ -101,18 +101,24 @@ int CLuaResourceFuncDefs::Call(lua_State* L)
 
 int CLuaResourceFuncDefs::ResourceIndex(lua_State* L)
 {
-	//Route all index accessing to the default handler
-	int results = CLuaFunctionDefs::Index(L);
-	if (!lua_isnil(L, -1))
+	luaL_dostring(L, lua_meta_script);
+	lua_getfield(L, -1, "__index");
+
+	if (lua_isfunction(L, -1))
 	{
-		//return results
-		return results;
+		lua_pushvalue(L, 1);
+		lua_pushvalue(L, 2);
+
+		int stack = lua_gettop(L) - 1;
+		lua_call(L, 2, LUA_MULTRET);
+
+		if(!lua_isnil(L, -1))
+			return (stack - lua_gettop(L));
 	}
 
-	//pop nil
-	lua_pop(L, 1);
+	//Pop result and metatable from the stack
+	lua_pop(L, 2);
 
-	//string expected on top of the stack
 	L_ASSERT(lua_isstring(L, -1), "String expected");
 
 	//Store function name in upvalue

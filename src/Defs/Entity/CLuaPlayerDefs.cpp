@@ -60,6 +60,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setPlayerWeather", SetWeather);
 	lua_globalfunction(L, "setPlayerClothes", SetClothes);
 	lua_globalfunction(L, "kickPlayer", Kick);
+	lua_globalfunction(L, "isEntityInStreamingRange", IsEntityInStreamingRange);
 #else
 	lua_globalfunction(L, "isPlayerTalking", IsTalking);
 	lua_globalfunction(L, "getPlayerMicLevel", GetMicLevel);
@@ -126,6 +127,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "setWeather", SetWeather);
 		lua_classfunction(L, "setClothes", SetClothes);
 		lua_classfunction(L, "kick", Kick);
+		lua_classfunction(L, "isEntityInStreamingRange", IsEntityInStreamingRange);
 #else
 		lua_classfunction(L, "getLocalPlayer", GetLocalPlayer);
 
@@ -1249,6 +1251,26 @@ int CLuaPlayerDefs::Kick(lua_State* L)
 	player->Kick(reason);
 
 	return 0;
+}
+
+int CLuaPlayerDefs::IsEntityInStreamingRange(lua_State* L)
+{
+	alt::IPlayer* player;
+	alt::IEntity* entity;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadBaseObject(entity);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, player->IsEntityInStreamingRange(entity));
+
+	return 1;
 }
 
 //int CLuaPlayerDefs::GetModel(lua_State* L)

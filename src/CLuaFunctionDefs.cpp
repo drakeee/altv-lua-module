@@ -297,6 +297,19 @@ int CLuaFunctionDefs::DisabledFunction(lua_State* L)
 	return 1;
 }
 
+int CLuaFunctionDefs::FunctionCallback(lua_State* L)
+{
+	alt::MValueArgs args;
+
+	CArgReader argReader(L);
+	argReader.ReadArguments(args);
+
+	alt::IMValueFunction* function = static_cast<alt::IMValueFunction*>(lua_touserdata(L, lua_upvalueindex(1)));
+	lua_pushmvalue(L, function->Call(args));
+
+	return 1;
+}
+
 /*int CLuaDefs::Index(lua_State *L)
 {
 	//get the classname

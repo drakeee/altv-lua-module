@@ -227,21 +227,8 @@ bool CLuaResourceImpl::Start()
 	}
 
 #else
-
-	auto pkg = resource->GetPackage();
-	auto mainFile = resource->GetMain();
-
-	if (!pkg->FileExists(mainFile))
-	{
-		Core->LogError(" Client main \"" + mainFile + "\" is not found");
-		return true;
-	}
-
-	auto file = pkg->OpenFile(mainFile);
-	alt::String script{pkg->GetFileSize(file)};
-
-	pkg->ReadFile(file, script.GetData(), script.GetSize());
-	pkg->CloseFile(file);
+	alt::String mainFile = resource->GetMain();
+	alt::String script{this->GetScript(mainFile)};
 
 	if (luaL_dostring(this->resourceState, script.CStr()))
 	{
