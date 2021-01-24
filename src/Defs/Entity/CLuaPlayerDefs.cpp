@@ -60,7 +60,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setPlayerWeather", SetWeather);
 	lua_globalfunction(L, "setPlayerClothes", SetClothes);
 	lua_globalfunction(L, "kickPlayer", Kick);
-	lua_globalfunction(L, "isEntityInStreamingRange", IsEntityInStreamingRange);
+	lua_globalfunction(L, "isEntityInStreamRange", IsEntityInStreamingRange);
 #else
 	lua_globalfunction(L, "isPlayerTalking", IsTalking);
 	lua_globalfunction(L, "getPlayerMicLevel", GetMicLevel);
@@ -185,6 +185,11 @@ void CLuaPlayerDefs::Init(lua_State* L)
 #endif
 	}
 	lua_endclass(L);
+
+#ifdef ALT_CLIENT_API
+	lua_pushbaseobject(L, Core->GetLocalPlayer());
+	lua_setglobal(L, "localPlayer");
+#endif
 
 	DEBUG_INFO("CLuaPlayerDefs::Init ...done");
 }

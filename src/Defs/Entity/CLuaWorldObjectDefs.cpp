@@ -19,6 +19,7 @@ void CLuaWorldObjectDefs::Init(lua_State* L)
 		lua_classfunction(L, "getDimension", GetDimension);
 
 		lua_classvariable(L, "pos", "setPosition", "getPosition");
+		lua_classvariable(L, "position", "setPosition", "getPosition");
 		lua_classvariable(L, "dimension", "setDimension", "getDimension");
 	}
 	lua_endclass(L);
