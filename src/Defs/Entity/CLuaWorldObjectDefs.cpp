@@ -54,7 +54,7 @@ int CLuaWorldObjectDefs::GetPosition(lua_State* L)
 {
 	alt::IWorldObject* worldObject;
 
-	Core->LogInfo("CLuaWorldObjectDefs::GetPosition");
+	//Core->LogInfo("CLuaWorldObjectDefs::GetPosition");
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(worldObject);

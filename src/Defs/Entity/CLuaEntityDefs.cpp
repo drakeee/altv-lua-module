@@ -67,7 +67,7 @@ void CLuaEntityDefs::Init(lua_State* L)
 
 		lua_classvariable(L, "id", nullptr, "getId");
 		lua_classvariable(L, "model", nullptr, "getModel");
-		lua_classvariable(L, "rotation", "setRotation", "getRotation");
+		lua_classvariable(L, "rot", "setRotation", "getRotation");
 		lua_classvariable(L, "all", nullptr, "getAll");
 
 #ifdef ALT_SERVER_API
