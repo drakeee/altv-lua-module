@@ -106,6 +106,8 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "isKeyToggled", IsKeyToggled);
 	
 	lua_globalfunction(L, "gameControlsEnabled", AreControlsEnabled);
+	lua_globalfunction(L, "toggleGameControls", ToggleGameControls);
+	lua_globalfunction(L, "showCursor", ShowCursor);
 	lua_globalfunction(L, "setCursorPos", SetCursorPosition);
 	lua_globalfunction(L, "getCursorPos", GetCursorPosition);
 
@@ -847,6 +849,59 @@ int CLuaAltFuncDefs::IsConsoleOpen(lua_State* L)
 {
 	lua_pushboolean(L, Core->IsConsoleOpen());
 	return 1;
+}
+
+int CLuaAltFuncDefs::ToggleGameControls(lua_State* L)
+{
+	bool state;
+
+	CArgReader argReader(L);
+	argReader.ReadBool(state);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in ToggleGameControls");
+		return 0;
+	}
+
+	resourceImpl->GetResource()->ToggleGameControls(state);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::ShowCursor(lua_State* L)
+{
+	bool state;
+
+	CArgReader argReader(L);
+	argReader.ReadBool(state);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+	if (resourceImpl == nullptr)
+	{
+		Core->LogError("Unable to retrieve CLuaResourceImpl in ShowCursor");
+		return 0;
+	}
+
+	if (!resourceImpl->GetResource()->ToggleCursor(state))
+	{
+		Core->LogWarning("Cursor state can't go < 0");
+	}
+
+	return 0;
 }
 
 int CLuaAltFuncDefs::GetTextureFromDrawable(lua_State* L)

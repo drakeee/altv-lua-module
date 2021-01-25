@@ -27,9 +27,9 @@ struct Ptr {
 std::list<Ptr> pointers;
 
 template<typename T>
-T* CreatePtr(T value, alt::INative::Type argType)
+T* CreatePtr(T value, alt::INative::Type argType, size_t additionalSize = 1)
 {
-	T* ptr = static_cast<T*>(malloc(sizeof(T)));
+	T* ptr = static_cast<T*>(malloc(additionalSize * sizeof(T)));
 	*ptr = value;
 
 	pointers.push_back({ ptr, argType });
@@ -69,8 +69,11 @@ void PushArg(alt::INative::Context *ctx, alt::INative::Type argType, alt::MValue
 		ctx->Push(CreatePtr(alt::INative::Vector3{}, argType));
 		break;
 	case alt::INative::Type::ARG_STRING:
-		ctx->Push(value.As<alt::IMValueString>()->Value().CStr());
+	{
+		//ctx->Push(SaveString(value.As<alt::IMValueString>()->Value().ToString().data()));
+		ctx->Push(*CreatePtr(_strdup(value.As<alt::IMValueString>()->Value().ToString().data()), argType));
 		break;
+	}
 	case alt::INative::Type::ARG_STRUCT:
 		Core->LogInfo("TODO: Native->PushArg(Struct)");
 		break;
@@ -188,21 +191,23 @@ int CLuaNativeDefs::InvokeNative(lua_State* L)
 		return 1;
 	}
 
+	uint16_t ptrCount = 0;
 	GetReturn(L, nativeCtx.Get(), native->GetRetnType());
 	if (pointers.size() > 0)
 	{
 		for (auto&& pointer : pointers)
-			GetPtrReturn(L, pointer.ptrType, pointer.ptr);
+			if (GetPtrReturn(L, pointer.ptrType, pointer.ptr))
+				ptrCount++;
 	}
 
 	//Delete pointers we allocated
 	{
 		for (auto&& pointer : pointers)
-			delete pointer.ptr;
+			free(pointer.ptr);
 
 		pointers.clear();
 	}
 
-	return ((uint8_t)(native->GetRetnType() != alt::INative::Type::ARG_VOID)) + argsCount;
+	return ((uint8_t)(native->GetRetnType() != alt::INative::Type::ARG_VOID)) + ptrCount;
 }
 #endif

@@ -108,6 +108,9 @@ private:
 	static int IsMenuOpen(lua_State* L); //done
 	static int IsConsoleOpen(lua_State* L); //done
 
+	static int ToggleGameControls(lua_State* L);
+	static int ShowCursor(lua_State* L);
+
 	//virtual const Array<INative*> GetAllNatives() const = 0;
 	//virtual Ref<INative::Context> CreateNativesContext() const = 0;
 
