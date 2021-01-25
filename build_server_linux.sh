@@ -5,13 +5,13 @@
 cmake -DCMAKE_BUILD_TYPE=Release -DMODULE_TYPE=SERVER ./
 cmake --build . --config Release
 
-mkdir -p artifacts/lua-server-module/modules
-cp ./libs/lua51/linux64/lua51.so ./artifacts/lua-server-module
-cp ./build/linux64/Release/liblua-module.so ./artifacts/lua-server-module
-ln -rs ./artifacts/lua-server-module/lua51.so ./artifacts/lua-server-module/libluajit-5.1.so.2
+mkdir -p artifacts/lua-module/modules
+cp ./libs/lua51/linux64/lua51.so ./artifacts/lua-module
+cp ./build/linux64/Release/liblua-module.so ./artifacts/lua-module
+ln -rs ./artifacts/lua-module/lua51.so ./artifacts/lua-module/libluajit-5.1.so.2
 
 cd artifacts
-zip --symlinks -r lua-server-module-linux.zip lua-server-module/*
+zip --symlinks -r lua-server-module-linux.zip lua-module/*
 cd ..
 
 #mkdir -p ./build/linux64/Release/modules/lua-module

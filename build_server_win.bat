@@ -12,13 +12,13 @@ cd ..
 
 mkdir artifacts
 
-xcopy libs\lua51\win64\lua51.dll artifacts\lua-server-module\ /Y
+xcopy libs\lua51\win64\lua51.dll artifacts\lua-module\ /Y
 REM xcopy libs\mariadb\win64\libmariadb.dll build\win64\Release\modules\lua-module\ /Y
 REM xcopy libs\sqlite3\win64\sqlite3.dll build\win64\Release\modules\lua-module\ /Y
-xcopy build\win64\Release\lua-module.dll artifacts\lua-server-module\ /Y
+xcopy build\win64\Release\lua-module.dll artifacts\lua-module\ /Y
 
 cd artifacts
-if not exist "lua-server-module\modules" mkdir "lua-server-module\modules"
-7z a -tzip "lua-server-module-windows.zip" -r lua-server-module
+if not exist "lua-module\modules" mkdir "lua-module\modules"
+7z a -tzip "lua-server-module-windows.zip" -r lua-module
 
 cd ..
