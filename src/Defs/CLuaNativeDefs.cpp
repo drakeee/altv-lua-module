@@ -48,16 +48,30 @@ void PushArg(alt::INative::Context *ctx, alt::INative::Type argType, alt::MValue
 		ctx->Push(CreatePtr((int32_t)value.As<alt::IMValueBool>()->Value(), argType));
 		break;
 	case alt::INative::Type::ARG_INT32:
-		ctx->Push((int32_t)value.As<alt::IMValueInt>()->Value());
+	{
+		if (value->GetType() == alt::IMValue::Type::BASE_OBJECT)
+		{
+			auto baseObject = value.As<alt::IMValueBaseObject>()->Value().Get();
+			if (
+				baseObject->GetType() == alt::IBaseObject::Type::PLAYER ||
+				baseObject->GetType() == alt::IBaseObject::Type::VEHICLE
+			)
+				ctx->Push((dynamic_cast<alt::IEntity*>(baseObject)->GetScriptGuid()));
+		} else
+			ctx->Push((int32_t)value.As<alt::IMValueInt>()->Value());
+
 		break;
+	}
 	case alt::INative::Type::ARG_INT32_PTR:
 		ctx->Push(CreatePtr((int32_t)value.As<alt::IMValueInt>()->Value(), argType));
 		break;
 	case alt::INative::Type::ARG_UINT32:
-		ctx->Push((uint32_t)value.As<alt::IMValueUInt>()->Value());
+	{
+		ctx->Push((uint32_t)value.As<alt::IMValueInt>()->Value()); //numbers are either converted to IMValueInt or IMValueDouble
 		break;
+	}
 	case alt::INative::Type::ARG_UINT32_PTR:
-		ctx->Push(CreatePtr((uint32_t)value.As<alt::IMValueUInt>()->Value(), argType));
+		ctx->Push(CreatePtr((uint32_t)value.As<alt::IMValueInt>()->Value(), argType)); //numbers are either converted to IMValueInt or IMValueDouble
 		break;
 	case alt::INative::Type::ARG_FLOAT:
 		ctx->Push((float)value.As<alt::IMValueDouble>()->Value());
@@ -79,6 +93,7 @@ void PushArg(alt::INative::Context *ctx, alt::INative::Type argType, alt::MValue
 		break;
 	default:
 		Core->LogError("Unknown native arg type" + std::to_string((int)argType));
+		break;
 	}
 }
 
@@ -93,8 +108,10 @@ void GetReturn(lua_State* L, alt::INative::Context* ctx, alt::INative::Type retu
 		lua_pushnumber(L, ctx->ResultInt());
 		break;
 	case alt::INative::Type::ARG_UINT32:
-		lua_pushnumber(L, ctx->ResultUint());
+	{
+		lua_pushnumber(L, (lua_Number)ctx->ResultUint());
 		break;
+	}
 	case alt::INative::Type::ARG_FLOAT:
 		lua_pushnumber(L, ctx->ResultFloat());
 		break;
@@ -191,8 +208,9 @@ int CLuaNativeDefs::InvokeNative(lua_State* L)
 		return 1;
 	}
 
-	uint16_t ptrCount = 0;
 	GetReturn(L, nativeCtx.Get(), native->GetRetnType());
+
+	uint16_t ptrCount = 0;
 	if (pointers.size() > 0)
 	{
 		for (auto&& pointer : pointers)

@@ -740,9 +740,10 @@ alt::IBaseObject* lua_tobaseobject(lua_State* L, int idx)
 
 int lua_isinteger(lua_State* L, int index)
 {
-	int32_t x = (int32_t)lua_tointeger(L, index);
+	//int32_t x = (int32_t)lua_tointeger(L, index);
+	//lua_Number n = lua_tonumber(L, index);
 	lua_Number n = lua_tonumber(L, index);
-	return ((lua_Number)x == n);
+	return (n == (int64_t)n);
 }
 
 alt::MValue lua_tomvalue(lua_State* L, int idx)
@@ -753,11 +754,13 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 	switch (argType)
 	{
 	case LUA_TNUMBER:
+	{
 		if (lua_isinteger(L, idx))
-			mValue = Core->CreateMValueInt(lua_tointeger(L, idx));
+			mValue = Core->CreateMValueInt(lua_tonumber(L, idx));
 		else
 			mValue = Core->CreateMValueDouble(lua_tonumber(L, idx));
 		break;
+	}
 	case LUA_TBOOLEAN:
 		mValue = Core->CreateMValueBool(lua_toboolean(L, idx));
 		break;
@@ -971,10 +974,11 @@ const char* luaL_tolstring(lua_State* L, int idx, size_t* len)
 	else {
 		switch (lua_type(L, idx)) {
 		case LUA_TNUMBER: {
-			if (lua_isinteger(L, idx))
+			/*if (lua_isinteger(L, idx))
 				lua_pushfstring(L, "%d", lua_tointeger(L, idx));
 			else
-				lua_pushfstring(L, "%f", lua_tonumber(L, idx));
+				lua_pushfstring(L, "%f", lua_tonumber(L, idx));*/
+			lua_pushfstring(L, "%f", lua_tonumber(L, idx));
 			break;
 		}
 		case LUA_TSTRING:
