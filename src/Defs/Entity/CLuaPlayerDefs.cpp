@@ -1214,26 +1214,36 @@ int CLuaPlayerDefs::SetWeather(lua_State* L)
 
 int CLuaPlayerDefs::SetClothes(lua_State* L)
 {
+	// todo: make default values here better
 	alt::IPlayer* player;
 	uint8_t component;
 	uint16_t drawable;
 	uint8_t texture;
-	uint8_t palette;
+	uint8_t palette = 2;
+	uint16_t dlc = 0;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
 	argReader.ReadNumber(component);
 	argReader.ReadNumber(drawable);
 	argReader.ReadNumber(texture);
-	argReader.ReadNumber(palette);
-
 	if(argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
+	argReader.ReadNumber(palette);
+	argReader.ReadNumber(dlc);
 
-	player->SetClothes(component, drawable, texture, palette);
+	if(dlc == 0)
+	{
+		player->SetClothes(component, drawable, texture, palette);
+	}
+	else
+	{
+		player->SetDlcClothes(component, drawable, texture, palette, dlc);
+	}
+	
 
 	return 0;
 }
