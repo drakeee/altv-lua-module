@@ -60,6 +60,7 @@ private:
 	static int GetHwidExHash(lua_State* L);
 	static int GetAuthToken(lua_State* L);
 	static int GetClothes(lua_State* L);
+	static int GetProp(lua_State* L);
 
 	static int Spawn(lua_State* L);
 	static int Despawn(lua_State* L);
@@ -79,6 +80,7 @@ private:
 	static int SetDateTime(lua_State* L);
 	static int SetWeather(lua_State* L);
 	static int SetClothes(lua_State* L);
+	static int SetProp(lua_State* L);
 	static int Kick(lua_State* L);
 
 	static int IsEntityInStreamingRange(lua_State* L);

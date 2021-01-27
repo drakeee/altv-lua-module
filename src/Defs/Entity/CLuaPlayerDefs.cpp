@@ -827,26 +827,88 @@ int CLuaPlayerDefs::GetClothes(lua_State* L)
 {
 	alt::IPlayer* player;
 	uint8_t component;
+	bool dlc = false;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
 	argReader.ReadNumber(component);
-
 	if (argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
+	argReader.ReadBool(dlc);
 
-	auto clothes = player->GetClothes(component);
+	if(!dlc)
+	{
+		auto clothes = player->GetClothes(component);
 
-	lua_newtable(L);
-	lua_pushnumber(L, clothes.drawableId);
-	lua_setfield(L, -2, "drawable");
-	lua_pushnumber(L, clothes.textureId);
-	lua_setfield(L, -2, "texture");
-	lua_pushnumber(L, clothes.paletteId);
-	lua_setfield(L, -2, "palette");
+		lua_newtable(L);
+		lua_pushnumber(L, clothes.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, clothes.textureId);
+		lua_setfield(L, -2, "texture");
+		lua_pushnumber(L, clothes.paletteId);
+		lua_setfield(L, -2, "palette");
+	}
+	else
+	{
+		auto clothes = player->GetDlcClothes(component);
+
+		lua_newtable(L);
+		lua_pushnumber(L, clothes.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, clothes.textureId);
+		lua_setfield(L, -2, "texture");
+		lua_pushnumber(L, clothes.paletteId);
+		lua_setfield(L, -2, "palette");
+		lua_pushnumber(L, clothes.dlc);
+		lua_setfield(L, -2, "dlc");
+	}
+	
+
+	return 1;
+}
+
+int CLuaPlayerDefs::SetProp(lua_State* L)
+{
+	alt::IPlayer* player;
+	uint8_t component;
+	bool dlc = false;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(component);
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+	argReader.ReadBool(dlc);
+
+	if(!dlc)
+	{
+		auto prop = player->GetProps(component);
+
+		lua_newtable(L);
+		lua_pushnumber(L, prop.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, prop.textureId);
+		lua_setfield(L, -2, "texture");
+	}
+	else
+	{
+		auto prop = player->GetDlcProps(component);
+
+		lua_newtable(L);
+		lua_pushnumber(L, prop.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, prop.textureId);
+		lua_setfield(L, -2, "texture");
+		lua_pushnumber(L, prop.dlc);
+		lua_setfield(L, -2, "dlc");
+	}
+	
 
 	return 1;
 }
@@ -1220,7 +1282,7 @@ int CLuaPlayerDefs::SetClothes(lua_State* L)
 	uint16_t drawable;
 	uint8_t texture;
 	uint8_t palette = 2;
-	uint16_t dlc = 0;
+	uint32_t dlc = 0;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
@@ -1244,8 +1306,38 @@ int CLuaPlayerDefs::SetClothes(lua_State* L)
 		player->SetDlcClothes(component, drawable, texture, palette, dlc);
 	}
 	
-
 	return 0;
+}
+
+int CLuaPlayerDefs::SetProp(lua_State* L)
+{
+	// todo: make default values here better
+	alt::IPlayer* player;
+	uint8_t component;
+	uint16_t drawable;
+	uint8_t texture;
+	uint32_t dlc = 0;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(component);
+	argReader.ReadNumber(drawable);
+	argReader.ReadNumber(texture);
+	if(argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+	argReader.ReadNumber(dlc);
+
+	if(dlc == 0)
+	{
+		player->SetProps(component, drawable, texture);
+	}
+	else
+	{
+		player->SetDlcProps(component, drawable, texture, dlc);
+	}
 }
 
 int CLuaPlayerDefs::Kick(lua_State* L)
