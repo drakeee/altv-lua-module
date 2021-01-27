@@ -40,6 +40,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getPlayerHwidExHash", GetHwidExHash);
 	lua_globalfunction(L, "getPlayerAuthToken", GetAuthToken);
 	lua_globalfunction(L, "getPlayerClothes", GetClothes);
+	lua_globalfunction(L, "getPlayerProp", GetProp);
 
 	lua_globalfunction(L, "spawnPlayer", Spawn);
 	lua_globalfunction(L, "despawnPlayer", Despawn);
@@ -59,6 +60,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setPlayerDateTime", SetDateTime);
 	lua_globalfunction(L, "setPlayerWeather", SetWeather);
 	lua_globalfunction(L, "setPlayerClothes", SetClothes);
+	lua_globalfunction(L, "setPlayerProp", SetProp);
 	lua_globalfunction(L, "kickPlayer", Kick);
 	lua_globalfunction(L, "isEntityInStreamRange", IsEntityInStreamingRange);
 #else
@@ -107,6 +109,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getHwidExHash", GetHwidExHash);
 		lua_classfunction(L, "getAuthToken", GetAuthToken);
 		lua_classfunction(L, "getClothes", GetClothes);
+		lua_classfunction(L, "getProp", GetProp);
 
 		lua_classfunction(L, "spawn", Spawn);
 		lua_classfunction(L, "despawn", Despawn);
@@ -126,6 +129,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "setDateTime", SetDateTime);
 		lua_classfunction(L, "setWeather", SetWeather);
 		lua_classfunction(L, "setClothes", SetClothes);
+		lua_classfunction(L, "setProp", SetProp);
 		lua_classfunction(L, "kick", Kick);
 		lua_classfunction(L, "isEntityInStreamingRange", IsEntityInStreamingRange);
 #else
@@ -870,7 +874,7 @@ int CLuaPlayerDefs::GetClothes(lua_State* L)
 	return 1;
 }
 
-int CLuaPlayerDefs::SetProp(lua_State* L)
+int CLuaPlayerDefs::GetProp(lua_State* L)
 {
 	alt::IPlayer* player;
 	uint8_t component;
