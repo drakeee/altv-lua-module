@@ -40,6 +40,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getPlayerHwidExHash", GetHwidExHash);
 	lua_globalfunction(L, "getPlayerAuthToken", GetAuthToken);
 	lua_globalfunction(L, "getPlayerClothes", GetClothes);
+	lua_globalfunction(L, "getPlayerProp", GetProp);
 
 	lua_globalfunction(L, "spawnPlayer", Spawn);
 	lua_globalfunction(L, "despawnPlayer", Despawn);
@@ -59,6 +60,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "setPlayerDateTime", SetDateTime);
 	lua_globalfunction(L, "setPlayerWeather", SetWeather);
 	lua_globalfunction(L, "setPlayerClothes", SetClothes);
+	lua_globalfunction(L, "setPlayerProp", SetProp);
 	lua_globalfunction(L, "kickPlayer", Kick);
 	lua_globalfunction(L, "isEntityInStreamRange", IsEntityInStreamingRange);
 #else
@@ -107,6 +109,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getHwidExHash", GetHwidExHash);
 		lua_classfunction(L, "getAuthToken", GetAuthToken);
 		lua_classfunction(L, "getClothes", GetClothes);
+		lua_classfunction(L, "getProp", GetProp);
 
 		lua_classfunction(L, "spawn", Spawn);
 		lua_classfunction(L, "despawn", Despawn);
@@ -126,6 +129,7 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "setDateTime", SetDateTime);
 		lua_classfunction(L, "setWeather", SetWeather);
 		lua_classfunction(L, "setClothes", SetClothes);
+		lua_classfunction(L, "setProp", SetProp);
 		lua_classfunction(L, "kick", Kick);
 		lua_classfunction(L, "isEntityInStreamingRange", IsEntityInStreamingRange);
 #else
@@ -827,26 +831,88 @@ int CLuaPlayerDefs::GetClothes(lua_State* L)
 {
 	alt::IPlayer* player;
 	uint8_t component;
+	bool dlc = false;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
 	argReader.ReadNumber(component);
-
 	if (argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
+	argReader.ReadBool(dlc);
 
-	auto clothes = player->GetClothes(component);
+	if(!dlc)
+	{
+		auto clothes = player->GetClothes(component);
 
-	lua_newtable(L);
-	lua_pushnumber(L, clothes.drawableId);
-	lua_setfield(L, -2, "drawable");
-	lua_pushnumber(L, clothes.textureId);
-	lua_setfield(L, -2, "texture");
-	lua_pushnumber(L, clothes.paletteId);
-	lua_setfield(L, -2, "palette");
+		lua_newtable(L);
+		lua_pushnumber(L, clothes.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, clothes.textureId);
+		lua_setfield(L, -2, "texture");
+		lua_pushnumber(L, clothes.paletteId);
+		lua_setfield(L, -2, "palette");
+	}
+	else
+	{
+		auto clothes = player->GetDlcClothes(component);
+
+		lua_newtable(L);
+		lua_pushnumber(L, clothes.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, clothes.textureId);
+		lua_setfield(L, -2, "texture");
+		lua_pushnumber(L, clothes.paletteId);
+		lua_setfield(L, -2, "palette");
+		lua_pushnumber(L, clothes.dlc);
+		lua_setfield(L, -2, "dlc");
+	}
+	
+
+	return 1;
+}
+
+int CLuaPlayerDefs::GetProp(lua_State* L)
+{
+	alt::IPlayer* player;
+	uint8_t component;
+	bool dlc = false;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(component);
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+	argReader.ReadBool(dlc);
+
+	if(!dlc)
+	{
+		auto prop = player->GetProps(component);
+
+		lua_newtable(L);
+		lua_pushnumber(L, prop.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, prop.textureId);
+		lua_setfield(L, -2, "texture");
+	}
+	else
+	{
+		auto prop = player->GetDlcProps(component);
+
+		lua_newtable(L);
+		lua_pushnumber(L, prop.drawableId);
+		lua_setfield(L, -2, "drawable");
+		lua_pushnumber(L, prop.textureId);
+		lua_setfield(L, -2, "texture");
+		lua_pushnumber(L, prop.dlc);
+		lua_setfield(L, -2, "dlc");
+	}
+	
 
 	return 1;
 }
@@ -1214,44 +1280,84 @@ int CLuaPlayerDefs::SetWeather(lua_State* L)
 
 int CLuaPlayerDefs::SetClothes(lua_State* L)
 {
+	// todo: make default values here better
 	alt::IPlayer* player;
 	uint8_t component;
 	uint16_t drawable;
 	uint8_t texture;
-	uint8_t palette;
+	uint8_t palette = 2;
+	uint32_t dlc = 0;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
 	argReader.ReadNumber(component);
 	argReader.ReadNumber(drawable);
 	argReader.ReadNumber(texture);
-	argReader.ReadNumber(palette);
-
 	if(argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
+	argReader.ReadNumber(palette);
+	argReader.ReadNumber(dlc);
 
-	player->SetClothes(component, drawable, texture, palette);
-
+	if(dlc == 0)
+	{
+		player->SetClothes(component, drawable, texture, palette);
+	}
+	else
+	{
+		player->SetDlcClothes(component, drawable, texture, palette, dlc);
+	}
+	
 	return 0;
+}
+
+int CLuaPlayerDefs::SetProp(lua_State* L)
+{
+	// todo: make default values here better
+	alt::IPlayer* player;
+	uint8_t component;
+	uint16_t drawable;
+	uint8_t texture;
+	uint32_t dlc = 0;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(component);
+	argReader.ReadNumber(drawable);
+	argReader.ReadNumber(texture);
+	if(argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+	argReader.ReadNumber(dlc);
+
+	if(dlc == 0)
+	{
+		player->SetProps(component, drawable, texture);
+	}
+	else
+	{
+		player->SetDlcProps(component, drawable, texture, dlc);
+	}
 }
 
 int CLuaPlayerDefs::Kick(lua_State* L)
 {
+	// todo: make default values here better
 	alt::IPlayer* player;
-	std::string reason;
+	std::string reason = "Kicked";
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
-	argReader.ReadString(reason);
-
 	if (argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
+	argReader.ReadString(reason);
 
 	player->Kick(reason);
 
