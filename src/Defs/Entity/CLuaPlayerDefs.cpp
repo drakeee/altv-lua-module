@@ -1250,18 +1250,18 @@ int CLuaPlayerDefs::SetClothes(lua_State* L)
 
 int CLuaPlayerDefs::Kick(lua_State* L)
 {
+	// todo: make default values here better
 	alt::IPlayer* player;
-	std::string reason;
+	std::string reason = "Kicked";
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
-	argReader.ReadString(reason);
-
 	if (argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
+	argReader.ReadString(reason);
 
 	player->Kick(reason);
 
