@@ -23,6 +23,9 @@ static const char* preferred_separator = "/";
 #include <map>
 #include <vector>
 #include <memory>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
 //Semantic versioning
 #include <semver.hpp>

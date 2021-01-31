@@ -61,7 +61,6 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			auto event = static_cast<const alt::CResourceStartEvent*>(ev);
 			lua_State* L = resource->GetLuaState();
 
-			lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
 
 			return 1;
@@ -79,7 +78,6 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			auto event = static_cast<const alt::CResourceStopEvent*>(ev);
 			lua_State* L = resource->GetLuaState();
 
-			lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
 
 			return 1;
@@ -97,7 +95,6 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			auto event = static_cast<const alt::CResourceErrorEvent*>(ev);
 			lua_State* L = resource->GetLuaState();
 
-			lua_pushstring(L, event->GetResource()->GetName().CStr());
 			lua_pushresource(L, event->GetResource());
 
 			return 1;
@@ -732,9 +729,9 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 		{
 			auto event = static_cast<const alt::CKeyboardEvent*>(ev);
 			if (event->GetKeyState() == alt::CKeyboardEvent::KeyState::UP)
-				return &resource->GetRemoteEventReferences("keyup");
+				return &resource->GetLocalEventReferences("keyup");
 			else
-				return &resource->GetRemoteEventReferences("keydown");
+				return &resource->GetLocalEventReferences("keydown");
 		},
 		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
 		{
@@ -854,15 +851,11 @@ bool CLuaScriptRuntime::OnResourceStop(const alt::CEvent* e, void* userData)
 alt::IResource::Impl* CLuaScriptRuntime::CreateImpl(alt::IResource* resource)
 {
 
-#ifndef NDEBUG
-	Core->LogInfo("Before::CLuaScriptRuntime::CreateImpl");
-#endif
+	DEBUG_INFO("Before::CLuaScriptRuntime::CreateImpl");
 
 	CLuaResourceImpl* resourceImpl = new CLuaResourceImpl{ this, resource };
 
-#ifndef NDEBUG
-	Core->LogInfo("After::CLuaScriptRuntime::CreateImpl: " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
-#endif
+	DEBUG_INFO("After::CLuaScriptRuntime::CreateImpl: " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl)) + " - " + std::to_string(reinterpret_cast<intptr_t>(resourceImpl->GetLuaState())));
 
 	return resourceImpl;
 }

@@ -1488,12 +1488,10 @@ int CLuaAltFuncDefs::OnServer(lua_State* L)
 	std::string eventName;
 	int functionRef;
 
-	unsigned int ha = 1;
-	lua_pushnumber(L, ha);
-
 	CArgReader argReader(L);
 	argReader.ReadString(eventName);
 	argReader.ReadFunction(functionRef);
+
 	//argReader.ReadFunctionComplete();
 
 	if (argReader.HasAnyError())
@@ -2006,7 +2004,7 @@ int CLuaAltFuncDefs::Log(lua_State* L, LogType logType)
 
 int CLuaAltFuncDefs::LogInfo(lua_State* L)
 {
-	return CLuaAltFuncDefs::Log(L, LogType::LOG_INFO);
+	return CLuaAltFuncDefs::Log(L, LogType::LOG_COLORED);
 }
 
 int CLuaAltFuncDefs::LogDebug(lua_State* L)

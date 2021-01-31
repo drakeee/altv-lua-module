@@ -836,12 +836,13 @@ int CLuaPlayerDefs::GetClothes(lua_State* L)
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
 	argReader.ReadNumber(component);
+	argReader.ReadBoolDefault(dlc, false);
+
 	if (argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
-	argReader.ReadBool(dlc);
 
 	if(!dlc)
 	{
@@ -883,12 +884,13 @@ int CLuaPlayerDefs::GetProp(lua_State* L)
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
 	argReader.ReadNumber(component);
+	argReader.ReadBoolDefault(dlc, false);
+
 	if (argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
-	argReader.ReadBool(dlc);
 
 	if(!dlc)
 	{
@@ -1293,13 +1295,14 @@ int CLuaPlayerDefs::SetClothes(lua_State* L)
 	argReader.ReadNumber(component);
 	argReader.ReadNumber(drawable);
 	argReader.ReadNumber(texture);
+	argReader.ReadNumberDefault(palette, (uint8_t)2);
+	argReader.ReadNumberDefault(dlc, (uint32_t)0);
+
 	if(argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
-	argReader.ReadNumber(palette);
-	argReader.ReadNumber(dlc);
 
 	if(dlc == 0)
 	{
@@ -1327,12 +1330,13 @@ int CLuaPlayerDefs::SetProp(lua_State* L)
 	argReader.ReadNumber(component);
 	argReader.ReadNumber(drawable);
 	argReader.ReadNumber(texture);
+	argReader.ReadNumberDefault(dlc, (uint32_t)0);
+
 	if(argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
-	argReader.ReadNumber(dlc);
 
 	if(dlc == 0)
 	{
@@ -1348,16 +1352,17 @@ int CLuaPlayerDefs::Kick(lua_State* L)
 {
 	// todo: make default values here better
 	alt::IPlayer* player;
-	std::string reason = "Kicked";
+	std::string reason;
 
 	CArgReader argReader(L);
 	argReader.ReadBaseObject(player);
+	argReader.ReadStringDefault(reason, "Kicked");
+
 	if (argReader.HasAnyError())
 	{
 		argReader.GetErrorMessages();
 		return 0;
 	}
-	argReader.ReadString(reason);
 
 	player->Kick(reason);
 

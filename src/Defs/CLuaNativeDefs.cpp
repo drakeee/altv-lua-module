@@ -37,13 +37,30 @@ T* CreatePtr(T value, alt::INative::Type argType, size_t additionalSize = 1)
 	return ptr;
 }
 
-void PushArg(alt::INative::Context *ctx, alt::INative::Type argType, alt::MValueConst &value)
+static char* SaveString(const char* str)
+{
+	static char* stringValues[256] = { 0 };
+	static int nextString = 0;
+
+	if (stringValues[nextString])
+		free(stringValues[nextString]);
+
+	char* _str = _strdup(str);
+	stringValues[nextString] = _str;
+	nextString = (nextString + 1) % 256;
+
+	return _str;
+}
+
+void PushArg(alt::Ref<alt::INative::Context> ctx, alt::INative::Type argType, alt::MValueConst &value)
 {
 	switch (argType)
 	{
 	case alt::INative::Type::ARG_BOOL:
+	{
 		ctx->Push((int32_t)value.As<alt::IMValueBool>()->Value());
 		break;
+	}
 	case alt::INative::Type::ARG_BOOL_PTR:
 		ctx->Push(CreatePtr((int32_t)value.As<alt::IMValueBool>()->Value(), argType));
 		break;
@@ -55,10 +72,13 @@ void PushArg(alt::INative::Context *ctx, alt::INative::Type argType, alt::MValue
 			if (
 				baseObject->GetType() == alt::IBaseObject::Type::PLAYER ||
 				baseObject->GetType() == alt::IBaseObject::Type::VEHICLE
-			)
+				) {
 				ctx->Push((dynamic_cast<alt::IEntity*>(baseObject)->GetScriptGuid()));
-		} else
+			}
+		}
+		else {
 			ctx->Push((int32_t)value.As<alt::IMValueInt>()->Value());
+		}
 
 		break;
 	}
@@ -74,8 +94,14 @@ void PushArg(alt::INative::Context *ctx, alt::INative::Type argType, alt::MValue
 		ctx->Push(CreatePtr((uint32_t)value.As<alt::IMValueInt>()->Value(), argType)); //numbers are either converted to IMValueInt or IMValueDouble
 		break;
 	case alt::INative::Type::ARG_FLOAT:
-		ctx->Push((float)value.As<alt::IMValueDouble>()->Value());
+	{
+		if(value->GetType() == alt::IMValue::Type::INT)
+			ctx->Push((float)value.As<alt::IMValueInt>()->Value());
+		else if(value->GetType() == alt::IMValue::Type::DOUBLE)
+			ctx->Push((float)value.As<alt::IMValueDouble>()->Value());
+		//ctx->Push((float)value.As<alt::IMValueDouble>()->Value());
 		break;
+	}
 	case alt::INative::Type::ARG_FLOAT_PTR:
 		ctx->Push(CreatePtr((float)value.As<alt::IMValueDouble>()->Value(), argType));
 		break;
@@ -85,7 +111,10 @@ void PushArg(alt::INative::Context *ctx, alt::INative::Type argType, alt::MValue
 	case alt::INative::Type::ARG_STRING:
 	{
 		//ctx->Push(SaveString(value.As<alt::IMValueString>()->Value().ToString().data()));
-		ctx->Push(*CreatePtr(_strdup(value.As<alt::IMValueString>()->Value().ToString().data()), argType));
+		//auto stringPtr = *CreatePtr(_strdup(value.As<alt::IMValueString>()->Value().ToString().data()), argType);
+		auto stringPtr = SaveString(value.As<alt::IMValueString>()->Value().CStr());
+		ctx->Push(stringPtr);
+
 		break;
 	}
 	case alt::INative::Type::ARG_STRUCT:
@@ -171,7 +200,7 @@ bool GetPtrReturn(lua_State* L, alt::INative::Type returnType, void* ptr)
 
 int CLuaNativeDefs::InvokeNative(lua_State* L)
 {
-	auto native = static_cast<alt::INative* >(lua_touserdata(L, lua_upvalueindex(1)));
+	auto native = static_cast<alt::INative*>(lua_touserdata(L, lua_upvalueindex(1)));
 	if (!native->IsValid())
 	{
 		lua_pushboolean(L, false);
@@ -183,11 +212,12 @@ int CLuaNativeDefs::InvokeNative(lua_State* L)
 	CArgReader argReader(L);
 	argReader.ReadArguments(arguments);
 
-	auto nativeCtx = Core->CreateNativesContext();
-	nativeCtx->Reset();
+	static auto nativeCtx = Core->CreateNativesContext();
 
 	auto args = native->GetArgTypes();
 	auto argsCount = args.GetSize();
+
+	nativeCtx->Reset();
 
 	if (arguments.GetSize() != argsCount)
 	{
@@ -198,7 +228,7 @@ int CLuaNativeDefs::InvokeNative(lua_State* L)
 	}
 
 	for (int i = 0; i < argsCount; i++)
-		PushArg(nativeCtx.Get(), args[i], arguments[i]);
+		PushArg(nativeCtx, args[i], arguments[i]);
 
 	if (!native->Invoke(nativeCtx))
 	{

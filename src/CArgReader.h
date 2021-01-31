@@ -133,7 +133,7 @@ public:
 		return tempNumber;
 	}
 
-	/*template <typename T>
+	template <typename T>
 	void ReadNumberDefault(T& number, T defaultValue)
 	{
 		T tempNumber;
@@ -141,7 +141,7 @@ public:
 		ReadNumber(tempNumber, &isDefault);
 
 		number = isDefault ? defaultValue : tempNumber;
-	}*/
+	}
 
 	void ReadMValue(alt::MValue& mValue)
 	{
@@ -158,7 +158,15 @@ public:
 		return tempString;
 	}
 
-	void ReadString(std::string &stringValue)
+	void ReadStringDefault(std::string& stringValue, std::string defaultValue)
+	{
+		bool isDefault;
+		ReadString(stringValue, &isDefault);
+
+		stringValue = isDefault ? defaultValue : stringValue;
+	}
+
+	void ReadString(std::string &stringValue, bool* isDefault = nullptr)
 	{
 		//check if argument is string
 		int argType = lua_type(m_luaVM, m_stackIndex);
@@ -171,13 +179,19 @@ public:
 			//read if it is
 			stringValue.append(luaL_checkstring(m_luaVM, m_stackIndex));
 
+			SET_DEFAULT(isDefault, false);
+
 			//fill the variable and increase argindex
 			m_stackIndex++;
 			return;
 		}
 
-		AddErrorMessage("string");
+		if (isDefault == nullptr)
+			AddErrorMessage("string");
+
 		stringValue = "";
+
+		SET_DEFAULT(isDefault, true);
 
 		m_stackIndex++;
 	}

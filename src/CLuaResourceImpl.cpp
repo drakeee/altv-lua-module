@@ -227,6 +227,9 @@ bool CLuaResourceImpl::Start()
 	}
 
 #else
+	this->resource->EnableNatives();
+	this->resource->PushNativesScope();
+
 	alt::String mainFile = resource->GetMain();
 	alt::String script{this->GetScript(mainFile)};
 
@@ -264,7 +267,10 @@ bool CLuaResourceImpl::Stop()
 
 bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 {
-	DEBUG_INFO(alt::String("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev));
+	//DEBUG_INFO(alt::String("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev));
+#ifdef ALT_CLIENT_API
+	this->resource->PushNativesScope();
+#endif
 
 	auto runtime = &CLuaScriptRuntime::Instance();
 	if (!runtime->IsEventExists(ev))
