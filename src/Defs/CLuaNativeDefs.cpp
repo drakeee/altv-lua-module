@@ -37,21 +37,6 @@ T* CreatePtr(T value, alt::INative::Type argType, size_t additionalSize = 1)
 	return ptr;
 }
 
-static char* SaveString(const char* str)
-{
-	static char* stringValues[256] = { 0 };
-	static int nextString = 0;
-
-	if (stringValues[nextString])
-		free(stringValues[nextString]);
-
-	char* _str = _strdup(str);
-	stringValues[nextString] = _str;
-	nextString = (nextString + 1) % 256;
-
-	return _str;
-}
-
 void PushArg(alt::Ref<alt::INative::Context> ctx, alt::INative::Type argType, alt::MValueConst &value)
 {
 	switch (argType)
@@ -110,11 +95,7 @@ void PushArg(alt::Ref<alt::INative::Context> ctx, alt::INative::Type argType, al
 		break;
 	case alt::INative::Type::ARG_STRING:
 	{
-		//ctx->Push(SaveString(value.As<alt::IMValueString>()->Value().ToString().data()));
-		//auto stringPtr = *CreatePtr(_strdup(value.As<alt::IMValueString>()->Value().ToString().data()), argType);
-		auto stringPtr = SaveString(value.As<alt::IMValueString>()->Value().CStr());
-		ctx->Push(stringPtr);
-
+		ctx->Push(*CreatePtr(_strdup(value.As<alt::IMValueString>()->Value().ToString().data()), argType));
 		break;
 	}
 	case alt::INative::Type::ARG_STRUCT:
