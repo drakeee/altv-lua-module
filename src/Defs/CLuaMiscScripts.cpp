@@ -2,7 +2,66 @@
 
 void CLuaMiscScripts::Init(lua_State* L)
 {
+	thread(L);
     inspect(L);
+}
+
+void CLuaMiscScripts::thread(lua_State* L)
+{
+	const char* const thread = R"~LUA~(
+local threads = {}
+function createThread(callback)
+
+    assert(type(callback) == "function", "callback argument is not a function")
+
+    threads[coroutine.create(callback)] = {
+        lastTime = alt.getNetTime(),
+        waitFor = 0,
+        args = {}
+    }
+
+end
+
+function wait(arg, ...)
+	assert((type(arg) == "number" or type(arg) == "function"), "only number and function allowed")
+
+    coroutine.yield(arg, ...)
+end
+
+alt.on("tick", function()
+    for callback, data in pairs(threads) do
+        local condition = nil
+
+        if type(data.waitFor) == "number" then
+            condition = (alt.getNetTime() > (data.lastTime + data.waitFor))
+        elseif type(data.waitFor) == "function" then
+            condition = data.waitFor(unpack(data.args))
+        end
+
+        if condition then
+            if coroutine.status(callback) == "suspended" then
+                local args = {coroutine.resume(callback)}
+
+                if args[1] then
+                    data.lastTime = alt.getNetTime()
+                    data.waitFor = args[2]
+                    data.args = {unpack(args, 3)}
+                else
+                    error(args[2], 2)
+                end
+            end
+        end
+
+        if coroutine.status(callback) == "dead" then
+            threads[callback] = nil
+        end
+    end
+end)
+)~LUA~";
+
+	luaL_loadbuffer(L, thread, strlen(thread), NULL);
+	lua_call(L, 0, LUA_MULTRET);
+	//lua_setglobal(L, "inspect");
 }
 
 void CLuaMiscScripts::inspect(lua_State* L)

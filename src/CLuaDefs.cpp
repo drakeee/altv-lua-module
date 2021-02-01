@@ -573,6 +573,12 @@ void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 	case alt::IMValue::Type::BASE_OBJECT:
 		lua_pushbaseobject(L, mValue.As<alt::IMValueBaseObject>()->Value().Get());
 		break;
+	case alt::IMValue::Type::VECTOR2:
+		lua_pushvector2(L, mValue.As<alt::IMValueVector2>()->Value());
+		break;
+	case alt::IMValue::Type::VECTOR3:
+		lua_pushvector3(L, mValue.As<alt::IMValueVector3>()->Value());
+		break;
 	case alt::IMValue::Type::LIST:
 	{
 		auto list = mValue.As<alt::IMValueList>();
