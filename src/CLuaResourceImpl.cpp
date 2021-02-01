@@ -269,7 +269,7 @@ bool CLuaResourceImpl::OnEvent(const alt::CEvent* ev)
 {
 	//DEBUG_INFO(alt::String("CLuaResourceImpl::OnEvent::") + runtime->GetEventType(ev));
 #ifdef ALT_CLIENT_API
-	this->resource->PushNativesScope();
+	auto scope = this->resource->PushNativesScope();
 #endif
 
 	auto runtime = &CLuaScriptRuntime::Instance();
