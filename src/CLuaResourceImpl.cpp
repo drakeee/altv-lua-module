@@ -228,7 +228,7 @@ bool CLuaResourceImpl::Start()
 
 #else
 	this->resource->EnableNatives();
-	this->resource->PushNativesScope();
+	auto scope = this->resource->PushNativesScope();
 
 	alt::String mainFile = resource->GetMain();
 	alt::String script{this->GetScript(mainFile)};
