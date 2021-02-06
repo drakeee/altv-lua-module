@@ -319,7 +319,7 @@ void CLuaResourceImpl::OnTick()
 
 	for (auto& timer : this->timerReferences)
 	{
-		uint64_t timeNow = GetTime();
+		uint64_t timeNow = CLuaScriptRuntime::Instance().GetModuleTime();
 		if ((timeNow - timer.second.lastTime) > timer.second.interval)
 		{
 			lua_rawgeti(this->resourceState, LUA_REGISTRYINDEX, timer.second.functionIndex);
@@ -513,7 +513,7 @@ bool CLuaResourceImpl::RemoveRemoteEvent(std::string eventName, int functionRefe
 uint32_t CLuaResourceImpl::CreateTimer(uint32_t functionIndex, uint32_t interval, bool repeat)
 {
 	this->timerIndex++;
-	this->timerReferences[timerIndex] = LuaTimer{functionIndex, interval, repeat, GetTime()};
+	this->timerReferences[timerIndex] = LuaTimer{functionIndex, interval, repeat, CLuaScriptRuntime::Instance().GetModuleTime()};
 	
 	return timerIndex;
 }

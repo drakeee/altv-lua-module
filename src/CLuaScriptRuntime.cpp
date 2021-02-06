@@ -819,6 +819,8 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_START, CLuaScriptRuntime::OnResourceStart, this);
 	Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_STOP, CLuaScriptRuntime::OnResourceStop, this);
 #endif
+
+	this->moduleStartedTime = this->GetTime();
 }
 
 #ifdef ALT_SERVER_API

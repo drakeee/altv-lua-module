@@ -15,7 +15,7 @@ function createThread(callback)
     assert(type(callback) == "function", "callback argument is not a function")
 
     threads[coroutine.create(callback)] = {
-        lastTime = alt.getNetTime(),
+        lastTime = alt.getModuleTime(),
         waitFor = 0,
         args = {}
     }
@@ -33,7 +33,7 @@ alt.on("tick", function()
         local condition = nil
 
         if type(data.waitFor) == "number" then
-            condition = (alt.getNetTime() > (data.lastTime + data.waitFor))
+            condition = (alt.getModuleTime() > (data.lastTime + data.waitFor))
         elseif type(data.waitFor) == "function" then
             condition = data.waitFor(unpack(data.args))
         end
@@ -43,7 +43,7 @@ alt.on("tick", function()
                 local args = {coroutine.resume(callback)}
 
                 if args[1] then
-                    data.lastTime = alt.getNetTime()
+                    data.lastTime = alt.getModuleTime()
                     data.waitFor = args[2]
                     data.args = {unpack(args, 3)}
                 else

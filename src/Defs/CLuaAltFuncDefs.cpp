@@ -73,6 +73,8 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getRequiredPermissions", GetRequiredPermissions);
 	lua_globalfunction(L, "getOptionalPermissions", GetOptionalPermissions);
 
+	lua_globalfunction(L, "getModuleTime", GetModuleTime);
+
 #ifdef ALT_SERVER_API
 	lua_globalfunction(L, "getRootDirectory", GetRootDirectory);
 
@@ -300,6 +302,12 @@ int CLuaAltFuncDefs::HasMetaData(lua_State* L)
 
 	lua_pushboolean(L, Core->HasMetaData(key));
 
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetModuleTime(lua_State* L)
+{
+	lua_pushnumber(L, CLuaScriptRuntime::Instance().GetModuleTime());
 	return 1;
 }
 

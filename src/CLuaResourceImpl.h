@@ -194,14 +194,6 @@ public:
 		return (this->timerReferences.erase(timerIndex) > 0);
 	}
 
-	//Source: https://github.com/altmp/v8-helpers/blob/f4e4c2cacff229df022e68af99756b6f6ef1f6eb/V8ResourceImpl.h#L229
-	static int64_t GetTime()
-	{
-		return std::chrono::duration_cast<std::chrono::milliseconds>(
-			std::chrono::steady_clock::now().time_since_epoch())
-			.count();
-	}
-
 private:
 	lua_State*			resourceState = nullptr;
 	CLuaScriptRuntime*	runtime;

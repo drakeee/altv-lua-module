@@ -69,6 +69,8 @@ private:
 
 	static int Hash(lua_State* L);
 
+	static int GetModuleTime(lua_State* L);
+
 #ifdef ALT_SERVER_API
 	static int GetRootDirectory(lua_State* L);
 

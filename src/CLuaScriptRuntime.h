@@ -71,6 +71,19 @@ public:
 	}
 #endif
 
+	//Source: https://github.com/altmp/v8-helpers/blob/f4e4c2cacff229df022e68af99756b6f6ef1f6eb/V8ResourceImpl.h#L229
+	inline static int64_t GetTime()
+	{
+		return std::chrono::duration_cast<std::chrono::milliseconds>(
+			std::chrono::steady_clock::now().time_since_epoch())
+			.count();
+	}
+
+	inline int64_t GetModuleTime()
+	{
+		return (this->GetTime() - this->moduleStartedTime);
+	}
+
 
 	static CLuaScriptRuntime& Instance()
 	{
@@ -82,16 +95,18 @@ public:
 	~CLuaScriptRuntime() { };
 
 private:
-	const semver::version						version{ 1, 1, 2, alt::ICore::SDK_VERSION, semver::branch::dev };
+	const semver::version						version{ 1, 1, 3, alt::ICore::SDK_VERSION, semver::branch::dev };
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;
+
+	static bool OnResourceStart(const alt::CEvent* e, void* userData);
+	static bool OnResourceStop(const alt::CEvent* e, void* userData);
 #endif
 	std::map<lua_State*, CLuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;
 
-	static bool OnResourceStart(const alt::CEvent* e, void* userData);
-	static bool OnResourceStop(const alt::CEvent* e, void* userData);
+	int64_t										moduleStartedTime;
 
 	const std::vector<std::string> entityTypes{
 		"Player",
