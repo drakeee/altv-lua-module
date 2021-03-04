@@ -89,5 +89,10 @@ private:
 
 	static int IsTalking(lua_State* L);
 	static int GetMicLevel(lua_State* L);
+
+	static int GetSpatialVolume(lua_State* L);
+	static int SetSpatialVolume(lua_State* L);
+	static int GetNonSpatialVolume(lua_State* L);
+	static int SetNonSpatialVolume(lua_State* L);
 #endif
 };

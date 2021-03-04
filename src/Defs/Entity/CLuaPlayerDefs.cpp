@@ -137,6 +137,11 @@ void CLuaPlayerDefs::Init(lua_State* L)
 
 		lua_classfunction(L, "isTalking", IsTalking);
 		lua_classfunction(L, "getMicLevel", GetMicLevel);
+
+		lua_classfunction(L, "setSpatialVolume", SetSpatialVolume);
+		lua_classfunction(L, "getSpatialVolume", GetSpatialVolume);
+		lua_classfunction(L, "setNonSpatialVolume", SetNonSpatialVolume);
+		lua_classfunction(L, "getNonSpatialVolume", GetNonSpatialVolume);
 #endif
 
 		lua_classvariable(L, "name", nullptr, "getName");
@@ -185,6 +190,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "health", nullptr, "getHealth");
 		lua_classvariable(L, "maxHealth", nullptr, "getMaxHealth");
 		lua_classvariable(L, "micLevel", nullptr, "getMicLevel");
+		lua_classvariable(L, "spatialVolume", SetSpatialVolume, GetSpatialVolume);
+		lua_classvariable(L, "nonSpatialVolume", SetNonSpatialVolume, GetNonSpatialVolume);
 		lua_classvariable(L, "local", nullptr, "getLocalPlayer");
 #endif
 	}
@@ -1448,4 +1455,81 @@ int CLuaPlayerDefs::GetMicLevel(lua_State* L)
 
 	return 1;
 }
+
+int CLuaPlayerDefs::GetSpatialVolume(lua_State* L)
+{
+	alt::IPlayer* player;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, player->GetSpatialVolume());
+
+	return 1;
+}
+
+int CLuaPlayerDefs::SetSpatialVolume(lua_State* L)
+{
+	alt::IPlayer* player;
+	float volume;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(volume);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	player->SetSpatialVolume(volume);
+
+	return 1;
+}
+
+int CLuaPlayerDefs::GetNonSpatialVolume(lua_State* L)
+{
+	alt::IPlayer* player;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, player->GetNonSpatialVolume());
+
+	return 1;
+}
+
+int CLuaPlayerDefs::SetNonSpatialVolume(lua_State* L)
+{
+	alt::IPlayer* player;
+	float volume;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+	argReader.ReadNumber(volume);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	player->SetNonSpatialVolume(volume);
+
+	return 1;
+}
+
 #endif

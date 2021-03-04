@@ -6,8 +6,8 @@
 #include <dirent.h>
 #endif
 
-CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource) :
-	runtime(runtime),
+CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource)
+	: runtime(runtime),
 	resource(resource),
 	exportFunction(Core->CreateMValueDict())
 {
