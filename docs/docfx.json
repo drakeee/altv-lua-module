@@ -1,0 +1,54 @@
+{
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/index.md"
+        ],
+        "exclude": [
+          "api/index.yml"
+        ],
+        "src": "altv-types/docs"
+      },
+      {
+        "files": [
+          "articles/**.md",
+          "articles/**/toc.yml",
+          "toc.yml",
+          "index.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ]
+      }
+    ],
+    "globalMetadata": {
+      "_disableSideFilter": true,
+      "_gitContribute": {
+        "branch": "master",
+        "apiSpecFolder": "docs/apidoc"
+      },
+      "_gitUrlPattern": "github"
+    },
+    "template": [
+      "default",
+      "templates/docfx-plugins-typescriptreference",
+      "templates/discordfx",
+      "templates/altmp"
+    ],
+    "markdownEngineName": "markdig",
+    "dest": "_site"
+  }
+}

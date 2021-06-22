@@ -1,0 +1,5 @@
+{
+  "packages": ["../client", "../server"],
+  "excludeExternals": true,
+  "json": "./api/.manifest"
+}
