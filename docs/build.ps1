@@ -7,26 +7,31 @@ param(
 function PostCleanup() {
     Remove-Item -Path 'docfx.zip' -Force 2>&1 > $null
     Remove-Item -Path 'docfx-plugins-typescriptreference.zip' -Force 2>&1 > $null
+    Remove-Item -Path 'docfx-plugins-extractsearchindex.zip' -Force 2>&1 > $null
     Remove-Item -Path 'docfx-tmpls-discordfx.zip' -Force 2>&1 > $null
     if($cleanMetadata) {
         Remove-Item -Path './_site/' -Recurse -Force 2>&1 > $null
         Remove-Item -Path './obj' -Recurse -Force 2>&1 > $null
         Remove-Item -Path './api/**.yml' -Force 2>&1 > $null
-        Remove-Item -Path './altv-types/docs/_site/' -Recurse -Force 2>&1 > $null
-        Remove-Item -Path './altv-types/docs/obj' -Recurse -Force 2>&1 > $null
-        Remove-Item -Path './altv-types/docs/api/**.yml' -Force 2>&1 > $null
-        Remove-Item -Path './altv-types/docs/api/.manifest' -Force 2>&1 > $null
+        Remove-Item -Path './api/.manifest' -Force 2>&1 > $null
     }
 }
 
 function GetAssemblyVersion([string] $file) {
-    if(-not (Test-Path -Path $file)) { throw "Cannot find path $file because it does not exist." }
+    if(-not (Test-Path -Path $file)) { throw "Cannot find path $file, because it does not exist." }
     $ver=(Get-Item -Path $file | Select-Object -ExpandProperty VersionInfo).FileVersion.Split('.')
     if($ver.Length -lt 4) {
         $ver -Join '.'
     } else {
         ($ver | Select -SkipLast 1) -Join '.'
     }
+}
+
+function GetPackageVersion([string] $pkgname) {
+    $json=(npm list $pkgname --silent --json | ConvertFrom-Json)
+    $global:LastExitCode=0 # npm list failing on GitHub package workaround
+    if(-not ($json.dependencies)) { throw "Cannot find package $pkgname, because it does not exist." }
+    $json.dependencies.$($pkgname).version
 }
 
 function FetchAndDownloadRelease([string] $repo, [string] $file, [string] $tag=$null) {
@@ -81,25 +86,11 @@ function LogWrap([string] $msg, [ScriptBlock] $action, [boolean] $disResult=$fal
 
 try
 {
-    $cwd=(Get-Location).Path
-
     if($cleanOnly) { exit }
-
-    LogWrap "Checkout JS repository" {
-        if(Test-Path "./altv-types/") { return -0x1 }
-        New-Item -ItemType "directory" -Path "./altv-types" -Force
-        Set-Location -Path "./altv-types"
-        git init 2>$null
-        git remote add "origin" "https://github.com/altmp/altv-types/" 2>$null
-        git fetch --depth 1 "origin" "master" 2>$null
-        git reset --hard "FETCH_HEAD" 2>$null
-        git branch --set-upstream-to "origin/master" "master" 2>$null
-        Set-Location $cwd
-    }
 
     LogWrap "Downloading DocFx package" {
         if(Test-Path "./docfx/docfx.exe") { return -0x1 }
-        FetchAndDownloadRelease "dotnet/docfx" "docfx.zip" "v2.56.6" 2>$null
+        FetchAndDownloadRelease "dotnet/docfx" "docfx.zip" "v2.56.7" 2>$null
     }
     LogWrap "Extracting DocFx package" {
         if(Test-Path "./docfx/docfx.exe") { return -0x1 }
@@ -108,11 +99,20 @@ try
 
     LogWrap "Downloading DocFx TypeScriptReference package" {
         if(Test-Path "./templates/docfx-plugins-typescriptreference/") { return -0x1 }
-        FetchAndDownloadRelease "Lhoerion/DocFx.Plugins.TypeScriptReference" "docfx-plugins-typescriptreference.zip" 2>&1 6>$null
+        FetchAndDownloadRelease "Lhoerion/DocFx.Plugins.TypeScriptReference" "docfx-plugins-typescriptreference.zip" "v1.1.2" 2>&1 6>$null
     }
     LogWrap "Extracting DocFx TypeScriptReference package" {
         if(Test-Path "./templates/docfx-plugins-typescriptreference/") { return -0x1 }
         ExtractArchive "docfx-plugins-typescriptreference.zip" "./templates/" 2>&1 6>$null
+    }
+
+    LogWrap "Downloading DocFx ExtractSearchIndex package" {
+        if(Test-Path "./templates/docfx-plugins-extractsearchindex/") { return -0x1 }
+        FetchAndDownloadRelease "Lhoerion/DocFx.Plugins.ExtractSearchIndex" "docfx-plugins-extractsearchindex.zip" "v1.0.0" 2>&1 6>$null
+    }
+    LogWrap "Extracting DocFx ExtractSearchIndex package" {
+        if(Test-Path "./templates/docfx-plugins-extractsearchindex/") { return -0x1 }
+        ExtractArchive "docfx-plugins-extractsearchindex.zip" "./templates/" 2>&1 6>$null
     }
 
     LogWrap "Downloading DocFx DiscordFX package" {
@@ -125,36 +125,36 @@ try
     }
 
     LogWrap "Installing node dependencies" {
-        Set-Location -Path './altv-types/docs/'
         yarn --version 2>$null
         if($?) {
             yarn install 2>$null
         } else {
             npm install 2>$null
         }
-        Set-Location $cwd
     }
 
     LogWrap "Tools version" {
+        $dotnetVersion=dotnet --version
         $docfxVer=GetAssemblyVersion "./docfx/docfx.exe"
-        $pluginVer=GetAssemblyVersion "./templates/docfx-plugins-typescriptreference/plugins/*.dll"
+        $pluginVer=GetAssemblyVersion "./templates/docfx-plugins-typescriptreference/plugins/DocFx.*.dll"
+        $plugin2Ver=GetAssemblyVersion "./templates/docfx-plugins-extractsearchindex/plugins/DocFx.*.dll"
         $themeVer=cat "./templates/discordfx/version.txt"
-        $typedocVer=npm view typedoc version
-        $type2docfxVer=npm view typedoc version
+        $typedocVer=GetPackageVersion "typedoc"
+        $type2docfxVer=GetPackageVersion "type2docfx"
         Write-Host -NoNewline -ForegroundColor "green" "done`n"
+        Write-Host ".NET Core v$dotnetVersion"
         Write-Host "DocFx v$docfxVer"
         Write-Host "DocFx TypescriptReference v$pluginVer"
+        Write-Host "DocFx ExtractSearchIndex v$plugin2Ver"
         Write-Host "DocFx DiscordFX v$themeVer"
         Write-Host "TypeDoc v$typedocVer"
         Write-Host "type2docfx v$type2docfxVer"
     } $true
 
-    LogWrap "Generating JS project metadata" {
-        Set-Location -Path './altv-types/docs/'
-        $stderr=npx typedoc --options '../../typedoc.json' 2>$null
+    LogWrap "Generating project metadata" {
+        $stderr=npx typedoc --options './typedoc.json' 2>$null
         if($LastExitCode -gt 0x0) { return $LastExitCode, $stderr }
         $stderr=npx type2docfx './api/.manifest' './api/' --basePath '.' --sourceUrl 'https://github.com/altmp/altv-types' --sourceBranch 'master' --disableAlphabetOrder 2>&1 6>$null
-        Set-Location $cwd
         return $LastExitCode, $buff
     }
 
@@ -162,6 +162,5 @@ try
 }
 finally
 {
-    Set-Location $cwd
     PostCleanup
 }
