@@ -1,5 +1,7 @@
 {
-  "packages": ["../client", "../server"],
-  "excludeExternals": true,
+  "plugin": "./test.js",
+  "packages": ["./client", "./server"],
+  "excludeExternals": false,
+  "excludeReflections": ["lua-*.*.type", "lua-*.*.valid"],
   "json": "./api/.manifest"
 }
