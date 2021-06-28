@@ -10,3 +10,4 @@ _site/
 docfx/
 plugins/
 templates/
+node_modules/
