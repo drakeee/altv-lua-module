@@ -567,7 +567,7 @@ int CLuaBlipDefs::SetScaleXY(lua_State* L)
 		return 0;
 	}
 
-	blip->SetScaleXY(X, Y);
+	blip->SetScaleXY(alt::Vector2f(X, Y));
 
 	return 0;
 }
