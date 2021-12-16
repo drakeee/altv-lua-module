@@ -207,6 +207,23 @@ void lua_endclass(lua_State* L)
 	lua_pop(L, 1);
 }
 
+
+void lua_openclass(lua_State* L, const char* className)
+{
+	lua_pushstring(L, "e_mt");
+	lua_rawget(L, LUA_REGISTRYINDEX);
+
+	lua_pushstring(L, className);
+	lua_rawget(L, -2);
+
+	L_ASSERT(lua_istable(L, -1), "lua_openclass: Table not found at position -1.");
+}
+
+void lua_closeclass(lua_State* L)
+{
+	lua_pop(L, 2);
+}
+
 void lua_getclass(lua_State* L, const char* className)
 {
 	lua_pushstring(L, "e_mt");

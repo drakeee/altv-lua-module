@@ -3,7 +3,7 @@
 void CLuaMiscScripts::Init(lua_State* L)
 {
 	thread(L);
-    inspect(L);
+	inspect(L);
 }
 
 void CLuaMiscScripts::thread(lua_State* L)

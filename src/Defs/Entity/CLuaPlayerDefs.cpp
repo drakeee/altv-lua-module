@@ -1,5 +1,59 @@
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
+const char* CLuaLocalPlayerDefs::ClassName = "LocalPlayer";
+void CLuaLocalPlayerDefs::Init(lua_State* L)
+{
+	DEBUG_INFO("CLuaLocalPlayerDefs::Init");
+
+	lua_globalfunction(L, "getCurrentAmmo", GetCurrentAmmo);
+
+	lua_beginclass(L, CLuaLocalPlayerDefs::ClassName, CLuaPlayerDefs::ClassName);
+	{
+		lua_classfunction(L, "getLocalPlayer", GetLocalPlayer);
+
+		lua_classvariable(L, "currentAmmo", nullptr, GetCurrentAmmo);
+	}
+	lua_endclass(L);
+
+	lua_openclass(L, CLuaPlayerDefs::ClassName);
+	{
+		lua_classvariable(L, "local", nullptr, GetLocalPlayer);
+	}
+	lua_closeclass(L);
+
+#ifdef ALT_CLIENT_API
+	lua_pushbaseobject(L, Core->GetLocalPlayer());
+	lua_setglobal(L, "localPlayer");
+#endif
+}
+
+int CLuaLocalPlayerDefs::GetLocalPlayer(lua_State* L)
+{
+	lua_pushbaseobject(L, Core->GetLocalPlayer());
+	return 1;
+}
+
+int CLuaLocalPlayerDefs::GetCurrentAmmo(lua_State* L)
+{
+	alt::ILocalPlayer* player;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(player);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, player->GetCurrentAmmo());
+
+	return 1;
+}
+
+#endif
+
 const char* CLuaPlayerDefs::ClassName = "Player";
 void CLuaPlayerDefs::Init(lua_State* L)
 {
@@ -15,6 +69,9 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "isPlayerJumping", IsJumping);
 	lua_globalfunction(L, "isPlayerInRagdoll", IsInRagdoll);
 	lua_globalfunction(L, "isPlayerAiming", IsAiming);
+
+	DEBUG_INFO("CLuaPlayerDefs::Init2");
+
 	lua_globalfunction(L, "isPlayerShooting", IsShooting);
 	lua_globalfunction(L, "isPlayerReloading", IsReloading);
 	lua_globalfunction(L, "getPlayerArmour", GetArmour);
@@ -30,6 +87,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getPlayerEntityAimingAt", GetEntityAimingAt);
 	lua_globalfunction(L, "getPlayerEntityAimOffset", GetEntityAimOffset);
 	lua_globalfunction(L, "isPlayerFlashlightActive", IsFlashlightActive);
+
+	DEBUG_INFO("CLuaPlayerDefs::Init3");
 
 #ifdef ALT_SERVER_API
 	lua_globalfunction(L, "isPlayerConnected", IsConnected);
@@ -68,10 +127,14 @@ void CLuaPlayerDefs::Init(lua_State* L)
 	lua_globalfunction(L, "getPlayerMicLevel", GetMicLevel);
 #endif
 
+	DEBUG_INFO("CLuaPlayerDefs::Init4");
+
 	lua_beginclass(L, ClassName, CLuaEntityDefs::ClassName);
 	{
 		lua_classmeta(L, "__tostring", tostring);
 		lua_classmeta(L, "__ipairs", ipairs);
+
+		DEBUG_INFO("CLuaPlayerDefs::Init5");
 
 		lua_classfunction(L, "getName", GetName);
 		lua_classfunction(L, "getHealth", GetHealth);
@@ -79,6 +142,9 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getCurrentWeaponComponents", GetCurrentWeaponComponents);
 		lua_classfunction(L, "getCurrentWeaponTintIndex", GetCurrentWeaponTintIndex);
 		lua_classfunction(L, "getCurrentWeapon", GetCurrentWeapon);
+
+		DEBUG_INFO("CLuaPlayerDefs::Init6");
+
 		lua_classfunction(L, "isDead", IsDead);
 		lua_classfunction(L, "isJumping", IsJumping);
 		lua_classfunction(L, "isInRagdoll", IsInRagdoll);
@@ -88,6 +154,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getArmour", GetArmour);
 		lua_classfunction(L, "getMaxArmour", GetMaxArmour);
 		lua_classfunction(L, "getMoveSpeed", GetMoveSpeed);
+
+		DEBUG_INFO("CLuaPlayerDefs::Init7");
 		//lua_classfunction(L, "getWeapon", GetWeapon);
 		//lua_classfunction(L, "getAmmo", GetAmmo);
 		lua_classfunction(L, "getAimPos", GetAimPos);
@@ -99,6 +167,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getEntityAimOffset", GetEntityAimOffset);
 		lua_classfunction(L, "isFlashlightActive", IsFlashlightActive);
 		lua_classfunction(L, "getAll", ipairs);
+
+		DEBUG_INFO("CLuaPlayerDefs::Init8");
 
 #ifdef ALT_SERVER_API
 		lua_classfunction(L, "isConnected", IsConnected);
@@ -133,7 +203,6 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "kick", Kick);
 		lua_classfunction(L, "isEntityInStreamingRange", IsEntityInStreamingRange);
 #else
-		lua_classfunction(L, "getLocalPlayer", GetLocalPlayer);
 
 		lua_classfunction(L, "isTalking", IsTalking);
 		lua_classfunction(L, "getMicLevel", GetMicLevel);
@@ -142,6 +211,9 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classfunction(L, "getSpatialVolume", GetSpatialVolume);
 		lua_classfunction(L, "setNonSpatialVolume", SetNonSpatialVolume);
 		lua_classfunction(L, "getNonSpatialVolume", GetNonSpatialVolume);
+
+		DEBUG_INFO("CLuaPlayerDefs::Init9");
+
 #endif
 
 		lua_classvariable(L, "name", nullptr, "getName");
@@ -155,6 +227,9 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "reloading", nullptr, "isReloading");
 		lua_classvariable(L, "moveSpeed", nullptr, "getMoveSpeed");
 		lua_classvariable(L, "weapon", nullptr, "getCurrentWeapon");
+
+		DEBUG_INFO("CLuaPlayerDefs::Init10");
+
 		//lua_classvariable(L, "ammo", nullptr, "getAmmo");
 		lua_classvariable(L, "aimPos", nullptr, "getAimPos");
 		lua_classvariable(L, "headRotation", nullptr, "getHeadRotation");
@@ -165,6 +240,8 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "aimOffset", nullptr, "getEntityAimOffset");
 		lua_classvariable(L, "flashlightActive", nullptr, "isFlashlightActive");
 		lua_classvariable(L, "all", nullptr, "getAll");
+
+		DEBUG_INFO("CLuaPlayerDefs::Init11");
 
 #ifdef ALT_SERVER_API
 		lua_classvariable(L, "weather", "setWeather", nullptr);
@@ -192,15 +269,12 @@ void CLuaPlayerDefs::Init(lua_State* L)
 		lua_classvariable(L, "micLevel", nullptr, "getMicLevel");
 		lua_classvariable(L, "spatialVolume", SetSpatialVolume, GetSpatialVolume);
 		lua_classvariable(L, "nonSpatialVolume", SetNonSpatialVolume, GetNonSpatialVolume);
-		lua_classvariable(L, "local", nullptr, "getLocalPlayer");
+		//lua_classvariable(L, "local", nullptr, "getLocalPlayer");
+
+		DEBUG_INFO("CLuaPlayerDefs::Init12");
 #endif
 	}
 	lua_endclass(L);
-
-#ifdef ALT_CLIENT_API
-	lua_pushbaseobject(L, Core->GetLocalPlayer());
-	lua_setglobal(L, "localPlayer");
-#endif
 
 	DEBUG_INFO("CLuaPlayerDefs::Init ...done");
 }
@@ -1414,11 +1488,6 @@ int CLuaPlayerDefs::IsEntityInStreamingRange(lua_State* L)
 //	return 0;
 //}
 #else
-int CLuaPlayerDefs::GetLocalPlayer(lua_State* L)
-{
-	lua_pushbaseobject(L, Core->GetLocalPlayer());
-	return 1;
-}
 
 int CLuaPlayerDefs::IsTalking(lua_State* L)
 {

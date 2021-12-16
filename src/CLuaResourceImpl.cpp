@@ -122,6 +122,9 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 	DEBUG_INFO("CLuaResourceImpl::CLuaResourceImpl12");
 
 	CLuaPlayerDefs::Init(this->resourceState);
+#ifdef ALT_CLIENT_API
+	CLuaLocalPlayerDefs::Init(this->resourceState);
+#endif
 	CLuaVehicleDefs::Init(this->resourceState);
 	CLuaBlipDefs::Init(this->resourceState);
 

@@ -33,6 +33,8 @@ void lua_disablefunction(lua_State* L, const char* functionName);
 void lua_initclass(lua_State* L);
 void lua_beginclass(lua_State* L, const char* className, const char* baseClass = nullptr);
 void lua_endclass(lua_State* L);
+void lua_openclass(lua_State* L, const char* className);
+void lua_closeclass(lua_State* L);
 void lua_getclass(lua_State* L, const char* className);
 void lua_getclassmt(lua_State* L, const char* className);
 void lua_classfunction(lua_State* L, const char* functionName, const char* globalFuncName);

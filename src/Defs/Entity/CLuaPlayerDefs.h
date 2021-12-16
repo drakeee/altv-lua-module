@@ -2,6 +2,21 @@
 
 #include <Main.h>
 
+#ifdef ALT_CLIENT_API
+
+class CLuaLocalPlayerDefs
+{
+public:
+	static const char* ClassName;
+	static void Init(lua_State* L);
+
+private:
+	static int GetLocalPlayer(lua_State* L);
+	static int GetCurrentAmmo(lua_State* L);
+};
+
+#endif
+
 class CLuaPlayerDefs
 {
 public:
@@ -85,8 +100,6 @@ private:
 
 	static int IsEntityInStreamingRange(lua_State* L);
 #else
-	static int GetLocalPlayer(lua_State* L);
-
 	static int IsTalking(lua_State* L);
 	static int GetMicLevel(lua_State* L);
 

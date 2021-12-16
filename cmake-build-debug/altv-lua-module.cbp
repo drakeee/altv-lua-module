@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="altv-lua-module"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="msvc8"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="D:/Projects/C/altv-lua-module/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="lua-module">
+				<Option output="D:/Projects/C/altv-lua-module/build/win64/Debug/lua-module.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/Projects/C/altv-lua-module/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DMODULE_NAME=&quot;lua-module&quot;"/>
+					<Add option="-DALT__API"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/Projects/C/altv-lua-module/src"/>
+					<Add directory="D:/Projects/C/altv-lua-module/vendors/luajit/include"/>
+					<Add directory="D:/Projects/C/altv-lua-module/vendors/alt-config"/>
+					<Add directory="D:/Projects/C/altv-lua-module/vendors/cpp-sdk"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 lua-module"/>
+					<CompileFile command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="lua-module/fast">
+				<Option output="D:/Projects/C/altv-lua-module/build/win64/Debug/lua-module.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/Projects/C/altv-lua-module/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DMODULE_NAME=&quot;lua-module&quot;"/>
+					<Add option="-DALT__API"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/Projects/C/altv-lua-module/src"/>
+					<Add directory="D:/Projects/C/altv-lua-module/vendors/luajit/include"/>
+					<Add directory="D:/Projects/C/altv-lua-module/vendors/alt-config"/>
+					<Add directory="D:/Projects/C/altv-lua-module/vendors/cpp-sdk"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 lua-module/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="D:/Projects/C/altv-lua-module/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 edit_cache"/>
+					<CompileFile command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="D:/Projects/C/altv-lua-module/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\Projects\C\altv-lua-module\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CArgReader.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaFunctionDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaFunctionDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaResourceImpl.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaResourceImpl.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaScriptRuntime.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/CLuaScriptRuntime.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaAltFuncDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaAltFuncDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaConfigDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaConfigDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaDiscordManagerDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaDiscordManagerDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaHandlingDataDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaHandlingDataDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaMapDataDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaMapDataDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaMiscScripts.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaMiscScripts.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaNativeDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaNativeDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaRGBADefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaRGBADefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaResourceFuncDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaResourceFuncDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaVector2Defs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaVector2Defs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaVector3Defs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaVector3Defs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaVoiceDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaVoiceDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaWebSocketDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaWebSocketDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaWebViewDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/CLuaWebViewDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaBaseObjectDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaBaseObjectDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaBlipDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaBlipDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaCheckpointDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaCheckpointDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaColShapeDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaColShapeDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaEntityDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaEntityDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaPlayerDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaPlayerDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaVehicleDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaVehicleDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaVoiceChannelDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaVoiceChannelDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaWorldObjectDefs.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Defs/Entity/CLuaWorldObjectDefs.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/LRGBA.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Main.cpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/Main.h">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/VehicleModels.hpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/src/semver.hpp">
+			<Option target="lua-module"/>
+		</Unit>
+		<Unit filename="D:/Projects/C/altv-lua-module/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

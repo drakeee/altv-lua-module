@@ -115,7 +115,11 @@ private:
 		"WebView",
 		"VoiceChannel",
 		"ColShape",
-		"Checkpoint"
+		"Checkpoint",
+		"WebSocketClient",
+		"HTTPClient",
+		"Audio",
+		"LocalPlayer"
 	};
 
 	const std::vector<std::string> eventTypes{

@@ -1,7 +1,7 @@
 #include <Main.h>
 #include <fstream>
 
-#include <events/CRenderEvent.h>
+//#include <events/CRenderEvent.h>
 #include <events/CWebSocketClientEvent.h>
 
 CLuaScriptRuntime::CLuaScriptRuntime()
@@ -272,10 +272,11 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			else
 				lua_pushnil(L);
 
-			lua_pushnumber(L, event->GetDamage());
 			lua_pushnumber(L, event->GetWeapon());
+			lua_pushnumber(L, event->GetHealthDamage());
+			lua_pushnumber(L, event->GetArmourDamage());
 
-			return 4;
+			return 5;
 		}
 	);
 
