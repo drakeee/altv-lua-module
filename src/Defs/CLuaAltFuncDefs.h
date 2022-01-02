@@ -86,6 +86,7 @@ private:
 	static int GetNetTime(lua_State* L);
 
 	static int SetPassword(lua_State* L);
+	static int HashServerPassword(lua_State* L);
 #else
 	static int require(lua_State* L);
 
@@ -144,5 +145,21 @@ private:
 
 	static int LoadYtyp(lua_State* L);
 	static int UnloadYtyp(lua_State* L);
+
+	static int GetHeadshotBase64(lua_State* L);
+
+	static int SetDlcClothes(lua_State* L);
+	static int SetDlcProps(lua_State* L);
+	static int ClearProps(lua_State* L);
+
+	static int SetWatermarkPosition(lua_State* L);
+
+	static int GetFps(lua_State* L);
+	static int GetPing(lua_State* L);
+	static int GetTotalPacketsSent(lua_State* L);
+	static int GetTotalPacketsLost(lua_State* L);
+	static int GetServerIp(lua_State* L);
+	static int GetServerPort(lua_State* L);
+	static int GetClientPath(lua_State* L);
 #endif
 };

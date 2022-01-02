@@ -111,7 +111,7 @@ CLuaResourceImpl::CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* r
 
 #ifdef ALT_CLIENT_API
 	CLuaNativeDefs::Init(this->resourceState);
-	CLuaHandlingDataDefs::Init(this->resourceState);
+	CLuaHandlingDataDefs::Init(this->resourceState); //moved to Vehicle class
 	CLuaMapDataDefs::Init(this->resourceState);
 	CLuaDiscordManagerDefs::Init(this->resourceState);
 	CLuaWebSocketDefs::Init(this->resourceState);

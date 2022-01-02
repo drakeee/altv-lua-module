@@ -150,6 +150,21 @@ void CLuaAltFuncDefs::Init(lua_State* L)
 
 	lua_globalfunction(L, "loadYtyp", LoadYtyp);
 	lua_globalfunction(L, "unloadYtyp", UnloadYtyp);
+
+	lua_globalfunction(L, "getHeadshotBase64", GetHeadshotBase64);
+
+	lua_globalfunction(L, "setPedDlcClothes", SetDlcClothes);
+	lua_globalfunction(L, "setPedDlcProps", SetDlcProps);
+	lua_globalfunction(L, "clearPedProps", ClearProps);
+
+	lua_globalfunction(L, "setWatermarkPosition", SetWatermarkPosition);
+	lua_globalfunction(L, "getFps", GetFps);
+	lua_globalfunction(L, "getPing", GetPing);
+	lua_globalfunction(L, "getTotalPacketsSent", GetTotalPacketsSent);
+	lua_globalfunction(L, "getTotalPacketsLost", GetTotalPacketsLost);
+	lua_globalfunction(L, "getServerIp", GetServerIp);
+	lua_globalfunction(L, "getServerPort", GetServerPort);
+	lua_globalfunction(L, "getClientPath", GetClientPath);
 #endif
 
 	lua_beginclass(L, ClassName);
@@ -458,6 +473,24 @@ int CLuaAltFuncDefs::SetPassword(lua_State* L)
 
 	return 0;
 }
+
+int CLuaAltFuncDefs::HashServerPassword(lua_State* L)
+{
+	std::string password;
+
+	CArgReader argReader(L);
+	argReader.ReadString(password);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, Core->HashServerPassword(password));
+	return 1;
+}
+
 #else
 int CLuaAltFuncDefs::require(lua_State* L)
 {
@@ -1299,6 +1332,159 @@ int CLuaAltFuncDefs::UnloadYtyp(lua_State* L)
 
 	return 1;
 }
+
+int CLuaAltFuncDefs::GetHeadshotBase64(lua_State* L)
+{
+	int id;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(id);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushstring(L, Core->HeadshotToBase64(id));
+
+	return 1;
+}
+
+int CLuaAltFuncDefs::SetDlcClothes(lua_State* L)
+{
+	int32_t scriptID;
+	uint8_t component;
+	uint16_t drawable;
+	uint8_t texture;
+	uint32_t dlc;
+	uint8_t palette;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(scriptID);
+	argReader.ReadNumber(dlc);
+	argReader.ReadNumber(component);
+	argReader.ReadNumber(drawable);
+	argReader.ReadNumber(texture);
+	argReader.ReadNumberDefault<uint8_t>(palette, 2);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetDlcClothes(scriptID, component, drawable, texture, palette, dlc);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::SetDlcProps(lua_State* L)
+{
+	int32_t scriptID;
+	uint8_t component;
+	uint16_t drawable;
+	uint8_t texture;
+	uint32_t dlc;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(scriptID);
+	argReader.ReadNumber(dlc);
+	argReader.ReadNumber(component);
+	argReader.ReadNumber(drawable);
+	argReader.ReadNumber(texture);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->SetDlcProps(scriptID, component, drawable, texture, dlc);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::ClearProps(lua_State* L)
+{
+	int32_t scriptID;
+	uint8_t component;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(scriptID);
+	argReader.ReadNumber(component);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	Core->ClearProps(scriptID, component);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::SetWatermarkPosition(lua_State* L)
+{
+	uint8_t pos;
+
+	CArgReader argReader(L);
+	argReader.ReadNumber(pos);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+	
+	Core->SetWatermarkPosition(pos);
+
+	return 0;
+}
+
+int CLuaAltFuncDefs::GetFps(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetFps());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetPing(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetPing());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetTotalPacketsSent(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetTotalPacketsSent());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetTotalPacketsLost(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetTotalPacketsLost());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetServerIp(lua_State* L)
+{
+	lua_pushstring(L, Core->GetServerIp());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetServerPort(lua_State* L)
+{
+	lua_pushnumber(L, Core->GetServerPort());
+	return 1;
+}
+
+int CLuaAltFuncDefs::GetClientPath(lua_State* L)
+{
+	lua_pushstring(L, Core->GetClientPath());
+	return 1;
+}
+
 #endif
 
 int CLuaAltFuncDefs::GetSyncedMetaData(lua_State* L)

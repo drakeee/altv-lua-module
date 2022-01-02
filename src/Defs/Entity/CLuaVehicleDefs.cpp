@@ -71,6 +71,8 @@ void CLuaVehicleDefs::Init(lua_State* L)
 	lua_globalfunction(L, "toggleVehicleExtra", ToggleExtra);
 	lua_globalfunction(L, "getVehicleAttached", GetAttached);
 	lua_globalfunction(L, "getVehicleAttachedTo", GetAttachedTo);
+	lua_globalfunction(L, "isVehicleDriftModeEnabled", IsDriftMode);
+	lua_globalfunction(L, "setVehicleDriftMode", SetDriftMode);
 #else
 	lua_globalfunction(L, "getVehicleWheelSpeed", GetWheelSpeed);
 	lua_globalfunction(L, "getVehicleCurrentGear", GetCurrentGear);
@@ -357,6 +359,14 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classfunction(L, "loadScriptDataFromBase64", LoadScriptDataFromBase64);
 		lua_classfunction(L, "getAttached", GetAttached);
 		lua_classfunction(L, "getAttachedTo", GetAttachedTo);
+		lua_classfunction(L, "setDriftMode", SetDriftMode);
+		lua_classfunction(L, "isDriftModeEnabled", IsDriftMode);
+
+		lua_classfunction(L, "setTrainEngineId", SetTrainEngineId);
+		lua_classfunction(L, "setTrainLinkedToBackwardId", SetTrainLinkedToBackwardId);
+		lua_classfunction(L, "setTrainLinkedToForwardId", SetTrainLinkedToForwardId);
+
+		lua_classfunction(L, "setSearchLightTo", SetSearchLight);
 
 		lua_classvariable(L, "modKit", "setModKit", "getModKit");
 		lua_classvariable(L, "primaryColor", "setPrimaryColor", "getPrimaryColor");
@@ -397,6 +407,24 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "scriptDataBase64", "loadScriptDataFromBase64", "getScriptDataBase64");
 		lua_classvariable(L, "attached", nullptr, "getAttached");
 		lua_classvariable(L, "attachedTo", nullptr, "getAttachedTo");
+
+		lua_classvariable(L, "driftModeEnabled", "setDriftMode", "isDriftModeEnabled");
+
+		lua_classvariable(L, "isMissionTrain", SetTrainMissionTrain, IsTrainMissionTrain);
+		lua_classvariable(L, "trainTrackId", SetTrainTrackId, GetTrainTrackId);
+		lua_classvariable(L, "trainEngineId", nullptr, GetTrainEngineId);
+		lua_classvariable(L, "trainConfigIndex", SetTrainConfigIndex, GetTrainConfigIndex);
+		lua_classvariable(L, "trainDistanceFromEngine", SetTrainDistanceFromEngine, GetTrainDistanceFromEngine);
+		lua_classvariable(L, "isTrainEngine", SetTrainIsEngine, IsTrainEngine);
+		lua_classvariable(L, "isTrainCaboose", SetTrainIsCaboose, IsTrainCaboose);
+		lua_classvariable(L, "trainDirection", SetTrainDirection, GetTrainDirection);
+		lua_classvariable(L, "trainPassengerCarriages", SetTrainHasPassengerCarriages, HasTrainPassengerCarriages);
+		lua_classvariable(L, "trainRenderDerailed", SetTrainRenderDerailed, GetTrainRenderDerailed);
+		lua_classvariable(L, "trainForceDoorsOpen", SetTrainForceDoorsOpen, GetTrainForceDoorsOpen);
+		lua_classvariable(L, "trainCruiseSpeed", SetTrainCruiseSpeed, GetTrainCruiseSpeed);
+		lua_classvariable(L, "trainCarriageConfigIndex", SetTrainCarriageConfigIndex, GetTrainCarriageConfigIndex);
+		lua_classvariable(L, "trainLinkedToBackwardId", nullptr, GetTrainLinkedToBackwardId);
+		lua_classvariable(L, "trainLinkedToForwardId", nullptr, GetTrainLinkedToForwardId);
 #else
 		lua_classfunction(L, "getWheelSpeed", GetWheelSpeed);
 		lua_classfunction(L, "getCurrentGear", GetCurrentGear);
@@ -449,8 +477,11 @@ void CLuaVehicleDefs::Init(lua_State* L)
 		lua_classvariable(L, "currentGear", nullptr, "getCurrentGear");
 		lua_classvariable(L, "currentRPM", nullptr, "getCurrentRPM");
 		lua_classvariable(L, "speedVector", nullptr, "getSpeedVector");
+		lua_classvariable(L, "maxGear", SetMaxGear, GetMaxGear);
 
 		lua_classvariable(L, "handling", nullptr, "getHandling");
+
+		lua_classvariable(L, "indicatorLights", SetLightsIndicator, GetLightsIndicator);
 #endif
 
 		lua_classvariable(L, "destroyed", nullptr, "isDestroyed");
@@ -1836,6 +1867,648 @@ int CLuaVehicleDefs::GetAttachedTo(lua_State* L)
 
 	return 1;
 }
+
+int CLuaVehicleDefs::IsDriftMode(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->IsDriftMode());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetDriftMode(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool state;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(state);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetDriftMode(state);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::IsTrainMissionTrain(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->IsTrainMissionTrain());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainMissionTrain(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool value;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(value);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainMissionTrain(value);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainTrackId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vehicle->GetTrainTrackId());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainTrackId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	int8_t value;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(value);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainTrackId(value);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainEngineId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	if (vehicle->GetTrainEngineId().Get() != nullptr)
+		lua_pushbaseobject(L, vehicle->GetTrainEngineId());
+	else
+		lua_pushnil(L);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainEngineId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainEngineId(vehicle);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainConfigIndex(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vehicle->GetTrainConfigIndex());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainConfigIndex(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	int8_t trainConfigIndex;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(trainConfigIndex);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainConfigIndex(trainConfigIndex);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainDistanceFromEngine(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vehicle->GetTrainDistanceFromEngine());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainDistanceFromEngine(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	float distanceFromEngine;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(distanceFromEngine);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainDistanceFromEngine(distanceFromEngine);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::IsTrainEngine(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->IsTrainEngine());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainIsEngine(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool isEngine;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(isEngine);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainIsEngine(isEngine);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::IsTrainCaboose(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->IsTrainCaboose());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainIsCaboose(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool isCaboose;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(isCaboose);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainIsCaboose(isCaboose);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainDirection(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->GetTrainDirection());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainDirection(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool direction;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(direction);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainDirection(direction);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::HasTrainPassengerCarriages(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->HasTrainPassengerCarriages());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainHasPassengerCarriages(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool hasPassengerCarriages;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(hasPassengerCarriages);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainHasPassengerCarriages(hasPassengerCarriages);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainRenderDerailed(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->GetTrainRenderDerailed());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainRenderDerailed(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool renderDerailed;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(renderDerailed);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainRenderDerailed(renderDerailed);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainForceDoorsOpen(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushboolean(L, vehicle->GetTrainForceDoorsOpen());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainForceDoorsOpen(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool forceDoorsOpen;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(forceDoorsOpen);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainForceDoorsOpen(forceDoorsOpen);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainCruiseSpeed(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vehicle->GetTrainCruiseSpeed());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainCruiseSpeed(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	float cruiseSpeed;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(cruiseSpeed);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainCruiseSpeed(cruiseSpeed);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainCarriageConfigIndex(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vehicle->GetTrainCarriageConfigIndex());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainCarriageConfigIndex(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	int8_t carriageConfigIndex;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(carriageConfigIndex);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetTrainCarriageConfigIndex(carriageConfigIndex);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainLinkedToBackwardId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	if (vehicle->GetTrainLinkedToBackwardId().Get() != nullptr)
+		lua_pushbaseobject(L, vehicle->GetTrainLinkedToBackwardId());
+	else
+		lua_pushnil(L);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainLinkedToBackwardId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	alt::IVehicle* tempVehicle = nullptr;
+	if(argReader.IsNextType(LUA_TUSERDATA))
+		argReader.ReadBaseObject(tempVehicle);
+
+	vehicle->SetTrainLinkedToBackwardId(tempVehicle);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetTrainLinkedToForwardId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	if (vehicle->GetTrainLinkedToForwardId().Get() != nullptr)
+		lua_pushbaseobject(L, vehicle->GetTrainLinkedToForwardId());
+	else
+		lua_pushnil(L);
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetTrainLinkedToForwardId(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	alt::IVehicle* tempVehicle = nullptr;
+	if (argReader.IsNextType(LUA_TUSERDATA))
+		argReader.ReadBaseObject(tempVehicle);
+
+	vehicle->SetTrainLinkedToForwardId(tempVehicle);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::SetSearchLight(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	bool state;
+	alt::IVehicle* spottedEntity;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadBool(state);
+	argReader.ReadBaseObject(spottedEntity);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetSearchLight(state, spottedEntity);
+
+	return 0;
+}
+
 #else
 int CLuaVehicleDefs::GetWheelSpeed(lua_State* L)
 {
@@ -1940,6 +2613,7 @@ int CLuaVehicleDefs::GetHandling(lua_State* L)
 		return 0;
 	}
 
+	vehicle->ReplaceHandling();
 	lua_pushhandlingdata(L, vehicle->GetHandling().Get());
 
 	return 1;
@@ -1962,6 +2636,121 @@ int CLuaVehicleDefs::ResetHandling(lua_State* L)
 
 	return 0;
 }
+
+int CLuaVehicleDefs::ReplaceHandling(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->ReplaceHandling();
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetMaxGear(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vehicle->GetMaxGear());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetCurrentGear(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	uint16_t currentGear;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(currentGear);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetCurrentGear(currentGear);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::SetMaxGear(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	uint16_t gearMax;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(gearMax);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetMaxGear(gearMax);
+
+	return 0;
+}
+
+int CLuaVehicleDefs::GetLightsIndicator(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	lua_pushnumber(L, vehicle->GetLightsIndicator());
+
+	return 1;
+}
+
+int CLuaVehicleDefs::SetLightsIndicator(lua_State* L)
+{
+	alt::IVehicle* vehicle;
+	uint8_t lightsIndicatorFlag;
+
+	CArgReader argReader(L);
+	argReader.ReadBaseObject(vehicle);
+	argReader.ReadNumber(lightsIndicatorFlag);
+
+	if (argReader.HasAnyError())
+	{
+		argReader.GetErrorMessages();
+		return 0;
+	}
+
+	vehicle->SetLightsIndicator(lightsIndicatorFlag);
+
+	return 0;
+}
+
 #endif
 
 int CLuaVehicleDefs::GetDriver(lua_State* L)

@@ -80,6 +80,42 @@ private:
 	static int LoadScriptDataFromBase64(lua_State* L);
 	static int GetAttached(lua_State* L);
 	static int GetAttachedTo(lua_State* L);
+
+	static int IsDriftMode(lua_State* L);
+	static int SetDriftMode(lua_State* L);
+
+	static int IsTrainMissionTrain(lua_State* L);
+	static int SetTrainMissionTrain(lua_State* L);
+	static int GetTrainTrackId(lua_State* L);
+	static int SetTrainTrackId(lua_State* L);
+	static int GetTrainEngineId(lua_State* L);
+	static int SetTrainEngineId(lua_State* L);
+	static int GetTrainConfigIndex(lua_State* L);
+	static int SetTrainConfigIndex(lua_State* L);
+	static int GetTrainDistanceFromEngine(lua_State* L);
+	static int SetTrainDistanceFromEngine(lua_State* L);
+	static int IsTrainEngine(lua_State* L);
+	static int SetTrainIsEngine(lua_State* L);
+	static int IsTrainCaboose(lua_State* L);
+	static int SetTrainIsCaboose(lua_State* L);
+	static int GetTrainDirection(lua_State* L);
+	static int SetTrainDirection(lua_State* L);
+	static int HasTrainPassengerCarriages(lua_State* L);
+	static int SetTrainHasPassengerCarriages(lua_State* L);
+	static int GetTrainRenderDerailed(lua_State* L);
+	static int SetTrainRenderDerailed(lua_State* L);
+	static int GetTrainForceDoorsOpen(lua_State* L);
+	static int SetTrainForceDoorsOpen(lua_State* L);
+	static int GetTrainCruiseSpeed(lua_State* L);
+	static int SetTrainCruiseSpeed(lua_State* L);
+	static int GetTrainCarriageConfigIndex(lua_State* L);
+	static int SetTrainCarriageConfigIndex(lua_State* L);
+	static int GetTrainLinkedToBackwardId(lua_State* L);
+	static int SetTrainLinkedToBackwardId(lua_State* L);
+	static int GetTrainLinkedToForwardId(lua_State* L);
+	static int SetTrainLinkedToForwardId(lua_State* L);
+
+	static int SetSearchLight(lua_State* L);
 #else
 	static int GetWheelSpeed(lua_State* L);
 	static int GetCurrentGear(lua_State* L);
@@ -89,6 +125,14 @@ private:
 	static int IsHandlingModified(lua_State* L);
 	static int GetHandling(lua_State* L);
 	static int ResetHandling(lua_State* L);
+	static int ReplaceHandling(lua_State* L);
+
+	static int GetMaxGear(lua_State* L);
+	static int SetCurrentGear(lua_State* L);
+	static int SetMaxGear(lua_State* L);
+
+	static int GetLightsIndicator(lua_State* L);
+	static int SetLightsIndicator(lua_State* L);
 #endif
 
 	static int GetMod(lua_State* L);
