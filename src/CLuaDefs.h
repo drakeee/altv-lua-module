@@ -48,6 +48,7 @@ void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool r
 void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData = true);
 void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, bool refUserData = true);
 void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData = true);
+void lua_pushstring(lua_State* L, const std::string& str);
 void lua_pushstring(lua_State* L, alt::String& str);
 void lua_pushstring(lua_State* L, alt::StringView& str);
 

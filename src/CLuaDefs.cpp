@@ -526,6 +526,11 @@ void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUse
 	lua_pushuserdata(L, CLuaConfigDefs::ClassName, nodeDict, refUserData);
 }
 
+void lua_pushstring(lua_State* L, const std::string& str)
+{
+	lua_pushstring(L, str.c_str());
+}
+
 void lua_pushstring(lua_State* L, alt::String& str)
 {
 	lua_pushstring(L, str.CStr());

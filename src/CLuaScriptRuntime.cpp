@@ -3,6 +3,7 @@
 
 //#include <events/CRenderEvent.h>
 #include <events/CWebSocketClientEvent.h>
+#include <events/CAudioEvent.h>
 
 CLuaScriptRuntime::CLuaScriptRuntime()
 {
@@ -29,6 +30,56 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_pushbaseobject(L, event->GetTarget().Get());
 
 			return 1;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::PLAYER_BEFORE_CONNECT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CPlayerBeforeConnectEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			const alt::ConnectionInfo& connectionInfo = event->GetConnectionInfo();
+			lua_newtable(L);
+			const int t = lua_gettop(L);
+
+			lua_pushstring(L, connectionInfo.name);
+			lua_setfield(L, t, "name");
+			
+			lua_pushstring(L, std::to_string(connectionInfo.socialId));
+			lua_setfield(L, t, "socialID");
+
+			lua_pushstring(L, std::to_string(connectionInfo.hwidHash));
+			lua_setfield(L, t, "hwidHash");
+
+			lua_pushstring(L, std::to_string(connectionInfo.hwidExHash));
+			lua_setfield(L, t, "hwidExHash");
+
+			lua_pushstring(L, connectionInfo.authToken);
+			lua_setfield(L, t, "authToken");
+
+			lua_pushboolean(L, connectionInfo.isDebug);
+			lua_setfield(L, t, "isDebug");
+
+			lua_pushstring(L, connectionInfo.branch);
+			lua_setfield(L, t, "branch");
+			
+			lua_pushnumber(L, connectionInfo.build);
+			lua_setfield(L, t, "build");
+
+			lua_pushstring(L, connectionInfo.cdnUrl);
+			lua_setfield(L, t, "cdnUrl");
+
+			lua_pushnumber(L, connectionInfo.passwordHash);
+			lua_setfield(L, t, "passwordHash");
+			lua_pushstring(L, event->GetReason());
+
+			return 2;
 		}
 	);
 
@@ -416,6 +467,29 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			lua_pushbaseobject(L, event->GetTarget().Get());
 
 			return 1;
+		}
+	);
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::VEHICLE_DAMAGE,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CVehicleDamageEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushbaseobject(L, event->GetTarget());
+			lua_pushbaseobject(L, event->GetDamager());
+			lua_pushnumber(L, event->GetBodyHealthDamage());
+			lua_pushnumber(L, event->GetBodyAdditionalHealthDamage());
+			lua_pushnumber(L, event->GetEngineHealthDamage());
+			lua_pushnumber(L, event->GetPetrolTankHealthDamage());
+			lua_pushnumber(L, event->GetDamagedWith());
+
+			return 7;
 		}
 	);
 
@@ -811,6 +885,45 @@ CLuaScriptRuntime::CLuaScriptRuntime()
 			return static_cast<int>(event->GetArgs().GetSize());
 		}
 	);
+
+	/*this->RegisterServerCallback(
+		alt::CEvent::Type::AUDIO_EVENT,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			auto event = static_cast<const alt::CAudioEvent*>(ev);
+			return &resource->GetWebSocketEventReferences(event->GetTarget().Get(), event->GetName().ToString());
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CWebSocketClientEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			for (auto arg : event->GetArgs())
+			{
+				lua_pushmvalue(L, arg);
+			}
+
+			return static_cast<int>(event->GetArgs().GetSize());
+		}
+	);*/
+
+	this->RegisterServerCallback(
+		alt::CEvent::Type::TASK_CHANGE,
+		[this](CLuaResourceImpl* resource, const alt::CEvent* ev)
+		{
+			return &resource->GetLocalEventReferences(this->GetEventType(ev->GetType()));
+		},
+		[](CLuaResourceImpl* resource, const alt::CEvent* ev) -> int
+		{
+			auto event = static_cast<const alt::CTaskChangeEvent*>(ev);
+			lua_State* L = resource->GetLuaState();
+
+			lua_pushnumber(L, event->GetOldTask());
+			lua_pushnumber(L, event->GetNewTask());
+
+			return 2;
+		}
+		);
 #endif
 
 #ifdef ALT_SERVER_API

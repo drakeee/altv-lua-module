@@ -127,6 +127,7 @@ private:
 
 		// Shared
 		"playerConnect", //done
+		"playerBeforeConnect", //done
 		"playerDisconnect", //done
 
 		"anyResourceStart", //done
@@ -149,6 +150,7 @@ private:
 		"startProjectile", //done
 		"weaponDamage", //done
 		"vehicleDestroy", //done
+		"vehicleDamage", //done
 
 		"checkpoint", //
 		"colshape", //done
@@ -177,8 +179,10 @@ private:
 		"keyboard", //done
 		"gameEntityCreate", //done
 		"gameEntityDestroy", //done
-		"render", //done
+		//"render", //done
 		"WEB_SOCKET_CLIENT_EVENT", //done
+		"AUDIO_EVENT",
+		"TASK_CHANGE",
 
 		"ALL",
 		"SIZE"
