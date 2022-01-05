@@ -59,37 +59,36 @@ const alt::String p_s(preferred_separator);
 typedef alt::Vector3f Vector3fp;
 typedef alt::Vector2f Vector2fp;
 
-
 #include "VehicleModels.hpp"
-#include "LRGBA.h"
+#include "Helpers/LRGBA.h"
 
-#include "CLuaDefs.h"
-#include "CArgReader.h"
-#include "CLuaScriptRuntime.h"
-#include "CLuaResourceImpl.h"
-#include "CLuaFunctionDefs.h"
+#include "Helpers/LuaHelpers.h"
+#include "Helpers/ArgumentReader.h"
+#include "LuaScriptRuntime.h"
+#include "LuaResourceImpl.h"
+#include "Helpers/MetaFunction.h"
 
-#include <Defs/CLuaAltFuncDefs.h>
-#include <Defs/CLuaConfigDefs.h>
-#include <Defs/CLuaNativeDefs.h>
-#include <Defs/CLuaResourceFuncDefs.h>
-#include <Defs/CLuaVector2Defs.h>
-#include <Defs/CLuaVector3Defs.h>
-#include <Defs/CLuaRGBADefs.h>
-#include <Defs/CLuaHandlingDataDefs.h>
-#include <Defs/CLuaMapDataDefs.h>
-#include <Defs/CLuaDiscordManagerDefs.h>
-#include <Defs/CLuaVoiceDefs.h>
-#include <Defs/CLuaWebViewDefs.h>
-#include <Defs/CLuaWebSocketDefs.h>
-#include <Defs/Entity/CLuaBaseObjectDefs.h>
-#include <Defs/Entity/CLuaWorldObjectDefs.h>
-#include <Defs/Entity/CLuaEntityDefs.h>
-#include <Defs/Entity/CLuaPlayerDefs.h>
-#include <Defs/Entity/CLuaVehicleDefs.h>
-#include <Defs/Entity/CLuaBlipDefs.h>
-#include <Defs/Entity/CLuaCheckpointDefs.h>
-#include <Defs/Entity/CLuaColShapeDefs.h>
-#include <Defs/Entity/CLuaVoiceChannelDefs.h>
+#include <Defs/Alt.h>
+#include <Defs/Config.h>
+#include <Defs/Client/Native.h>
+#include <Defs/Resource.h>
+#include <Defs/Shared/Vector2.h>
+#include <Defs/Shared/Vector3.h>
+#include <Defs/Shared/RGBA.h>
+#include <Defs/Client/HandlingData.h>
+#include <Defs/Client/MapData.h>
+#include <Defs/Client/DiscordManager.h>
+#include <Defs/Voice.h>
+#include <Defs/Client/WebView.h>
+#include <Defs/Client/WebSocket.h>
+#include <Defs/Entity/BaseObject.h>
+#include <Defs/Entity/WorldObject.h>
+#include <Defs/Entity/Entity.h>
+#include <Defs/Entity/Player.h>
+#include <Defs/Entity/Vehicle.h>
+#include <Defs/Entity/Blip.h>
+#include <Defs/Entity/Checkpoint.h>
+#include <Defs/Entity/ColShape.h>
+#include <Defs/Entity/VoiceChannel.h>
 
-#include <Defs/CLuaMiscScripts.h>
+#include <Defs/Shared/MiscScripts.h>
