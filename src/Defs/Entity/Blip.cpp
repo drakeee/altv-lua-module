@@ -282,7 +282,7 @@ namespace lua::Class
 		}
 
 		auto blip = Core->CreateBlip(player, static_cast<alt::IBlip::BlipType>(type), position);
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		resourceImpl->AddEntity(blip.Get());
 
 		lua_pushbaseobject(L, blip.Get());

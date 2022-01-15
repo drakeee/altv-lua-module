@@ -588,7 +588,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+		LuaScriptRuntime* runtime = &LuaScriptRuntime::Instance();
 		auto vehModels = &VehicleModels::Instance();
 
 		std::string type("userdata:" + runtime->GetBaseObjectType(vehicle) + ":" + vehModels->GetVehicleInfo(vehicle->GetModel())->vehicleName);
@@ -644,7 +644,7 @@ namespace lua::Class
 		{
 			lua_pushbaseobject(L, vehicle.Get());
 
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 			resourceImpl->AddEntity(vehicle.Get());
 		}
 		else

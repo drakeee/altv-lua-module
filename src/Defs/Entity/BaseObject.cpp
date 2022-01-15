@@ -46,7 +46,7 @@ namespace lua::Class
 
 		lua_removedata(L, baseObject);
 
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		resourceImpl->RemoveEntity(baseObject);
 		Core->DestroyBaseObject(baseObject);
 
@@ -73,7 +73,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto type = CLuaScriptRuntime::Instance().GetBaseObjectType(baseObject->GetType());
+		auto type = LuaScriptRuntime::Instance().GetBaseObjectType(baseObject->GetType());
 		lua_pushstring(L, type.c_str());
 
 		return 1;
@@ -114,7 +114,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushmvalue(L, baseObject->GetMetaData(alt::String(key)));
+		lua_pushmvalue(L, baseObject->GetMetaData(key));
 
 		return 1;
 	}

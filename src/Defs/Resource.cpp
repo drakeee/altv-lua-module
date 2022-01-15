@@ -61,7 +61,7 @@ namespace lua::Class
 		}
 		lua_endclass(L);
 
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
 		lua_pushresource(L, resource->GetResource());
 		lua_setglobal(L, "localResource");
@@ -226,7 +226,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushconfig(L, &CLuaScriptRuntime::Instance().GetResourceConfig(resource));
+		lua_pushconfig(L, &LuaScriptRuntime::Instance().GetResourceConfig(resource));
 
 		return 1;
 	}

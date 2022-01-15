@@ -480,17 +480,27 @@ void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool r
 
 void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUserData)
 {
+	DEBUG_INFO("lua_pushbaseobject1: " + std::to_string(baseObject == nullptr));
+
 	if (baseObject == nullptr)
 		lua_pushnil(L);
 	else
 	{
-		CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+		DEBUG_INFO("lua_pushbaseobject2");
+
+		LuaScriptRuntime* runtime = &LuaScriptRuntime::Instance();
+		DEBUG_INFO("lua_pushbaseobject3");
+
+		Core->LogInfo("Class: " + runtime->GetBaseObjectType(baseObject->GetType()));
 		lua_pushuserdata(L, runtime->GetBaseObjectType(baseObject->GetType()).c_str(), baseObject, refUserData);
 	}
+
+	DEBUG_INFO("lua_pushbaseobject3");
 }
 
 void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, bool refUserData)
 {
+	DEBUG_INFO("lua_pushbaseobject0");
 	lua_pushbaseobject(L, baseObject.Get(), refUserData);
 }
 
@@ -798,7 +808,7 @@ int lua_functionref(lua_State* L, int idx)
 	lua_pushvalue(L, idx);
 	const void* ptr = lua_topointer(L, -1);
 
-	auto runtime = &CLuaScriptRuntime::Instance();
+	auto runtime = &LuaScriptRuntime::Instance();
 	auto resource = runtime->GetResourceImplFromState(L);
 	int ref = resource->GetFunctionRef(ptr);
 
@@ -899,9 +909,9 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 	}
 	case LUA_TFUNCTION:
 	{
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		auto functionRef = lua_functionref(L, idx);
-		mValue = Core->CreateMValueFunction(new CLuaResourceImpl::LuaFunction(resourceImpl, functionRef));
+		mValue = Core->CreateMValueFunction(new LuaResourceImpl::LuaFunction(resourceImpl, functionRef));
 
 		break;
 	}

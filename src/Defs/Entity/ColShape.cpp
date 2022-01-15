@@ -82,7 +82,7 @@ namespace lua::Class
 		{
 			lua_pushbaseobject(L, colshape.Get());
 
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 			resourceImpl->AddEntity(colshape.Get());
 		}
 		else
@@ -113,7 +113,7 @@ namespace lua::Class
 		{
 			lua_pushbaseobject(L, colshape.Get());
 
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 			resourceImpl->AddEntity(colshape.Get());
 		}
 		else
@@ -146,7 +146,7 @@ namespace lua::Class
 		{
 			lua_pushbaseobject(L, colshape.Get());
 
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 			resourceImpl->AddEntity(colshape.Get());
 		}
 		else
@@ -175,7 +175,7 @@ namespace lua::Class
 		{
 			lua_pushbaseobject(L, colshape.Get());
 
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 			resourceImpl->AddEntity(colshape.Get());
 		}
 		else

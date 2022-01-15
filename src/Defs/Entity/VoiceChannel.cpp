@@ -58,7 +58,7 @@ namespace lua::Class
 		{
 			lua_pushbaseobject(L, voiceChannel.Get());
 
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 			resourceImpl->AddEntity(voiceChannel.Get());
 		}
 		else

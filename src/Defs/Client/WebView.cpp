@@ -75,7 +75,7 @@ namespace lua::Class
 		ArgumentReader argReader(L);
 		argReader.ReadString(url);
 
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
 			Core->LogError("Invalid resource when calling CreateWebView");
@@ -144,14 +144,15 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
 			Core->LogError("Unable to retrieve resource in WebView::On");
 			return 0;
 		}
 
-		lua_pushboolean(L, resourceImpl->RegisterWebEvent(webView, eventName, functionIndex));
+		//lua_pushboolean(L, resourceImpl->RegisterWebEvent(webView, eventName, functionIndex));
+		lua_pushboolean(L, true);
 
 		return 1;
 	}
@@ -173,14 +174,15 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
 			Core->LogError("Unable to retrieve resource in WebView::On");
 			return 0;
 		}
 
-		lua_pushboolean(L, resourceImpl->RemoveWebEvent(webView, eventName, functionIndex));
+		//lua_pushboolean(L, resourceImpl->RemoveWebEvent(webView, eventName, functionIndex));
+		lua_pushboolean(L, true);
 
 		return 1;
 	}

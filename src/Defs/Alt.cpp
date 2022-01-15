@@ -34,6 +34,7 @@ namespace lua::Class
 		lua_globalfunction(L, "on", OnClient);
 	#endif
 		lua_globalfunction(L, "onServer", OnServer);
+		lua_globalfunction(L, "onServerEx", OnServerEx);
 		lua_globalfunction(L, "offServer", OffServer);
 		lua_globalfunction(L, "onClient", OnClient);
 		lua_globalfunction(L, "offClient", OffClient);
@@ -234,7 +235,7 @@ namespace lua::Class
 		lua_rawset(L, -3);
 
 	#ifdef ALT_SERVER_API
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		lua_pushconfig(L, &runtime->GetServerConfig());
 		lua_setglobal(L, "serverConfig");
 	#endif
@@ -324,7 +325,7 @@ namespace lua::Class
 
 	int Alt::GetModuleTime(lua_State* L)
 	{
-		lua_pushnumber(L, CLuaScriptRuntime::Instance().GetModuleTime());
+		lua_pushnumber(L, LuaScriptRuntime::Instance().GetModuleTime());
 		return 1;
 	}
 
@@ -507,10 +508,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in require");
+			Core->LogError("Unable to retrieve LuaResourceImpl in require");
 			return 0;
 		}
 
@@ -907,10 +908,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in ToggleGameControls");
+			Core->LogError("Unable to retrieve LuaResourceImpl in ToggleGameControls");
 			return 0;
 		}
 
@@ -932,10 +933,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in ShowCursor");
+			Core->LogError("Unable to retrieve LuaResourceImpl in ShowCursor");
 			return 0;
 		}
 
@@ -1179,7 +1180,7 @@ namespace lua::Class
 		Core->TakeScreenshot([](alt::StringView base64, const void* userData)
 		{
 			auto args = (ScreenshotHelper*)userData;
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
 			L_ASSERT(resourceImpl != nullptr, "lua state not found when executing TakeScreenshot");
 
 			auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
@@ -1220,7 +1221,7 @@ namespace lua::Class
 		Core->TakeScreenshotGameOnly([](alt::StringView base64, const void* userData)
 		{
 			auto args = (ScreenshotHelper*)userData;
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
 			L_ASSERT(resourceImpl != nullptr, "lua state not found when executing TakeScreenshot");
 
 			auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
@@ -1563,7 +1564,7 @@ namespace lua::Class
 
 	int Alt::Export(lua_State* L)
 	{
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
 
 		std::string exportName;
@@ -1584,7 +1585,7 @@ namespace lua::Class
 			Core->LogError("Warning: Export \"" + exportName + "\" already exists. It will be overwritten by the new function.");
 		}
 
-		resource->AddExport(exportName, new CLuaResourceImpl::LuaFunction(resource, functionRef));
+		resource->AddExport(exportName, new LuaResourceImpl::LuaFunction(resource, functionRef));
 
 		return 0;
 	}
@@ -1696,14 +1697,42 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
+		auto resourceEventManager = resource->GetResourceEventManager();
+		
+		Core->LogInfo("Registered events: " + resource->GetResource()->GetName() + " - " + eventName + " - FunctionRef: " + std::to_string(functionRef));
 
 	#ifdef ALT_SERVER_API
-		lua_pushboolean(L, resource->RegisterLocalEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->SubscribeLocalEvent(eventName, functionRef));
 	#else
-		lua_pushboolean(L, resource->RegisterRemoteEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->SubscribeRemoteEvent(eventName, functionRef));
 	#endif
+
+		return 1;
+	}
+
+	int Alt::OnServerEx(lua_State* L)
+	{
+		std::string eventName;
+		int functionRef;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(eventName);
+		argReader.ReadFunction(functionRef);
+
+		//argReader.ReadFunctionComplete();
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		LuaScriptRuntime* runtime = &LuaScriptRuntime::Instance();
+		ResourceEventManager* resourceEventManager = runtime->GetResourceImplFromState(L)->GetResourceEventManager();
+		
+		lua_pushboolean(L, resourceEventManager->SubscribeLocalEvent(eventName, functionRef));
 
 		return 1;
 	}
@@ -1724,13 +1753,14 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
+		ResourceEventManager* resourceEventManager = resource->GetResourceEventManager();
 
 	#ifdef ALT_SERVER_API
-		lua_pushboolean(L, resource->RemoveLocalEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->UnsubscribeLocalEvent(eventName, functionRef));
 	#else
-		lua_pushboolean(L, resource->RemoveRemoteEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->UnsubscribeRemoteEvent(eventName, functionRef));
 	#endif
 
 		return 1;
@@ -1755,13 +1785,14 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
+		ResourceEventManager* resourceEventManager = resource->GetResourceEventManager();
 
 	#ifdef ALT_SERVER_API
-		lua_pushboolean(L, resource->RegisterRemoteEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->SubscribeRemoteEvent(eventName, functionRef));
 	#else
-		lua_pushboolean(L, resource->RegisterLocalEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->SubscribeLocalEvent(eventName, functionRef));
 	#endif
 
 		return 1;
@@ -1783,13 +1814,14 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
+		ResourceEventManager* resourceEventManager = resource->GetResourceEventManager();
 
 	#ifdef ALT_SERVER_API
-		lua_pushboolean(L, resource->RemoveRemoteEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->UnsubscribeRemoteEvent(eventName, functionRef));
 	#else
-		lua_pushboolean(L, resource->RemoveLocalEvent(eventName, functionRef));
+		lua_pushboolean(L, resourceEventManager->UnsubscribeLocalEvent(eventName, functionRef));
 	#endif
 
 		return 1;
@@ -1927,7 +1959,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto runtime = &CLuaScriptRuntime::Instance();
+		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
 		auto file = (resource->GetWorkingPath() + filePath + ".lua");
 		auto &loadedFiles = resource->GetLoadedFiles();
@@ -2043,10 +2075,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		CLuaResourceImpl *resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		LuaResourceImpl *resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in NextTick");
+			Core->LogError("Unable to retrieve LuaResourceImpl in NextTick");
 			return 0;
 		}
 
@@ -2068,10 +2100,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in EveryTick");
+			Core->LogError("Unable to retrieve LuaResourceImpl in EveryTick");
 			return 0;
 		}
 
@@ -2095,10 +2127,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in SetTimeout");
+			Core->LogError("Unable to retrieve LuaResourceImpl in SetTimeout");
 			return 0;
 		}
 
@@ -2122,10 +2154,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in SetInterval");
+			Core->LogError("Unable to retrieve LuaResourceImpl in SetInterval");
 			return 0;
 		}
 
@@ -2147,10 +2179,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		CLuaResourceImpl* resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 		if (resourceImpl == nullptr)
 		{
-			Core->LogError("Unable to retrieve CLuaResourceImpl in NextTick");
+			Core->LogError("Unable to retrieve LuaResourceImpl in NextTick");
 			return 0;
 		}
 

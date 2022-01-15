@@ -45,16 +45,12 @@ static const char* preferred_separator = "/";
 //Include Lua
 #include <lua.hpp>
 
-//Include SQL libraries
-//#include <mysql.h>
-//#include <CDatabaseManager.h>
-//#include <Database/MariaDatabase.h>
-
 extern alt::ICore* Core;
-const alt::String p_s(preferred_separator);
 
-//typedef alt::Vector<float, 3, alt::PointLayout> Vector3fp;
-//typedef alt::Vector<float, 2, alt::PointLayout> Vector2fp;
+extern bool isClient;
+extern bool isServer;
+
+const alt::String p_s(preferred_separator);
 
 typedef alt::Vector3f Vector3fp;
 typedef alt::Vector2f Vector2fp;
@@ -64,6 +60,7 @@ typedef alt::Vector2f Vector2fp;
 
 #include "Helpers/LuaHelpers.h"
 #include "Helpers/ArgumentReader.h"
+#include "EventManager.h"
 #include "LuaScriptRuntime.h"
 #include "LuaResourceImpl.h"
 #include "Helpers/MetaFunction.h"

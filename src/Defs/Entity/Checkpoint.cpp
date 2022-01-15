@@ -65,7 +65,7 @@ namespace lua::Class
 		{
 			lua_pushbaseobject(L, checkpoint.Get());
 
-			auto resourceImpl = CLuaScriptRuntime::Instance().GetResourceImplFromState(L);
+			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
 			resourceImpl->AddEntity(checkpoint.Get());
 		}
 		else

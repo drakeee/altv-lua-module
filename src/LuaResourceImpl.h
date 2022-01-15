@@ -2,8 +2,8 @@
 
 #include <Main.h>
 
-class CLuaScriptRuntime;
-class CLuaResourceImpl : public alt::IResource::Impl
+class LuaScriptRuntime;
+class LuaResourceImpl : public alt::IResource::Impl
 {
 public:
 	struct LuaTimer
@@ -17,7 +17,7 @@ public:
 	class LuaFunction : public alt::IMValueFunction::Impl
 	{
 	public:
-		LuaFunction(CLuaResourceImpl* resource, int functionRef) :
+		LuaFunction(LuaResourceImpl* resource, int functionRef) :
 			resource(resource),
 			functionRef(functionRef)
 		{
@@ -28,14 +28,14 @@ public:
 		alt::MValue Call(alt::MValueArgs args) const override;
 
 	private:
-		CLuaResourceImpl* resource;
+		LuaResourceImpl* resource;
 		int functionRef;
 	};
 
 	typedef std::map<std::string, std::vector<int>>		EventsReferences;
 
-	CLuaResourceImpl(CLuaScriptRuntime* runtime, alt::IResource* resource);
-	~CLuaResourceImpl();
+	LuaResourceImpl(LuaScriptRuntime* runtime, alt::IResource* resource);
+	~LuaResourceImpl();
 
 #ifdef ALT_SERVER_API
 	bool MakeClient(alt::IResource::CreationInfo* info, alt::Array<alt::String> files) override;
@@ -51,24 +51,24 @@ public:
 	void OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object) override;
 
 	lua_State*	GetLuaState(void) { return this->resourceState; }
-	bool		RegisterLocalEvent(std::string eventName, int functionReference);
-	bool		RemoveLocalEvent(std::string eventName, int functionReference);
-	bool		RegisterRemoteEvent(std::string eventName, int functionReference);
-	bool		RemoveRemoteEvent(std::string eventName, int functionReference);
+	//bool		RegisterLocalEvent(std::string eventName, int functionReference);
+	//bool		RemoveLocalEvent(std::string eventName, int functionReference);
+	//bool		RegisterRemoteEvent(std::string eventName, int functionReference);
+	//bool		RemoveRemoteEvent(std::string eventName, int functionReference);
 #ifdef ALT_CLIENT_API
-	bool		RegisterWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
-	bool		RemoveWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
-	inline const std::vector<int>& GetWebEventReferences(alt::IWebView* webView, std::string eventName)
+	//bool		RegisterWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
+	//bool		RemoveWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
+	/*inline const std::vector<int>& GetWebEventReferences(alt::IWebView* webView, std::string eventName)
 	{
 		return this->webEventsReferences[webView][eventName];
-	}
+	}*/
 
-	bool		RegisterWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
-	bool		RemoveWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
-	inline const std::vector<int>& GetWebSocketEventReferences(alt::IWebSocketClient* webSocket, std::string eventName)
+	//bool		RegisterWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
+	//bool		RemoveWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
+	/*inline const std::vector<int>& GetWebSocketEventReferences(alt::IWebSocketClient* webSocket, std::string eventName)
 	{
 		return this->webSocketEventsReferences[webSocket][eventName];
-	}
+	}*/
 
 	inline bool IsScriptExists(alt::String path)
 	{
@@ -94,16 +94,17 @@ public:
 		return script;
 	}
 #endif
+	inline ResourceEventManager* GetResourceEventManager() { return this->resourceEventManager; }
 	void		TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args);
 	void		IncludePath(const char* path);
-	inline const std::vector<int>& GetLocalEventReferences(std::string eventName)
+	/*inline const std::vector<int>& GetLocalEventReferences(std::string eventName)
 	{
 		return this->localEventsReferences[eventName];
 	}
 	inline const std::vector<int>& GetRemoteEventReferences(std::string eventName)
 	{
 		return this->remoteEventsReferences[eventName];
-	}
+	}*/
 	inline bool				AddFunctionRef(const void* ptr, int functionRef)
 	{
 		if (this->IsFunctionRefExists(ptr))
@@ -196,22 +197,24 @@ public:
 
 private:
 	lua_State*			resourceState = nullptr;
-	CLuaScriptRuntime*	runtime;
+	LuaScriptRuntime*	runtime;
+	ResourceEventManager* resourceEventManager;
+
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict resourceConfigDict;
 #endif
 	alt::IResource*		resource;
 	std::string			workingPath;
 
-	EventsReferences			localEventsReferences;
-	EventsReferences			remoteEventsReferences;
+	//EventsReferences			localEventsReferences;
+	//EventsReferences			remoteEventsReferences;
 
 	uint32_t timerIndex = -1;
 	std::map<uint32_t, LuaTimer>	timerReferences;
 
 #ifdef ALT_CLIENT_API
-	std::map<alt::IWebView*, EventsReferences> webEventsReferences;
-	std::map<alt::IWebSocketClient*, EventsReferences> webSocketEventsReferences;
+	//std::map<alt::IWebView*, EventsReferences> webEventsReferences;
+	//std::map<alt::IWebSocketClient*, EventsReferences> webSocketEventsReferences;
 #endif
 
 	std::map<const void*, int>	functionReferences;

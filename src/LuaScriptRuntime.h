@@ -11,13 +11,13 @@
 #define DEBUG_WARNING(x)
 #endif
 
-class CLuaResourceImpl;
-class CLuaScriptRuntime : public alt::IScriptRuntime
+class LuaResourceImpl;
+class LuaScriptRuntime : public alt::IScriptRuntime
 {
 
 public:
-	typedef std::function<int(CLuaResourceImpl*, const alt::CEvent*)>				FunctionCallback;
-	typedef std::function<const std::vector<int>*(CLuaResourceImpl*, const alt::CEvent*)>	CallbackGetter;
+	typedef std::function<int(LuaResourceImpl*, const alt::CEvent*)>				FunctionCallback;
+	typedef std::function<const std::vector<int>*(LuaResourceImpl*, const alt::CEvent*)>	CallbackGetter;
 	typedef std::map<std::string, FunctionCallback>					EventsCallbacks;
 	typedef std::map<std::string, CallbackGetter>					EventsGetter;
 
@@ -29,8 +29,8 @@ public:
 	void					DestroyImpl(alt::IResource::Impl* impl) override;
 
 	alt::config::Node::Dict	ParseConfig(std::string path);
-	CLuaResourceImpl*		GetResourceImplFromState(lua_State* L);
-	void					AddResource(lua_State* L, CLuaResourceImpl* resource);
+	LuaResourceImpl*		GetResourceImplFromState(lua_State* L);
+	void					AddResource(lua_State* L, LuaResourceImpl* resource);
 	const std::string		GetBaseObjectType(alt::IBaseObject *baseObject);
 	const std::string		GetBaseObjectType(alt::IBaseObject::Type baseType);
 	const std::string		GetEventType(const alt::CEvent* ev);
@@ -60,6 +60,10 @@ public:
 	{
 		return this->version;
 	}
+	inline EventManager* GetEventManager(void)
+	{
+		return this->eventManager;
+	}
 #ifdef ALT_SERVER_API
 	inline alt::config::Node::Dict &GetServerConfig(void)
 	{
@@ -84,16 +88,16 @@ public:
 		return (this->GetTime() - this->moduleStartedTime);
 	}
 
-	static CLuaScriptRuntime& Instance()
+	static LuaScriptRuntime& Instance()
 	{
-		static CLuaScriptRuntime _Instance;
+		static LuaScriptRuntime _Instance;
 		return _Instance;
 	}
 
-	CLuaScriptRuntime();
-	~CLuaScriptRuntime() { };
-
 private:
+	LuaScriptRuntime();
+	~LuaScriptRuntime() { };
+
 	const semver::version						version{ 1, 1, 4, alt::ICore::SDK_VERSION, semver::branch::dev };
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;
@@ -101,9 +105,11 @@ private:
 	static bool OnResourceStart(const alt::CEvent* e, void* userData);
 	static bool OnResourceStop(const alt::CEvent* e, void* userData);
 #endif
-	std::map<lua_State*, CLuaResourceImpl*>		resources;
+	std::map<lua_State*, LuaResourceImpl*>		resources;
 	EventsCallbacks								eventsCallbacks;
 	EventsGetter								eventsGetter;
+
+	EventManager*								eventManager;
 
 	int64_t										moduleStartedTime;
 
@@ -118,6 +124,8 @@ private:
 		"WebSocketClient",
 		"HTTPClient",
 		"Audio",
+		"RmlDocument",
+		"RmlElement",
 		"LocalPlayer"
 	};
 

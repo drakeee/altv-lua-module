@@ -10,6 +10,8 @@ void LocalPlayer::Init(lua_State* L)
 
 	lua_globalfunction(L, "getCurrentAmmo", GetCurrentAmmo);
 
+	DEBUG_INFO("LocalPlayer::Init1");
+
 	lua_beginclass(L, LocalPlayer::ClassName, Player::ClassName);
 	{
 		lua_classfunction(L, "getLocalPlayer", GetLocalPlayer);
@@ -18,16 +20,21 @@ void LocalPlayer::Init(lua_State* L)
 	}
 	lua_endclass(L);
 
+	DEBUG_INFO("LocalPlayer::Init2");
+
 	lua_openclass(L, Player::ClassName);
 	{
 		lua_classvariable(L, "local", nullptr, GetLocalPlayer);
 	}
 	lua_closeclass(L);
 
-#ifdef ALT_CLIENT_API
+	DEBUG_INFO("LocalPlayer::Init3");
+
 	lua_pushbaseobject(L, Core->GetLocalPlayer());
+	DEBUG_INFO("LocalPlayer::Init3.1");
 	lua_setglobal(L, "localPlayer");
-#endif
+
+	DEBUG_INFO("LocalPlayer::Init4");
 }
 
 int LocalPlayer::GetLocalPlayer(lua_State* L)
@@ -294,7 +301,7 @@ int Player::tostring(lua_State* L)
 		return 0;
 	}
 
-	CLuaScriptRuntime* runtime = &CLuaScriptRuntime::Instance();
+	LuaScriptRuntime* runtime = &LuaScriptRuntime::Instance();
 	auto vehModels = &VehicleModels::Instance();
 
 	alt::StringView type(alt::String("userdata:") + runtime->GetBaseObjectType(player) + alt::String(":") + player->GetName());
