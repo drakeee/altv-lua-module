@@ -1,5 +1,0 @@
-// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
-// such as names of functions and macros.
-// For more information see https://go.microsoft.com/fwlink/?linkid=865984
-#define BLIP_GET_DEFINE(PUSH, GET) int CLuaBlipDefs::GET(lua_State* L) { alt::IBlip* blip; CArgReader argReader(L); argReader.ReadBaseObject(blip); if (argReader.HasAnyError()) { argReader.GetErrorMessages(); return 0; } PUSH(L, blip->GET()); return 1;}
-#define REGISTER_EVENT(eventName, test) class eventName : EventManager::Handler { public: void RegisterEvent(EventManager* manager) { test } private: EventManager* shit; }; eventName t_##eventName;
