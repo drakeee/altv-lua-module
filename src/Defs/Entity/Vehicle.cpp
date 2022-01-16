@@ -702,7 +702,7 @@ namespace lua::Class
 	int Vehicle::SetPrimaryColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -714,7 +714,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		vehicle->SetPrimaryColor(color.GetColor());
+		vehicle->SetPrimaryColor(color.toInt());
 
 		return 0;
 	}
@@ -722,7 +722,7 @@ namespace lua::Class
 	int Vehicle::SetPrimaryColorRGB(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -742,7 +742,7 @@ namespace lua::Class
 	int Vehicle::SetSecondaryColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -754,7 +754,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		vehicle->SetSecondaryColor(color.GetColor());
+		vehicle->SetSecondaryColor(color.toInt());
 
 		return 0;
 	}
@@ -762,7 +762,7 @@ namespace lua::Class
 	int Vehicle::SetSecondaryColorRGB(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -782,7 +782,7 @@ namespace lua::Class
 	int Vehicle::SetPearlColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -794,7 +794,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		vehicle->SetPearlColor(color.GetColor());
+		vehicle->SetPearlColor(color.toInt());
 
 		return 0;
 	}
@@ -802,7 +802,7 @@ namespace lua::Class
 	int Vehicle::SetWheelColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -814,7 +814,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		vehicle->SetWheelColor(color.GetColor());
+		vehicle->SetWheelColor(color.toInt());
 
 		return 0;
 	}
@@ -822,7 +822,7 @@ namespace lua::Class
 	int Vehicle::SetInteriorColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -834,7 +834,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		vehicle->SetInteriorColor(color.GetColor());
+		vehicle->SetInteriorColor(color.toInt());
 
 		return 0;
 	}
@@ -842,7 +842,7 @@ namespace lua::Class
 	int Vehicle::SetDashboardColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -854,7 +854,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		vehicle->SetDashboardColor(color.GetColor());
+		vehicle->SetDashboardColor(color.toInt());
 
 		return 0;
 	}
@@ -862,7 +862,7 @@ namespace lua::Class
 	int Vehicle::SetTireSmokeColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -1089,7 +1089,7 @@ namespace lua::Class
 	int Vehicle::SetNeonColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -1189,7 +1189,7 @@ namespace lua::Class
 	int Vehicle::SetHeadlightColor(lua_State* L)
 	{
 		alt::IVehicle* vehicle;
-		LRGBA color;
+		alt::RGBA color;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(vehicle);
@@ -1201,7 +1201,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		vehicle->SetHeadlightColor(color.GetColor());
+		vehicle->SetHeadlightColor(color.toInt());
 
 		return 0;
 	}

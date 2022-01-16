@@ -2,6 +2,7 @@
 
 #ifdef ALT_CLIENT_API
 #include <events/CKeyboardEvent.h>
+#include <events/CSpawnedEvent.h>
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::KEYBOARD_EVENT,
@@ -31,19 +32,13 @@ REGISTER_LOCAL_EVENT(
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::CONNECTION_COMPLETE,
 	connectionComplete,
-	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
-	{
-		return 0;
-	}
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int { return 0; }
 );
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::DISCONNECT_EVENT,
 	disconnect,
-	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
-	{
-		return 0;
-	}
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int { return 0; }
 );
 
 REGISTER_LOCAL_EVENT(
@@ -59,6 +54,12 @@ REGISTER_LOCAL_EVENT(
 
 		return 2;
 	}
+);
+
+REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::SPAWNED,
+	spawned,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int { return 0; }
 );
 
 #endif

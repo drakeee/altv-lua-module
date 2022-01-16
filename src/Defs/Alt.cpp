@@ -34,7 +34,6 @@ namespace lua::Class
 		lua_globalfunction(L, "on", OnClient);
 	#endif
 		lua_globalfunction(L, "onServer", OnServer);
-		lua_globalfunction(L, "onServerEx", OnServerEx);
 		lua_globalfunction(L, "offServer", OffServer);
 		lua_globalfunction(L, "onClient", OnClient);
 		lua_globalfunction(L, "offClient", OffClient);
@@ -1708,31 +1707,6 @@ namespace lua::Class
 	#else
 		lua_pushboolean(L, resourceEventManager->SubscribeRemoteEvent(eventName, functionRef));
 	#endif
-
-		return 1;
-	}
-
-	int Alt::OnServerEx(lua_State* L)
-	{
-		std::string eventName;
-		int functionRef;
-
-		ArgumentReader argReader(L);
-		argReader.ReadString(eventName);
-		argReader.ReadFunction(functionRef);
-
-		//argReader.ReadFunctionComplete();
-
-		if (argReader.HasAnyError())
-		{
-			argReader.GetErrorMessages();
-			return 0;
-		}
-
-		LuaScriptRuntime* runtime = &LuaScriptRuntime::Instance();
-		ResourceEventManager* resourceEventManager = runtime->GetResourceImplFromState(L)->GetResourceEventManager();
-		
-		lua_pushboolean(L, resourceEventManager->SubscribeLocalEvent(eventName, functionRef));
 
 		return 1;
 	}

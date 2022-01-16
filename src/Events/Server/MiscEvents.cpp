@@ -3,6 +3,34 @@
 #ifdef ALT_SERVER_API
 
 REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::CREATE_BASE_OBJECT_EVENT,
+	createBaseObject,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
+	{
+		const alt::CCreateBaseObjectEvent* event = static_cast<const alt::CCreateBaseObjectEvent*>(ev);
+		lua_State* L = resourceImpl->GetLuaState();
+
+		lua_pushbaseobject(L, event->GetObject());
+
+		return 1;
+	}
+);
+
+REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::REMOVE_BASE_OBJECT_EVENT,
+	removeBaseObject,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
+	{
+		const alt::CRemoveBaseObjectEvent* event = static_cast<const alt::CRemoveBaseObjectEvent*>(ev);
+		lua_State* L = resourceImpl->GetLuaState();
+
+		lua_pushbaseobject(L, event->GetObject());
+
+		return 1;
+	}
+);
+
+REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::FIRE_EVENT,
 	startFire,
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
@@ -20,13 +48,10 @@ REGISTER_LOCAL_EVENT(
 
 			lua_pushnumber(L, i + 1);
 			lua_newtable(L);
-			lua_pushstring(L, "position");
-			lua_pushvector3(L, fire.position);
-			lua_rawset(L, -3);
+			
+			lua_setfield(L, -1, "position", fire.position);
+			lua_setfield(L, -1, "weapon", fire.weaponHash);
 
-			lua_pushstring(L, "weapon");
-			lua_pushnumber(L, fire.weaponHash);
-			lua_rawset(L, -3);
 			lua_rawset(L, -3);
 		}
 

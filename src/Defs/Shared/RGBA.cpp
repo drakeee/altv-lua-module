@@ -34,8 +34,8 @@ namespace lua::Class
 
 	int RGBA::SetColor(lua_State* L)
 	{
-		LRGBA* rgba;
-		LRGBA* copy;
+		alt::RGBA* rgba;
+		alt::RGBA* copy;
 
 		ArgumentReader argReader(L);
 		argReader.ReadUserData(rgba);
@@ -57,7 +57,7 @@ namespace lua::Class
 
 	int RGBA::GetColor(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 
 		ArgumentReader argReader(L);
 		argReader.ReadUserData(rgba);
@@ -68,7 +68,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushnumber(L, rgba->GetColor());
+		lua_pushnumber(L, rgba->toInt());
 
 		return 1;
 	}
@@ -89,14 +89,14 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushrgba(L, LRGBA(r, g, b, a));
+		lua_pushrgba(L, alt::RGBA(r, g, b, a));
 
 		return 1;
 	}
 
 	int RGBA::SetR(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 		int r;
 
 		ArgumentReader argReader(L);
@@ -116,7 +116,7 @@ namespace lua::Class
 
 	int RGBA::GetR(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 
 		ArgumentReader argReader(L);
 		argReader.ReadUserData(rgba);
@@ -134,7 +134,7 @@ namespace lua::Class
 
 	int RGBA::SetG(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 		int g;
 
 		ArgumentReader argReader(L);
@@ -154,7 +154,7 @@ namespace lua::Class
 
 	int RGBA::GetG(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 
 		ArgumentReader argReader(L);
 		argReader.ReadUserData(rgba);
@@ -172,7 +172,7 @@ namespace lua::Class
 
 	int RGBA::SetB(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 		int b;
 
 		ArgumentReader argReader(L);
@@ -192,7 +192,7 @@ namespace lua::Class
 
 	int RGBA::GetB(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 
 		ArgumentReader argReader(L);
 		argReader.ReadUserData(rgba);
@@ -210,7 +210,7 @@ namespace lua::Class
 
 	int RGBA::SetA(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 		int a;
 
 		ArgumentReader argReader(L);
@@ -230,7 +230,7 @@ namespace lua::Class
 
 	int RGBA::GetA(lua_State* L)
 	{
-		LRGBA* rgba;
+		alt::RGBA* rgba;
 
 		ArgumentReader argReader(L);
 		argReader.ReadUserData(rgba);

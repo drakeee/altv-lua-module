@@ -56,7 +56,6 @@ typedef alt::Vector3f Vector3fp;
 typedef alt::Vector2f Vector2fp;
 
 #include "VehicleModels.hpp"
-#include "Helpers/LRGBA.h"
 
 #include "Helpers/LuaHelpers.h"
 #include "Helpers/ArgumentReader.h"
@@ -76,6 +75,9 @@ typedef alt::Vector2f Vector2fp;
 #include <Defs/Client/MapData.h>
 #include <Defs/Client/DiscordManager.h>
 #include <Defs/Voice.h>
+#include <Defs/Client/Audio.h>
+#include <Defs/Client/RmlDocument.h>
+#include <Defs/Client/RmlElement.h>
 #include <Defs/Client/WebView.h>
 #include <Defs/Client/WebSocket.h>
 #include <Defs/Entity/BaseObject.h>

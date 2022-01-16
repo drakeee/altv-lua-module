@@ -10,9 +10,23 @@ EventManager::Handler::Handler(alt::CEvent::Type eventType, const std::string& e
 	this->eventManager->RegisterHandler(this);
 }
 
+EventManager::Handler::Handler(alt::CEvent::Type eventType, const std::string& eventName, alt::IBaseObject::Type baseObjectType, FunctionCallback callback, CallbackGetter getter) :
+	eventType(eventType),
+	eventName(eventName),
+	baseObjectType((int)baseObjectType),
+	callback(callback),
+	getter(getter),
+	eventManager(&EventManager::Instance())
+{
+	this->eventManager->RegisterHandler(this);
+}
+
 void EventManager::Handler::Invoke()
 {
-	this->eventManager->RegisterEvent(this->eventType, this->eventName, this->callback, this->getter);
+	if(this->baseObjectType == -1)
+		this->eventManager->RegisterEvent(this->eventType, this->eventName, this->callback, this->getter);
+	else
+		this->eventManager->RegisterBaseObjectEvent(this->eventType, this->baseObjectType, this->callback, this->getter);
 }
 
 void EventManager::RegisterEvent(alt::CEvent::Type eventType, const std::string& eventName, FunctionCallback callback, CallbackGetter getter)

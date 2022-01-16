@@ -1,8 +1,33 @@
 #include <Main.h>
 
 REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::CONSOLE_COMMAND_EVENT,
+	consoleCommand,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* e) -> int
+	{
+		auto event = static_cast<const alt::CConsoleCommandEvent*>(e);
+		lua_State* L = resourceImpl->GetLuaState();
+
+		lua_pushstring(L, event->GetName().c_str());
+		lua_newtable(L);
+
+		int index = 1;
+		for (auto& arg : event->GetArgs())
+		{
+			lua_pushnumber(L, index);
+			lua_pushstring(L, arg.c_str());
+			lua_rawset(L, -3);
+
+			index++;
+		}
+
+		return 2;
+	}
+);
+
+REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::SERVER_SCRIPT_EVENT,
-	serverScriptEvent,
+	SERVER_SCRIPT_EVENT,
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
 	{
 		const alt::CServerScriptEvent* event = static_cast<const alt::CServerScriptEvent*>(ev);
@@ -31,7 +56,7 @@ REGISTER_LOCAL_EVENT(
 #ifdef ALT_SERVER_API
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::CLIENT_SCRIPT_EVENT,
-	clientScriptEvent,
+	CLIENT_SCRIPT_EVENT,
 	[](LuaResourceImpl* resource, const alt::CEvent* ev) -> int
 	{
 		const alt::CClientScriptEvent* event = static_cast<const alt::CClientScriptEvent*>(ev);
@@ -54,7 +79,7 @@ REGISTER_LOCAL_EVENT(
 #else
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::CLIENT_SCRIPT_EVENT,
-	clientScriptEvent,
+	CLIENT_SCRIPT_EVENT,
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
 	{
 		const alt::CClientScriptEvent* event = static_cast<const alt::CClientScriptEvent*>(ev);

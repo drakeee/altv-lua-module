@@ -62,15 +62,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
-		if (resourceImpl == nullptr)
-		{
-			Core->LogError("Unable to retrieve resource in WebSocket::On");
-			return 0;
-		}
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
-		//lua_pushboolean(L, resourceImpl->RegisterWebSocketEvent(webSocket, eventName, functionIndex));
-		lua_pushboolean(L, true);
+		lua_pushboolean(L, resourceEventManager->SubscribeEvent(webSocket, eventName, functionIndex));
 
 		return 1;
 	}
@@ -92,15 +87,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
-		if (resourceImpl == nullptr)
-		{
-			Core->LogError("Unable to retrieve resource in WebSocket::On");
-			return 0;
-		}
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
-		//lua_pushboolean(L, resourceImpl->RemoveWebSocketEvent(webSocket, eventName, functionIndex));
-		lua_pushboolean(L, true);
+		lua_pushboolean(L, resourceEventManager->UnsubscribeEvent(webSocket, eventName, functionIndex));
 
 		return 1;
 	}

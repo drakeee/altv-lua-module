@@ -16,6 +16,7 @@ public:
 	{
 	public:
 		Handler(alt::CEvent::Type eventType, const std::string& eventName, FunctionCallback callback, CallbackGetter getter = nullptr);
+		Handler(alt::CEvent::Type eventType, const std::string& eventName, alt::IBaseObject::Type baseObjectType, FunctionCallback callback, CallbackGetter getter = nullptr);
 		void Invoke(void);
 
 	private:
@@ -23,6 +24,7 @@ public:
 
 		alt::CEvent::Type eventType;
 		std::string eventName;
+		int baseObjectType = -1;
 
 		FunctionCallback callback;
 		CallbackGetter getter;

@@ -34,7 +34,8 @@ REGISTER_LOCAL_EVENT(
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::WEB_VIEW_EVENT,
-	webView,
+	WEB_VIEW,
+	alt::IBaseObject::Type::WEBVIEW,
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
 	{
 		const alt::CWebViewEvent* event = static_cast<const alt::CWebViewEvent*>(ev);
@@ -58,7 +59,8 @@ REGISTER_LOCAL_EVENT(
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::WEB_SOCKET_CLIENT_EVENT,
-	webSocketClient,
+	WEB_SOCKET_CLIENT,
+	alt::IBaseObject::Type::WEBSOCKET_CLIENT,
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
 	{
 		const alt::CWebSocketClientEvent* event = static_cast<const alt::CWebSocketClientEvent*>(ev);
@@ -82,7 +84,8 @@ REGISTER_LOCAL_EVENT(
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::AUDIO_EVENT,
-	audio,
+	AUDIO_EVENT,
+	alt::IBaseObject::Type::AUDIO,
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
 	{
 		const alt::CWebSocketClientEvent* event = static_cast<const alt::CWebSocketClientEvent*>(ev);

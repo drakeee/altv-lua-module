@@ -53,7 +53,6 @@ namespace lua::Class
 		static int GetOptionalPermissions(lua_State* L);
 
 		static int OnServer(lua_State* L);
-		static int OnServerEx(lua_State* L);
 		static int OffServer(lua_State* L);
 		static int OnClient(lua_State* L);
 		static int OffClient(lua_State* L);

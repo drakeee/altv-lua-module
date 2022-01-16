@@ -55,9 +55,11 @@ void lua_pushstring(lua_State* L, alt::StringView& str);
 void lua_setfield(lua_State* L, int index, const char* k, const char* value);
 void lua_setfield(lua_State* L, int index, const char* k, const std::string& value);
 void lua_setfield(lua_State* L, int index, const char* k, int64_t value);
+void lua_setfield(lua_State* L, int index, const char* k, uint32_t value);
 void lua_setfield(lua_State* L, int index, const char* k, float value);
 void lua_setfield(lua_State* L, int index, const char* k, double value);
 void lua_setfield(lua_State* L, int index, const char* k, bool value);
+void lua_setfield(lua_State* L, int index, const char* k, const Vector3fp& vector3);
 
 void* lua_checkclass(lua_State* L, int idx, const char* classname);
 #define lua_isclass(state,idx,classname) (lua_checkclass(state,idx,classname)!=nullptr)

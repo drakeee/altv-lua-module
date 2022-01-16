@@ -569,6 +569,12 @@ void lua_setfield(lua_State* L, int index, const char* k, int64_t value)
 	lua_setfield(L, index, k);
 }
 
+void lua_setfield(lua_State* L, int index, const char* k, uint32_t value)
+{
+	lua_pushnumber(L, value);
+	lua_setfield(L, index, k);
+}
+
 void lua_setfield(lua_State* L, int index, const char* k, float value)
 {
 	lua_pushnumber(L, value);
@@ -584,6 +590,12 @@ void lua_setfield(lua_State* L, int index, const char* k, double value)
 void lua_setfield(lua_State* L, int index, const char* k, bool value)
 {
 	lua_pushboolean(L, value);
+	lua_setfield(L, index, k);
+}
+
+void lua_setfield(lua_State* L, int index, const char* k, const Vector3fp& vector3)
+{
+	lua_pushvector3(L, vector3);
 	lua_setfield(L, index, k);
 }
 

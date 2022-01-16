@@ -20,7 +20,7 @@ namespace lua::Class
 		lua_globalfunction(L, "isWebViewOverlay", IsOverlay);
 		lua_globalfunction(L, "isWebViewReady", IsReady);
 
-		lua_beginclass(L, WebView::ClassName);
+		lua_beginclass(L, WebView::ClassName, BaseObject::ClassName);
 		{
 			lua_classmeta(L, "__tostring", tostring);
 
@@ -144,15 +144,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
-		if (resourceImpl == nullptr)
-		{
-			Core->LogError("Unable to retrieve resource in WebView::On");
-			return 0;
-		}
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
-		//lua_pushboolean(L, resourceImpl->RegisterWebEvent(webView, eventName, functionIndex));
-		lua_pushboolean(L, true);
+		lua_pushboolean(L, resourceEventManager->SubscribeEvent(webView, eventName, functionIndex));
 
 		return 1;
 	}
@@ -174,15 +169,10 @@ namespace lua::Class
 			return 0;
 		}
 
-		auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
-		if (resourceImpl == nullptr)
-		{
-			Core->LogError("Unable to retrieve resource in WebView::On");
-			return 0;
-		}
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
-		//lua_pushboolean(L, resourceImpl->RemoveWebEvent(webView, eventName, functionIndex));
-		lua_pushboolean(L, true);
+		lua_pushboolean(L, resourceEventManager->UnsubscribeEvent(webView, eventName, functionIndex));
 
 		return 1;
 	}
