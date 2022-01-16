@@ -3,6 +3,7 @@
 #ifdef ALT_CLIENT_API
 
 #include <events/CWebSocketClientEvent.h>
+#include <events/CRmlEvent.h>
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::GAME_ENTITY_CREATE,
@@ -104,6 +105,33 @@ REGISTER_LOCAL_EVENT(
 		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
 		return resourceEventManager->GetFunctionReferences(event->GetTarget().Get(), event->GetName().ToString());
+	}
+);
+
+REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::RMLUI_EVENT,
+	RMLUI,
+	alt::IBaseObject::Type::RML_ELEMENT,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
+	{
+		const alt::CRmlEvent* event = static_cast<const alt::CRmlEvent*>(ev);
+		lua_State* L = resourceImpl->GetLuaState();
+
+		//for (auto arg : event->GetArgs())
+		//{
+		lua_pushmvalue(L, event->GetArgs());
+		//}
+
+		//return static_cast<int>(event->GetArgs().GetSize());
+
+		return 1;
+	},
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> std::vector<int>
+	{
+		const alt::CRmlEvent* event = static_cast<const alt::CRmlEvent*>(ev);
+		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
+
+		return resourceEventManager->GetFunctionReferences(event->GetElement().Get(), event->GetName());
 	}
 );
 

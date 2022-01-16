@@ -89,6 +89,10 @@ namespace lua::Class
 
 		static int SetPassword(lua_State* L);
 		static int HashServerPassword(lua_State* L);
+
+		static int StopServer(lua_State* L);
+
+		static int GetVehicleModelByHash(lua_State* L);
 #else
 		static int require(lua_State* L);
 
@@ -163,6 +167,19 @@ namespace lua::Class
 		static int GetServerIp(lua_State* L);
 		static int GetServerPort(lua_State* L);
 		static int GetClientPath(lua_State* L);
+
+		static int HasLocalMetaData(lua_State* L);
+		static int GetLocalMetaData(lua_State* L);
+
+		static int CopyToClipboard(lua_State* L);
+
+		static int ToggleRmlDebugger(lua_State* L);
+		static int LoadRmlFontFace(lua_State* L);
+		static int ToggleRmlControl(lua_State* L);
+
+		static int WorldToScreen(lua_State* L);
+		static int ScreenToWorld(lua_State* L);
+		static int GetCamPos(lua_State* L);
 #endif
 	};
 }

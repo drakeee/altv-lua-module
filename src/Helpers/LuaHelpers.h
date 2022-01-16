@@ -52,12 +52,15 @@ void lua_pushstring(lua_State* L, const std::string& str);
 void lua_pushstring(lua_State* L, alt::String& str);
 void lua_pushstring(lua_State* L, alt::StringView& str);
 
+template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+void lua_setfield(lua_State* L, int index, const char* k, T value)
+{
+	lua_pushnumber(L, value);
+	lua_setfield(L, index - 1, k);
+}
+
 void lua_setfield(lua_State* L, int index, const char* k, const char* value);
 void lua_setfield(lua_State* L, int index, const char* k, const std::string& value);
-void lua_setfield(lua_State* L, int index, const char* k, int64_t value);
-void lua_setfield(lua_State* L, int index, const char* k, uint32_t value);
-void lua_setfield(lua_State* L, int index, const char* k, float value);
-void lua_setfield(lua_State* L, int index, const char* k, double value);
 void lua_setfield(lua_State* L, int index, const char* k, bool value);
 void lua_setfield(lua_State* L, int index, const char* k, const Vector3fp& vector3);
 

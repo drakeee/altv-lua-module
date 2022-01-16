@@ -92,7 +92,11 @@ namespace lua::Class
 		lua_globalfunction(L, "getNetTime", GetNetTime);
 
 		lua_globalfunction(L, "setPassword", SetPassword);
+		lua_globalfunction(L, "hashServerPassword", HashServerPassword);
 
+		lua_globalfunction(L, "stopServer", StopServer);
+
+		lua_globalfunction(L, "getVehicleModelInfoByHash", GetVehicleModelByHash);
 
 		lua_pushnumber(L, alt::DEFAULT_DIMENSION);
 		lua_setglobal(L, "defaultDimension");
@@ -167,6 +171,18 @@ namespace lua::Class
 		lua_globalfunction(L, "getServerIp", GetServerIp);
 		lua_globalfunction(L, "getServerPort", GetServerPort);
 		lua_globalfunction(L, "getClientPath", GetClientPath);
+
+		lua_globalfunction(L, "hasLocalMeta", HasLocalMetaData);
+		lua_globalfunction(L, "getLocalMeta", GetLocalMetaData);
+
+		lua_globalfunction(L, "copyToClipboard", CopyToClipboard);
+
+		lua_globalfunction(L, "toggleRmlControls", ToggleRmlControl);
+		lua_globalfunction(L, "loadRmlFont", LoadRmlFontFace);
+
+		lua_globalfunction(L, "worldToScreen", WorldToScreen);
+		lua_globalfunction(L, "screenToWorld", ScreenToWorld);
+		lua_globalfunction(L, "getCamPos", GetCamPos);
 	#endif
 
 		lua_beginclass(L, ClassName);
@@ -490,6 +506,70 @@ namespace lua::Class
 		}
 
 		lua_pushnumber(L, Core->HashServerPassword(password));
+		return 1;
+	}
+
+	int Alt::StopServer(lua_State* L)
+	{
+		Core->StopServer();
+		return 0;
+	}
+
+	int Alt::GetVehicleModelByHash(lua_State* L)
+	{
+		DEBUG_INFO("GetVehicleModelByHash1");
+		uint32_t hash;
+
+		ArgumentReader argReader(L);
+		argReader.ReadNumber(hash);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		DEBUG_INFO("GetVehicleModelByHash2");
+
+		const alt::VehicleModelInfo& modelInfo = Core->GetVehicleModelByHash(hash);
+		if (modelInfo.modelType == alt::VehicleModelInfo::Type::INVALID)
+		{
+			lua_pushboolean(L, false);
+			return 1;
+		}
+
+		DEBUG_INFO("GetVehicleModelByHash3");
+
+		lua_newtable(L);
+		{
+			lua_setfield(L, -1, "title", modelInfo.title);
+			lua_setfield(L, -1, "type", (int)modelInfo.modelType);
+			lua_setfield(L, -1, "wheelsCount", modelInfo.wheelsCount);
+			lua_setfield(L, -1, "hasArmoredWindows", modelInfo.hasArmoredWindows);
+			lua_setfield(L, -1, "primaryColor", modelInfo.primaryColor);
+			lua_setfield(L, -1, "secondaryColor", modelInfo.secondaryColor);
+			lua_setfield(L, -1, "pearlColor", modelInfo.pearlColor);
+			lua_setfield(L, -1, "wheelsColor", modelInfo.wheelsColor);
+			lua_setfield(L, -1, "interiorColor", modelInfo.interiorColor);
+			lua_setfield(L, -1, "dashboardColor", modelInfo.dashboardColor);
+			lua_setfield(L, -1, "extras", modelInfo.extras);
+			lua_setfield(L, -1, "defaultExtras", modelInfo.defaultExtras);
+
+			DEBUG_INFO("GetVehicleModelByHash4");
+
+			lua_pushstring(L, "availableModkits");
+			lua_newtable(L);
+			for (size_t i = 0; i < std::size(modelInfo.modkits); i++)
+			{
+				lua_pushnumber(L, i + 1);
+				lua_pushnumber(L, modelInfo.modkits[i]);
+				lua_rawset(L, -3);
+			}
+			lua_rawset(L, -3);
+
+			DEBUG_INFO("GetVehicleModelByHash5");
+		}
+
 		return 1;
 	}
 
@@ -1484,6 +1564,164 @@ namespace lua::Class
 	int Alt::GetClientPath(lua_State* L)
 	{
 		lua_pushstring(L, Core->GetClientPath());
+		return 1;
+	}
+
+	int Alt::HasLocalMetaData(lua_State* L)
+	{
+		std::string key;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(key);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushboolean(L, Core->HasLocalMetaData(key));
+
+		return 1;
+	}
+
+	int Alt::GetLocalMetaData(lua_State* L)
+	{
+		std::string key;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(key);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushmvalue(L, Core->GetLocalMetaData(key));
+
+		return 1;
+	}
+
+	int Alt::CopyToClipboard(lua_State* L)
+	{
+		std::string value;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(value);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushnumber(L, (int)Core->CopyToClipboard(value));
+
+		return 1;
+	}
+
+	int Alt::ToggleRmlDebugger(lua_State* L)
+	{
+		bool state;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBool(state);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		Core->ToggleRmlDebugger(state);
+
+		return 0;
+	}
+
+	int Alt::LoadRmlFontFace(lua_State* L)
+	{
+		std::string path;
+		std::string name;
+		bool italic;
+		bool bold;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(path);
+		argReader.ReadString(name);
+		argReader.ReadBoolDefault(italic, false);
+		argReader.ReadBoolDefault(bold, false);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(L);
+		lua_pushnumber(L, Core->LoadRmlFontFace(resourceImpl->GetResource(), path, resourceImpl->GetWorkingPath(), name, italic, bold));
+
+		return 0;
+	}
+
+	int Alt::ToggleRmlControl(lua_State* L)
+	{
+		bool state;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBool(state);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		Core->ToggleRmlControl(state);
+
+		return 0;
+	}
+
+	int Alt::WorldToScreen(lua_State* L)
+	{
+		alt::Vector3f pos;
+
+		ArgumentReader argReader(L);
+		argReader.ReadVector(pos);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushvector2(L, Core->WorldToScreen(pos));
+
+		return 1;
+	}
+
+	int Alt::ScreenToWorld(lua_State* L)
+	{
+		alt::Vector2f pos;
+
+		ArgumentReader argReader(L);
+		argReader.ReadVector(pos);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushvector3(L, Core->ScreenToWorld(pos));
+
+		return 1;
+	}
+
+	int Alt::GetCamPos(lua_State* L)
+	{
+		lua_pushvector3(L, Core->GetCamPos());
+
 		return 1;
 	}
 
