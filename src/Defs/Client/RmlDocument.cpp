@@ -9,6 +9,8 @@ namespace lua::Class
     {
 		lua_beginclass(L, RmlDocument::ClassName, RmlElement::ClassName);
 		{
+			lua_classmeta(L, "__tostring", tostring);
+
 			lua_classfunction(L, "new", CreateRmlDocument);
 
 			lua_classfunction(L, "show", Show);
@@ -16,8 +18,8 @@ namespace lua::Class
 
 			lua_classfunction(L, "update", Update);
 
-			lua_classfunction(L, "createElement", &CreateElement);
-			lua_classfunction(L, "createTextNode", &CreateTextNode);
+			lua_classfunction(L, "createElement", CreateElement);
+			lua_classfunction(L, "createTextNode", CreateTextNode);
 
 			lua_classvariable(L, "title", SetTitle, GetTitle);
 			lua_classvariable(L, "sourceUrl", nullptr, GetSourceUrl);
@@ -28,6 +30,13 @@ namespace lua::Class
 		}
 		lua_endclass(L);
     }
+
+	int RmlDocument::tostring(lua_State* L)
+	{
+		lua_pushstring(L, "userdata:RmlDocument");
+
+		return 1;
+	}
 
     int RmlDocument::CreateRmlDocument(lua_State* L)
 	{

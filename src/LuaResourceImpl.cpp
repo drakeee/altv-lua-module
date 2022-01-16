@@ -119,6 +119,8 @@ LuaResourceImpl::LuaResourceImpl(LuaScriptRuntime* runtime, alt::IResource* reso
 	lua::Class::WebView::Init(this->resourceState);
 	lua::Class::Voice::Init(this->resourceState);
 	lua::Class::Audio::Init(this->resourceState);
+	lua::Class::RmlElement::Init(this->resourceState);
+	lua::Class::RmlDocument::Init(this->resourceState);
 #endif
 
 	DEBUG_INFO("LuaResourceImpl::CLuaResourceImpl12");

@@ -40,6 +40,7 @@ namespace lua::Class
 
 	#ifdef ALT_SERVER_API
 		lua_globalfunction(L, "emit", EmitServer);
+		lua_globalfunction(L, "emitAllClients", EmitClientAll);
 	#else
 		lua_globalfunction(L, "emit", EmitClient);
 	#endif
@@ -2099,6 +2100,28 @@ namespace lua::Class
 
 		return 0;
 	}
+
+#ifdef ALT_SERVER_API
+	int Alt::EmitClientAll(lua_State* L)
+	{
+		std::string eventName;
+		alt::MValueArgs args;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(eventName);
+		argReader.ReadArguments(args);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		Core->TriggerClientEventForAll(eventName, args);
+
+		return 0;
+	}
+#endif
 
 	int Alt::AltIndex(lua_State* L)
 	{

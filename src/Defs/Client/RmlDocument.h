@@ -13,6 +13,8 @@ namespace lua::Class
         static void Init(lua_State* L);
 
     private:
+        static int tostring(lua_State* L);
+
         static int CreateRmlDocument(lua_State* L);
 
         static int SetTitle(lua_State* L);

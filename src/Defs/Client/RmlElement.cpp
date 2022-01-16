@@ -4,11 +4,13 @@
 
 namespace lua::Class
 {
-	const char* RmlElement::ClassName = "RmlEmenet";
+	const char* RmlElement::ClassName = "RmlElement";
 	void RmlElement::Init(lua_State* L)
 	{
 		lua_beginclass(L, RmlElement::ClassName, BaseObject::ClassName);
 		{
+			lua_classmeta(L, "__tostring", tostring);
+
 			lua_classfunction(L, "on", On);
 			lua_classfunction(L, "off", Off);
 
@@ -107,6 +109,12 @@ namespace lua::Class
 		lua_endclass(L);
 	}
 
+	int RmlElement::tostring(lua_State* L)
+	{
+		lua_pushstring(L, "userdata:RmlElement");
+
+		return 1;
+	}
 
     int RmlElement::On(lua_State* L)
 	{

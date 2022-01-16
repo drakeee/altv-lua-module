@@ -124,8 +124,8 @@ private:
 		"WebSocketClient",
 		"HTTPClient",
 		"Audio",
-		"RmlDocument",
 		"RmlElement",
+		"RmlDocument",
 		"LocalPlayer"
 	};
 

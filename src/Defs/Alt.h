@@ -74,6 +74,8 @@ namespace lua::Class
 		static int GetModuleTime(lua_State* L);
 
 #ifdef ALT_SERVER_API
+		static int EmitClientAll(lua_State* L);
+
 		static int GetRootDirectory(lua_State* L);
 
 		static int StartResource(lua_State* L);
