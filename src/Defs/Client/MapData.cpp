@@ -8,18 +8,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("MapData::Init");
 
-		lua_globalfunction(L, "getMapDataZoomScale", GetZoomScale);
-		lua_globalfunction(L, "getMapDataZoomSpeed", GetZoomSpeed);
-		lua_globalfunction(L, "getMapDataScrollSpeed", GetScrollSpeed);
-		lua_globalfunction(L, "getMapDataTilesCountX", GetTilesCountX);
-		lua_globalfunction(L, "getMapDataTilesCountY", GetTilesCountY);
-
-		lua_globalfunction(L, "setMapDataZoomScale", SetZoomScale);
-		lua_globalfunction(L, "setMapDataZoomSpeed", SetZoomSpeed);
-		lua_globalfunction(L, "setMapDataScrollSpeed", SetScrollSpeed);
-		lua_globalfunction(L, "setMapDataTilesCountX", SetTilesCountX);
-		lua_globalfunction(L, "setMapDataTilesCountY", SetTilesCountY);
-
 		lua_beginclass(L, MapData::ClassName);
 		{
 			lua_classfunction(L, "get", Get);
@@ -38,18 +26,18 @@ namespace lua::Class
 			lua_classfunction(L, "setTilesCountX", SetTilesCountX);
 			lua_classfunction(L, "setTilesCountY", SetTilesCountY);
 
-			lua_classvariable(L, "zoomScale", "setZoomScale", "getZoomScale");
-			lua_classvariable(L, "zoomSpeed", "setZoomSpeed", "getZoomSpeed");
-			lua_classvariable(L, "scrollSpeed", "setScrollSpeed", "getScrollSpeed");
-			lua_classvariable(L, "tilesCountX", "setTilesCountX", "getTilesCountX");
-			lua_classvariable(L, "tilesCountY", "setTilesCountY", "getTilesCountY");
+			lua_classvariable(L, "zoomScale", SetZoomScale, GetZoomScale);
+			lua_classvariable(L, "zoomSpeed", SetZoomSpeed, GetZoomSpeed);
+			lua_classvariable(L, "scrollSpeed", SetScrollSpeed, GetScrollSpeed);
+			lua_classvariable(L, "tilesCountX", SetTilesCountX, GetTilesCountX);
+			lua_classvariable(L, "tilesCountY", SetTilesCountY, GetTilesCountY);
 
 			//JS alias
-			lua_classvariable(L, "fZoomScale", "setZoomScale", "getZoomScale");
-			lua_classvariable(L, "fZoomSpeed", "setZoomSpeed", "getZoomSpeed");
-			lua_classvariable(L, "fScrollSpeed", "setScrollSpeed", "getScrollSpeed");
-			lua_classvariable(L, "vTilesX", "setTilesCountX", "getTilesCountX");
-			lua_classvariable(L, "vTilesY", "setTilesCountY", "getTilesCountY");
+			lua_classvariable(L, "fZoomScale", SetZoomScale, GetZoomScale);
+			lua_classvariable(L, "fZoomSpeed", SetZoomSpeed, GetZoomSpeed);
+			lua_classvariable(L, "fScrollSpeed", SetScrollSpeed, GetScrollSpeed);
+			lua_classvariable(L, "vTilesX", SetTilesCountX, GetTilesCountX);
+			lua_classvariable(L, "vTilesY", SetTilesCountY, GetTilesCountY);
 		}
 		lua_endclass(L);
 

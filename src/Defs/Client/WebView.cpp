@@ -8,18 +8,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("WebView::Init");
 
-		lua_globalfunction(L, "createWebView", CreateWebView);
-		lua_globalfunction(L, "emitWebView", Trigger);
-		lua_globalfunction(L, "focusWebView", Focus);
-		lua_globalfunction(L, "unfocusWebView", Unfocus);
-		lua_globalfunction(L, "isWebViewFocused", IsFocused);
-		lua_globalfunction(L, "getWebViewUrl", GetUrl);
-		lua_globalfunction(L, "setWebViewUrl", SetUrl);
-		lua_globalfunction(L, "isWebViewVisible", IsVisible);
-		lua_globalfunction(L, "setWebViewVisible", SetVisible);
-		lua_globalfunction(L, "isWebViewOverlay", IsOverlay);
-		lua_globalfunction(L, "isWebViewReady", IsReady);
-
 		lua_beginclass(L, WebView::ClassName, BaseObject::ClassName);
 		{
 			lua_classmeta(L, "__tostring", tostring);
@@ -38,11 +26,11 @@ namespace lua::Class
 			lua_classfunction(L, "isOverlay", IsOverlay);
 			lua_classfunction(L, "isReady", IsReady);
 
-			lua_classvariable(L, "focused", nullptr, "isFocused");
-			lua_classvariable(L, "url", "setUrl", "getUrl");
-			lua_classvariable(L, "visible", "setVisible", "isVisible");
-			lua_classvariable(L, "overlay", nullptr, "isOverlay");
-			lua_classvariable(L, "ready", nullptr, "isReady");
+			lua_classvariable(L, "focused", nullptr, IsFocused);
+			lua_classvariable(L, "url", SetUrl, GetUrl);
+			lua_classvariable(L, "visible", SetVisible, IsVisible);
+			lua_classvariable(L, "overlay", nullptr, IsOverlay);
+			lua_classvariable(L, "ready", nullptr, IsReady);
 		}
 		lua_endclass(L);
 

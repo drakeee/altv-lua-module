@@ -7,215 +7,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("Vehicle::Init");
 
-		lua_globalfunction(L, "getVehicleDriver", GetDriver);
-		lua_globalfunction(L, "isVehicleDestroyed", IsDestroyed);
-
-	#ifdef ALT_SERVER_API
-		lua_globalfunction(L, "createVehicle", CreateVehicle);
-
-		lua_globalfunction(L, "repairVehicle", Repair);
-		lua_globalfunction(L, "setVehicleMod", SetMod);
-		lua_globalfunction(L, "setVehicleModKit", SetModKit);
-		lua_globalfunction(L, "setVehiclePrimaryColor", SetPrimaryColor);
-		lua_globalfunction(L, "setVehiclePrimaryColorRGB", SetPrimaryColorRGB);
-		lua_globalfunction(L, "setVehicleSecondaryColor", SetSecondaryColor);
-		lua_globalfunction(L, "setVehicleSecondaryColorRGB", SetSecondaryColorRGB);
-		lua_globalfunction(L, "setVehiclePearlColor", SetPearlColor);
-		lua_globalfunction(L, "setVehicleWheelColor", SetWheelColor);
-		lua_globalfunction(L, "setVehicleInteriorColor", SetInteriorColor);
-		lua_globalfunction(L, "setVehicleDashboardColor", SetDashboardColor);
-		lua_globalfunction(L, "setVehicleTireSmokeColor", SetTireSmokeColor);
-		lua_globalfunction(L, "setVehicleWheels", SetWheels);
-		lua_globalfunction(L, "setVehicleRearWheels", SetRearWheels);
-		lua_globalfunction(L, "setVehicleCustomTires", SetCustomTires);
-		lua_globalfunction(L, "setVehicleSpecialDarkness", SetSpecialDarkness);
-		lua_globalfunction(L, "setVehicleNumberplateIndex", SetNumberplateIndex);
-		lua_globalfunction(L, "setVehicleNumberplateText", SetNumberplateText);
-		lua_globalfunction(L, "setVehicleWindowTint", SetWindowTint);
-		lua_globalfunction(L, "setVehicleDirtLevel", SetDirtLevel);
-		lua_globalfunction(L, "setVehicleNeonActive", SetNeonActive);
-		lua_globalfunction(L, "setVehicleNeonColor", SetNeonColor);
-		lua_globalfunction(L, "setVehicleLivery", SetLivery);
-		lua_globalfunction(L, "setVehicleRoofLivery", SetRoofLivery);
-		lua_globalfunction(L, "setVehicleEngineOn", SetEngineOn);
-		lua_globalfunction(L, "setVehicleHeadlightColor", SetHeadlightColor);
-		lua_globalfunction(L, "setVehicleRadioStationIndex", SetRadioStationIndex);
-		lua_globalfunction(L, "setVehicleSirenActive", SetSirenActive);
-		lua_globalfunction(L, "setVehicleLockState", SetLockState);
-		lua_globalfunction(L, "setVehicleDoorState", SetDoorState);
-		lua_globalfunction(L, "setVehicleWindowOpened", SetWindowOpened);
-		lua_globalfunction(L, "setVehicleRoofState", SetRoofState);
-		lua_globalfunction(L, "setVehicleLightsMultiplier", SetLightsMultiplier);
-		lua_globalfunction(L, "setVehicleEngineHealth", SetEngineHealth);
-		lua_globalfunction(L, "setVehiclePetrolTankHealth", SetPetrolTankHealth);
-		lua_globalfunction(L, "setVehicleWheelBurst", SetWheelBurst);
-		lua_globalfunction(L, "setVehicleWheelHasTire", SetWheelHasTire);
-		lua_globalfunction(L, "setVehicleWheelDetached", SetWheelDetached);
-		lua_globalfunction(L, "setVehicleWheelOnFire", SetWheelOnFire);
-		lua_globalfunction(L, "setVehicleWheelHealth", SetWheelHealth);
-		lua_globalfunction(L, "setVehicleBodyHealth", SetBodyHealth);
-		lua_globalfunction(L, "setVehicleBodyAdditionalHealth", SetBodyAdditionalHealth);
-		lua_globalfunction(L, "setVehiclePartDamageLevel", SetPartDamageLevel);
-		lua_globalfunction(L, "setVehiclePartBulletHoles", SetPartBulletHoles);
-		lua_globalfunction(L, "setVehicleLightDamaged", SetLightDamaged);
-		lua_globalfunction(L, "setVehicleWindowDamaged", SetWindowDamaged);
-		lua_globalfunction(L, "setVehicleSpecialLightDamaged", SetSpecialLightDamaged);
-		lua_globalfunction(L, "setVehicleArmoredWindowHealth", SetArmoredWindowHealth);
-		lua_globalfunction(L, "setVehicleArmoredWindowShootCount", SetArmoredWindowShootCount);
-		lua_globalfunction(L, "setVehicleBumperDamageLevel", SetBumperDamageLevel);
-		lua_globalfunction(L, "setVehicleManualEngineControl", SetManualEngineControl);
-		//lua_globalfunction(L, "setVehiclePosition", SetVehiclePosition);
-		lua_globalfunction(L, "loadVehicleAppearanceDataFromBase64", LoadAppearanceDataFromBase64);
-		lua_globalfunction(L, "loadVehicleGameStateFromBase64", LoadGameStateFromBase64);
-		lua_globalfunction(L, "loadVehicleHealthDataFromBase64", LoadHealthDataFromBase64);
-		lua_globalfunction(L, "loadVehicleDamageDataFromBase64", LoadDamageDataFromBase64);
-		lua_globalfunction(L, "loadVehicleScriptDataFromBase64", LoadScriptDataFromBase64);
-		lua_globalfunction(L, "toggleVehicleExtra", ToggleExtra);
-		lua_globalfunction(L, "getVehicleAttached", GetAttached);
-		lua_globalfunction(L, "getVehicleAttachedTo", GetAttachedTo);
-		lua_globalfunction(L, "isVehicleDriftModeEnabled", IsDriftMode);
-		lua_globalfunction(L, "setVehicleDriftMode", SetDriftMode);
-	#else
-		lua_globalfunction(L, "getVehicleWheelSpeed", GetWheelSpeed);
-		lua_globalfunction(L, "getVehicleCurrentGear", GetCurrentGear);
-		lua_globalfunction(L, "getVehicleCurrentRPM", GetCurrentRPM);
-		lua_globalfunction(L, "getVehicleSpeedVector", GetSpeedVector);
-
-		lua_globalfunction(L, "isVehicleHandlingModified", IsHandlingModified);
-		lua_globalfunction(L, "getVehicleHandling", GetHandling);
-		lua_globalfunction(L, "resetVehicleHandling", ResetHandling);
-	#endif
-
-		lua_globalfunction(L, "getVehicleMod", GetMod);
-		lua_globalfunction(L, "getVehicleModsCount", GetModsCount);
-
-		lua_globalfunction(L, "getVehicleModKitsCount", GetModKitsCount);
-		lua_globalfunction(L, "getVehicleModKit", GetModKit);
-
-		lua_globalfunction(L, "isVehiclePrimaryColorRGB", IsPrimaryColorRGB);
-		lua_globalfunction(L, "getVehiclePrimaryColor", GetPrimaryColor);
-		lua_globalfunction(L, "getVehiclePrimaryColorRGB", GetPrimaryColorRGB);
-
-		lua_globalfunction(L, "isVehicleSecondaryColorRGB", IsSecondaryColorRGB);
-		lua_globalfunction(L, "getVehicleSecondaryColor", GetSecondaryColor);
-		lua_globalfunction(L, "getVehicleSecondaryColorRGB", GetSecondaryColorRGB);
-
-		lua_globalfunction(L, "getVehiclePearlColor", GetPearlColor);
-
-		lua_globalfunction(L, "getVehicleWheelColor", GetWheelColor);
-
-		lua_globalfunction(L, "getVehicleInteriorColor", GetInteriorColor);
-
-		lua_globalfunction(L, "getVehicleDashboardColor", GetDashboardColor);
-
-		lua_globalfunction(L, "isVehicleTireSmokeColorCustom", IsTireSmokeColorCustom);
-		lua_globalfunction(L, "getVehicleTireSmokeColor", GetTireSmokeColor);
-
-		lua_globalfunction(L, "getVehicleWheelType", GetWheelType);
-		lua_globalfunction(L, "getVehicleWheelVariation", GetWheelVariation);
-		lua_globalfunction(L, "getVehicleRearWheelVariation", GetRearWheelVariation);
-
-		lua_globalfunction(L, "getVehicleCustomTires", GetCustomTires);
-
-		lua_globalfunction(L, "getVehicleSpecialDarkness", GetSpecialDarkness);
-
-		lua_globalfunction(L, "getVehicleNumberplateIndex", GetNumberplateIndex);
-
-		lua_globalfunction(L, "getVehicleNumberplateText", GetNumberplateText);
-
-		lua_globalfunction(L, "getVehicleWindowTint", GetWindowTint);
-
-		lua_globalfunction(L, "getVehicleDirtLevel", GetDirtLevel);
-
-		lua_globalfunction(L, "isVehicleExtraOn", IsExtraOn);
-
-		lua_globalfunction(L, "isVehicleNeonActive", IsNeonActive);
-		lua_globalfunction(L, "getVehicleNeonActive", GetNeonActive);
-		lua_globalfunction(L, "getVehicleNeonColor", GetNeonColor);
-
-		lua_globalfunction(L, "getVehicleLivery", GetLivery);
-		lua_globalfunction(L, "getVehicleRoofLivery", GetRoofLivery);
-
-		lua_globalfunction(L, "getVehicleAppearanceDataBase64", GetAppearanceDataBase64);
-
-		//vehicle game state
-		lua_globalfunction(L, "isVehicleEngineOn", IsEngineOn);
-
-		lua_globalfunction(L, "isVehicleHandbrakeActive", IsHandbrakeActive);
-
-		lua_globalfunction(L, "getVehicleHeadlightColor", GetHeadlightColor);
-
-		lua_globalfunction(L, "getVehicleRadioStationIndex", GetRadioStationIndex);
-
-		lua_globalfunction(L, "isVehicleSirenActive", IsSirenActive);
-
-		// TODO document available values. Enum?
-		lua_globalfunction(L, "getVehicleLockState", GetLockState);
-
-		// TODO document available values. Enum?
-		lua_globalfunction(L, "getVehicleDoorState", GetDoorState);
-
-		lua_globalfunction(L, "isVehicleWindowOpened", IsWindowOpened);
-
-		lua_globalfunction(L, "isVehicleDaylightOn", IsDaylightOn);
-		lua_globalfunction(L, "isVehicleNightlightOn", IsNightlightOn);
-
-		lua_globalfunction(L, "getVehicleRoofState", GetRoofState);
-
-		lua_globalfunction(L, "isVehicleFlamethrowerActive", IsFlamethrowerActive);
-
-		lua_globalfunction(L, "getVehicleLightsMultiplier", GetLightsMultiplier);
-
-		lua_globalfunction(L, "getVehicleGameStateBase64", GetGameStateBase64);
-
-		//vehicle health
-		lua_globalfunction(L, "getVehicleEngineHealth", GetEngineHealth);
-
-		lua_globalfunction(L, "getVehiclePetrolTankHealth", GetPetrolTankHealth);
-
-		lua_globalfunction(L, "getVehicleWheelsCount", GetWheelsCount);
-
-		lua_globalfunction(L, "isVehicleWheelBurst", IsWheelBurst);
-
-		lua_globalfunction(L, "doesVehicleWheelHasTire", DoesWheelHasTire);
-
-		lua_globalfunction(L, "isVehicleWheelDetached", IsWheelDetached);
-
-		lua_globalfunction(L, "isVehicleWheelOnFire", IsWheelOnFire);
-
-		lua_globalfunction(L, "getVehicleWheelHealth", GetWheelHealth);
-
-		lua_globalfunction(L, "getVehicleRepairsCount", GetRepairsCount);
-
-		// Will be moved to event
-		//static int<IEntity> GetVehicleLastAttacker(lua_State* L);
-		//static int GetVehicleLastDamagedWith(lua_State* L);
-
-		lua_globalfunction(L, "getVehicleBodyHealth", GetBodyHealth);
-		lua_globalfunction(L, "getVehicleBodyAdditionalHealth", GetBodyAdditionalHealth);
-
-		lua_globalfunction(L, "getVehicleHealthDataBase64", GetHealthDataBase64);
-
-		// vehicle damage
-		lua_globalfunction(L, "getVehiclePartDamageLevel", GetPartDamageLevel);
-		lua_globalfunction(L, "getVehiclePartBulletHoles", GetPartBulletHoles);
-		lua_globalfunction(L, "isVehicleLightDamaged", IsLightDamaged);
-		lua_globalfunction(L, "isVehicleWindowDamaged", IsWindowDamaged);
-		lua_globalfunction(L, "isVehicleSpecialLightDamaged", IsSpecialLightDamaged);
-		lua_globalfunction(L, "hasVehicleArmoredWindows", HasArmoredWindows);
-		lua_globalfunction(L, "getVehicleArmoredWindowHealth", GetArmoredWindowHealth);
-		lua_globalfunction(L, "getVehicleArmoredWindowShootCount", GetArmoredWindowShootCount);
-		lua_globalfunction(L, "getVehicleBumperDamageLevel", GetBumperDamageLevel);
-
-		lua_globalfunction(L, "getVehicleDamageDataBase64", GetDamageDataBase64);
-
-		//vehicle script data
-		lua_globalfunction(L, "isVehicleManualEngineControl", IsManualEngineControl);
-
-		lua_globalfunction(L, "getVehicleScriptDataBase64", GetScriptDataBase64);
-	
-		//lua_globalfunction(L, "getVehiclePosition", GetVehiclePosition);
-
 		lua_beginclass(L, ClassName, Entity::ClassName);
 		{
 			//lua_classmeta(L, "__gc", destroy);
@@ -370,47 +161,47 @@ namespace lua::Class
 
 			lua_classfunction(L, "setSearchLightTo", SetSearchLight);
 
-			lua_classvariable(L, "modKit", "setModKit", "getModKit");
-			lua_classvariable(L, "primaryColor", "setPrimaryColor", "getPrimaryColor");
-			lua_classvariable(L, "secondaryColor", "setSecondaryColor", "getSecondaryColor");
-			lua_classvariable(L, "secondaryColorRGB", "setSecondaryColorRGB", "getSecondaryColorRGB");
-			lua_classvariable(L, "pearlColor", "setPearlColor", "getPearlColor");
-			lua_classvariable(L, "wheelColor", "setWheelColor", "getWheelColor");
-			lua_classvariable(L, "interiorColor", "setInteriorColor", "getInteriorColor");
-			lua_classvariable(L, "dashboardColor", "setDashboardColor", "getDashboardColor");
-			lua_classvariable(L, "tireSmokeColor", "setTireSmokeColor", "getTireSmokeColor");
-			lua_classvariable(L, "rearWheels", "setRearWheels", nullptr);
-			lua_classvariable(L, "customTires", "setCustomTires", "getCustomTires");
-			lua_classvariable(L, "specialDarkness", "setSpecialDarkness", "getSpecialDarkness");
-			lua_classvariable(L, "numberplateIndex", "setNumberplateIndex", "getNumberplateIndex");
-			lua_classvariable(L, "numberplateText", "setNumberplateText", "getNumberplateText");
-			lua_classvariable(L, "windowTint", "setWindowTint", "getWindowTint");
-			lua_classvariable(L, "dirtLevel", "setDirtLevel", "getDirtLevel");
-			lua_classvariable(L, "neonColor", "setNeonColor", "getNeonColor");
-			lua_classvariable(L, "livery", "setLivery", "getLivery");
-			lua_classvariable(L, "roofLivery", "setRoofLivery", "getRoofLivery");
-			lua_classvariable(L, "engineOn", "setEngineOn", nullptr);
-			lua_classvariable(L, "headlightColor", "setHeadlightColor", "getHeadlightColor");
-			lua_classvariable(L, "radioStationIndex", "setRadioStationIndex", "getRadioStationIndex");
-			lua_classvariable(L, "sirenActive", "setSirenActive", "isSirenActive");
-			lua_classvariable(L, "lockState", "setLockState", "getLockState");
-			lua_classvariable(L, "doorState", "setDoorState", "getDoorState");
-			lua_classvariable(L, "roof", "setRoofState", "getRoofState");
-			lua_classvariable(L, "lightsMultiplier", "setLightsMultiplier", "getLightsMultiplier");
-			lua_classvariable(L, "engineHealth", "setEngineHealth", "getEngineHealth");
-			lua_classvariable(L, "petrolTankHealth", "setPetrolTankHealth", "getPetrolTankHealth");
-			lua_classvariable(L, "bodyHealth", "setBodyHealth", "getBodyHealth");
-			lua_classvariable(L, "bodyAdditionalHealth", "setBodyAdditionalHealth", "getBodyAdditionalHealth");
-			lua_classvariable(L, "manualEngineControl", "setManualEngineControl", "isManualEngineControl");
-			lua_classvariable(L, "appearanceDataBase64", "loadAppearanceDataFromBase64", "getAppearanceDataBase64");
-			lua_classvariable(L, "gameStateBase64", "loadGameStateFromBase64", "getGameStateBase64");
-			lua_classvariable(L, "healthDataBase64", "loadHealthDataFromBase64", "getHealthDataBase64");
-			lua_classvariable(L, "damageDataBase64", "loadDamageDataFromBase64", "getDamageDataBase64");
-			lua_classvariable(L, "scriptDataBase64", "loadScriptDataFromBase64", "getScriptDataBase64");
-			lua_classvariable(L, "attached", nullptr, "getAttached");
-			lua_classvariable(L, "attachedTo", nullptr, "getAttachedTo");
+			lua_classvariable(L, "modKit", SetModKit, GetModKit);
+			lua_classvariable(L, "primaryColor", SetPrimaryColor, GetPrimaryColor);
+			lua_classvariable(L, "secondaryColor", SetSecondaryColor, GetSecondaryColor);
+			lua_classvariable(L, "secondaryColorRGB", SetSecondaryColorRGB, GetSecondaryColorRGB);
+			lua_classvariable(L, "pearlColor", SetPearlColor, GetPearlColor);
+			lua_classvariable(L, "wheelColor", SetWheelColor, GetWheelColor);
+			lua_classvariable(L, "interiorColor", SetInteriorColor, GetInteriorColor);
+			lua_classvariable(L, "dashboardColor", SetDashboardColor, GetDashboardColor);
+			lua_classvariable(L, "tireSmokeColor", SetTireSmokeColor, GetTireSmokeColor);
+			lua_classvariable(L, "rearWheels", SetRearWheels, nullptr);
+			lua_classvariable(L, "customTires", SetCustomTires, GetCustomTires);
+			lua_classvariable(L, "specialDarkness", SetSpecialDarkness, GetSpecialDarkness);
+			lua_classvariable(L, "numberplateIndex", SetNumberplateIndex, GetNumberplateIndex);
+			lua_classvariable(L, "numberplateText", SetNumberplateText, GetNumberplateText);
+			lua_classvariable(L, "windowTint", SetWindowTint, GetWindowTint);
+			lua_classvariable(L, "dirtLevel", SetDirtLevel, GetDirtLevel);
+			lua_classvariable(L, "neonColor", SetNeonColor, GetNeonColor);
+			lua_classvariable(L, "livery", SetLivery, GetLivery);
+			lua_classvariable(L, "roofLivery", SetRoofLivery, GetRoofLivery);
+			lua_classvariable(L, "engineOn", SetEngineOn, nullptr);
+			lua_classvariable(L, "headlightColor", SetHeadlightColor, GetHeadlightColor);
+			lua_classvariable(L, "radioStationIndex", SetRadioStationIndex, GetRadioStationIndex);
+			lua_classvariable(L, "sirenActive", SetSirenActive, IsSirenActive);
+			lua_classvariable(L, "lockState", SetLockState, GetLockState);
+			lua_classvariable(L, "doorState", SetDoorState, GetDoorState);
+			lua_classvariable(L, "roof", SetRoofState, GetRoofState);
+			lua_classvariable(L, "lightsMultiplier", SetLightsMultiplier, GetLightsMultiplier);
+			lua_classvariable(L, "engineHealth", SetEngineHealth, GetEngineHealth);
+			lua_classvariable(L, "petrolTankHealth", SetPetrolTankHealth, GetPetrolTankHealth);
+			lua_classvariable(L, "bodyHealth", SetBodyHealth, GetBodyHealth);
+			lua_classvariable(L, "bodyAdditionalHealth", SetBodyAdditionalHealth, GetBodyAdditionalHealth);
+			lua_classvariable(L, "manualEngineControl", SetManualEngineControl, IsManualEngineControl);
+			lua_classvariable(L, "appearanceDataBase64", LoadAppearanceDataFromBase64, GetAppearanceDataBase64);
+			lua_classvariable(L, "gameStateBase64", LoadGameStateFromBase64, GetGameStateBase64);
+			lua_classvariable(L, "healthDataBase64", LoadHealthDataFromBase64, GetHealthDataBase64);
+			lua_classvariable(L, "damageDataBase64", LoadDamageDataFromBase64, GetDamageDataBase64);
+			lua_classvariable(L, "scriptDataBase64", LoadScriptDataFromBase64, GetScriptDataBase64);
+			lua_classvariable(L, "attached", nullptr, GetAttached);
+			lua_classvariable(L, "attachedTo", nullptr, GetAttachedTo);
 
-			lua_classvariable(L, "driftModeEnabled", "setDriftMode", "isDriftModeEnabled");
+			lua_classvariable(L, "driftModeEnabled", SetDriftMode, IsDriftMode);
 
 			lua_classvariable(L, "isMissionTrain", SetTrainMissionTrain, IsTrainMissionTrain);
 			lua_classvariable(L, "trainTrackId", SetTrainTrackId, GetTrainTrackId);
@@ -437,69 +228,69 @@ namespace lua::Class
 			lua_classfunction(L, "getHandling", GetHandling);
 			lua_classfunction(L, "resetHandling", ResetHandling);
 
-			lua_classvariable(L, "modKit", nullptr, "getModKit");
-			lua_classvariable(L, "primaryColor", nullptr, "getPrimaryColor");
-			lua_classvariable(L, "secondaryColor", nullptr, "getSecondaryColor");
-			lua_classvariable(L, "secondaryColorRGB", nullptr, "getSecondaryColorRGB");
-			lua_classvariable(L, "pearlColor", nullptr, "getPearlColor");
-			lua_classvariable(L, "wheelColor", nullptr, "getWheelColor");
-			lua_classvariable(L, "interiorColor", nullptr, "getInteriorColor");
-			lua_classvariable(L, "dashboardColor", nullptr, "getDashboardColor");
-			lua_classvariable(L, "tireSmokeColor", nullptr, "getTireSmokeColor");
+			lua_classvariable(L, "modKit", nullptr, GetModKit);
+			lua_classvariable(L, "primaryColor", nullptr, GetPrimaryColor);
+			lua_classvariable(L, "secondaryColor", nullptr, GetSecondaryColor);
+			lua_classvariable(L, "secondaryColorRGB", nullptr, GetSecondaryColorRGB);
+			lua_classvariable(L, "pearlColor", nullptr, GetPearlColor);
+			lua_classvariable(L, "wheelColor", nullptr, GetWheelColor);
+			lua_classvariable(L, "interiorColor", nullptr, GetInteriorColor);
+			lua_classvariable(L, "dashboardColor", nullptr, GetDashboardColor);
+			lua_classvariable(L, "tireSmokeColor", nullptr, GetTireSmokeColor);
 			//lua_classvariable(L, "rearWheels", nullptr, nullptr);
-			lua_classvariable(L, "customTires", nullptr, "getCustomTires");
-			lua_classvariable(L, "specialDarkness", nullptr, "getSpecialDarkness");
-			lua_classvariable(L, "numberplateIndex", nullptr, "getNumberplateIndex");
-			lua_classvariable(L, "numberplateText", nullptr, "getNumberplateText");
-			lua_classvariable(L, "windowTint", nullptr, "getWindowTint");
-			lua_classvariable(L, "dirtLevel", nullptr, "getDirtLevel");
-			lua_classvariable(L, "neonColor", nullptr, "getNeonColor");
-			lua_classvariable(L, "livery", nullptr, "getLivery");
-			lua_classvariable(L, "roofLivery", nullptr, "getRoofLivery");
+			lua_classvariable(L, "customTires", nullptr, GetCustomTires);
+			lua_classvariable(L, "specialDarkness", nullptr, GetSpecialDarkness);
+			lua_classvariable(L, "numberplateIndex", nullptr, GetNumberplateIndex);
+			lua_classvariable(L, "numberplateText", nullptr, GetNumberplateText);
+			lua_classvariable(L, "windowTint", nullptr, GetWindowTint);
+			lua_classvariable(L, "dirtLevel", nullptr, GetDirtLevel);
+			lua_classvariable(L, "neonColor", nullptr, GetNeonColor);
+			lua_classvariable(L, "livery", nullptr, GetLivery);
+			lua_classvariable(L, "roofLivery", nullptr, GetRoofLivery);
 			//lua_classvariable(L, "engineOn", nullptr, nullptr);
-			lua_classvariable(L, "headlightColor", nullptr, "getHeadlightColor");
-			lua_classvariable(L, "radioStationIndex", nullptr, "getRadioStationIndex");
-			lua_classvariable(L, "sirenActive", nullptr, "isSirenActive");
-			lua_classvariable(L, "lockState", nullptr, "getLockState");
-			lua_classvariable(L, "doorState", nullptr, "getDoorState");
-			lua_classvariable(L, "roof", nullptr, "getRoofState");
-			lua_classvariable(L, "lightsMultiplier", nullptr, "getLightsMultiplier");
-			lua_classvariable(L, "engineHealth", nullptr, "getEngineHealth");
-			lua_classvariable(L, "petrolTankHealth", nullptr, "getPetrolTankHealth");
-			lua_classvariable(L, "bodyHealth", nullptr, "getBodyHealth");
-			lua_classvariable(L, "bodyAdditionalHealth", nullptr, "getBodyAdditionalHealth");
-			lua_classvariable(L, "manualEngineControl", nullptr, "isManualEngineControl");
-			lua_classvariable(L, "appearanceDataBase64", nullptr, "getAppearanceDataBase64");
-			lua_classvariable(L, "gameStateBase64", nullptr, "getGameStateBase64");
-			lua_classvariable(L, "healthDataBase64", nullptr, "getHealthDataBase64");
-			lua_classvariable(L, "damageDataBase64", nullptr, "getDamageDataBase64");
-			lua_classvariable(L, "scriptDataBase64", nullptr, "getScriptDataBase64");
+			lua_classvariable(L, "headlightColor", nullptr, GetHeadlightColor);
+			lua_classvariable(L, "radioStationIndex", nullptr, GetRadioStationIndex);
+			lua_classvariable(L, "sirenActive", nullptr, IsSirenActive);
+			lua_classvariable(L, "lockState", nullptr, GetLockState);
+			lua_classvariable(L, "doorState", nullptr, GetDoorState);
+			lua_classvariable(L, "roof", nullptr, GetRoofState);
+			lua_classvariable(L, "lightsMultiplier", nullptr, GetLightsMultiplier);
+			lua_classvariable(L, "engineHealth", nullptr, GetEngineHealth);
+			lua_classvariable(L, "petrolTankHealth", nullptr, GetPetrolTankHealth);
+			lua_classvariable(L, "bodyHealth", nullptr, GetBodyHealth);
+			lua_classvariable(L, "bodyAdditionalHealth", nullptr, GetBodyAdditionalHealth);
+			lua_classvariable(L, "manualEngineControl", nullptr, IsManualEngineControl);
+			lua_classvariable(L, "appearanceDataBase64", nullptr, GetAppearanceDataBase64);
+			lua_classvariable(L, "gameStateBase64", nullptr, GetGameStateBase64);
+			lua_classvariable(L, "healthDataBase64", nullptr, GetHealthDataBase64);
+			lua_classvariable(L, "damageDataBase64", nullptr, GetDamageDataBase64);
+			lua_classvariable(L, "scriptDataBase64", nullptr, GetScriptDataBase64);
 
-			lua_classvariable(L, "wheelSpeed", nullptr, "getWheelSpeed");
-			lua_classvariable(L, "currentGear", nullptr, "getCurrentGear");
-			lua_classvariable(L, "currentRPM", nullptr, "getCurrentRPM");
-			lua_classvariable(L, "speedVector", nullptr, "getSpeedVector");
+			lua_classvariable(L, "wheelSpeed", nullptr, GetWheelSpeed);
+			lua_classvariable(L, "currentGear", nullptr, GetCurrentGear);
+			lua_classvariable(L, "currentRPM", nullptr, GetCurrentRPM);
+			lua_classvariable(L, "speedVector", nullptr, GetSpeedVector);
 			lua_classvariable(L, "maxGear", SetMaxGear, GetMaxGear);
 
-			lua_classvariable(L, "handling", nullptr, "getHandling");
+			lua_classvariable(L, "handling", nullptr, GetHandling);
 
 			lua_classvariable(L, "indicatorLights", SetLightsIndicator, GetLightsIndicator);
 	#endif
 
-			lua_classvariable(L, "destroyed", nullptr, "isDestroyed");
-			lua_classvariable(L, "driver", nullptr, "getDriver");
-			lua_classvariable(L, "modKitsCount", nullptr, "getModKitsCount");
-			lua_classvariable(L, "wheelType", nullptr, "getWheelType");
-			lua_classvariable(L, "wheelVariation", nullptr, "getWheelVariation");
-			lua_classvariable(L, "rearWheelVariation", nullptr, "getRearWheelVariation");
-			lua_classvariable(L, "handbrakeActive", nullptr, "isHandbrakeActive");
-			lua_classvariable(L, "daylightOn", nullptr, "isDaylightOn");
-			lua_classvariable(L, "nightlightOn", nullptr, "isNightlightOn");
-			lua_classvariable(L, "flamethrowerActive", nullptr, "isFlamethrowerActive");
-			lua_classvariable(L, "wheelsCount", nullptr, "getWheelsCount");
-			lua_classvariable(L, "repairsCount", nullptr, "getRepairsCount");
-			lua_classvariable(L, "armoredWindows", nullptr, "hasArmoredWindows");
-			lua_classvariable(L, "all", nullptr, "getAll");
+			lua_classvariable(L, "destroyed", nullptr, IsDestroyed);
+			lua_classvariable(L, "driver", nullptr, GetDriver);
+			lua_classvariable(L, "modKitsCount", nullptr, GetModKitsCount);
+			lua_classvariable(L, "wheelType", nullptr, GetWheelType);
+			lua_classvariable(L, "wheelVariation", nullptr, GetWheelVariation);
+			lua_classvariable(L, "rearWheelVariation", nullptr, GetRearWheelVariation);
+			lua_classvariable(L, "handbrakeActive", nullptr, IsHandbrakeActive);
+			lua_classvariable(L, "daylightOn", nullptr, IsDaylightOn);
+			lua_classvariable(L, "nightlightOn", nullptr, IsNightlightOn);
+			lua_classvariable(L, "flamethrowerActive", nullptr, IsFlamethrowerActive);
+			lua_classvariable(L, "wheelsCount", nullptr, GetWheelsCount);
+			lua_classvariable(L, "repairsCount", nullptr, GetRepairsCount);
+			lua_classvariable(L, "armoredWindows", nullptr, HasArmoredWindows);
+			lua_classvariable(L, "all", nullptr, ipairs);
 		}
 		lua_endclass(L);
 
@@ -3204,7 +2995,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, vehicle->GetNumberplateText().CStr());
+		lua_pushstring(L, vehicle->GetNumberplateText());
 
 		return 1;
 	}
@@ -3374,7 +3165,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, vehicle->GetAppearanceDataBase64().CStr());
+		lua_pushstring(L, vehicle->GetAppearanceDataBase64());
 
 		return 1;
 	}
@@ -3633,7 +3424,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, vehicle->GetGameStateBase64().CStr());
+		lua_pushstring(L, vehicle->GetGameStateBase64());
 
 		return 1;
 	}
@@ -3864,7 +3655,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, vehicle->GetHealthDataBase64().CStr());
+		lua_pushstring(L, vehicle->GetHealthDataBase64());
 
 		return 1;
 	}
@@ -4061,7 +3852,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, vehicle->GetDamageDataBase64().CStr());
+		lua_pushstring(L, vehicle->GetDamageDataBase64());
 
 		return 1;
 	}
@@ -4098,7 +3889,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, vehicle->GetScriptDataBase64().CStr());
+		lua_pushstring(L, vehicle->GetScriptDataBase64());
 
 		return 1;
 	}

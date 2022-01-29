@@ -811,6 +811,24 @@ namespace lua::Class
 		return 1;
 	}
 
+	int Player::GetModel(lua_State* L)
+	{
+		alt::IPlayer* player;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(player);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushnumber(L, player->GetModel());
+
+		return 1;
+	}
+
 #ifdef ALT_SERVER_API
 	int Player::IsConnected(lua_State* L)
 	{
@@ -1080,24 +1098,6 @@ namespace lua::Class
 		player->SetModel(modelHash);
 
 		return 0;
-	}
-
-	int Player::GetModel(lua_State* L)
-	{
-		alt::IPlayer* player;
-
-		ArgumentReader argReader(L);
-		argReader.ReadBaseObject(player);
-
-		if (argReader.HasAnyError())
-		{
-			argReader.GetErrorMessages();
-			return 0;
-		}
-
-		lua_pushnumber(L, player->GetModel());
-
-		return 1;
 	}
 
 	int Player::SetArmour(lua_State* L)

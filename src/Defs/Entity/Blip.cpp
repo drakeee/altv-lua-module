@@ -5,93 +5,7 @@ namespace lua::Class
 	const char* Blip::ClassName = "Blip";
 	void Blip::Init(lua_State* L)
 	{
-
 		DEBUG_INFO("Blip::Init");
-
-#ifdef ALT_SERVER_API
-		lua_globalfunction(L, "createBlip", Create);
-		lua_globalfunction(L, "createBlipAttached", CreateAttached);
-#else
-		lua_globalfunction(L, "createAreaBlip", CreateAreaBlip);
-		lua_globalfunction(L, "createRadiusBlip", CreateRadiusBlip);
-		lua_globalfunction(L, "createPointBlip", CreatePointBlip);
-		lua_globalfunction(L, "createPedBlip", CreatePedBlip);
-		lua_globalfunction(L, "createVehicleBlip", CreateVehicleBlip);
-
-		lua_globalfunction(L, "getBlipScaleXY", GetScaleXY);
-		lua_globalfunction(L, "getBlipDisplay", GetDisplay);
-		lua_globalfunction(L, "getBlipSprite", GetSprite);
-		lua_globalfunction(L, "getBlipColor", GetColor);
-		lua_globalfunction(L, "getBlipSecondaryColor", GetSecondaryColor);
-		lua_globalfunction(L, "getBlipAlpha", GetAlpha);
-		lua_globalfunction(L, "getBlipFlashTimer", GetFlashTimer);
-		lua_globalfunction(L, "getBlipFlashInterval", GetFlashInterval);
-		lua_globalfunction(L, "getBlipAsFriendly", GetAsFriendly);
-		lua_globalfunction(L, "getBlipRoute", GetRoute);
-		lua_globalfunction(L, "getBlipBright", GetBright);
-		lua_globalfunction(L, "getBlipNumber", GetNumber);
-		lua_globalfunction(L, "getBlipShowCone", GetShowCone);
-		lua_globalfunction(L, "getBlipFlashes", GetFlashes);
-		lua_globalfunction(L, "getBlipFlashesAlternate", GetFlashesAlternate);
-		lua_globalfunction(L, "getBlipAsShortRange", GetAsShortRange);
-		lua_globalfunction(L, "getBlipPriority", GetPriority);
-		lua_globalfunction(L, "getBlipRotation", GetRotation);
-		lua_globalfunction(L, "getBlipGxtName", GetGxtName);
-		lua_globalfunction(L, "getBlipName", GetName);
-		lua_globalfunction(L, "getBlipRouteColor", GetRouteColor);
-		lua_globalfunction(L, "getBlipPulse", GetPulse);
-		lua_globalfunction(L, "getBlipAsMissionCreator", GetAsMissionCreator);
-		lua_globalfunction(L, "getBlipTickVisible", GetTickVisible);
-		lua_globalfunction(L, "getBlipHeadingIndicatorVisible", GetHeadingIndicatorVisible);
-		lua_globalfunction(L, "getBlipOutlineIndicatorVisible", GetOutlineIndicatorVisible);
-		lua_globalfunction(L, "getBlipFriendIndicatorVisible", GetFriendIndicatorVisible);
-		lua_globalfunction(L, "getBlipCrewIndicatorVisible", GetCrewIndicatorVisible);
-		lua_globalfunction(L, "getBlipCategory", GetCategory);
-		lua_globalfunction(L, "getBlipAsHighDetail", GetAsHighDetail);
-		lua_globalfunction(L, "getBlipShrinked", GetShrinked);
-
-		lua_globalfunction(L, "setBlipDisplay", SetDisplay);
-		lua_globalfunction(L, "setBlipScaleXY", SetScaleXY);
-		lua_globalfunction(L, "setBlipSprite", SetSprite);
-		lua_globalfunction(L, "setBlipColor", SetColor);
-		lua_globalfunction(L, "setBlipRoute", SetRoute);
-		lua_globalfunction(L, "setBlipRouteColor", SetRouteColor);
-		lua_globalfunction(L, "setBlipSecondaryColor", SetSecondaryColor);
-		lua_globalfunction(L, "setBlipAlpha", SetAlpha);
-		lua_globalfunction(L, "setBlipFlashTimer", SetFlashTimer);
-		lua_globalfunction(L, "setBlipFlashInterval", SetFlashInterval);
-		lua_globalfunction(L, "setBlipAsFriendly", SetAsFriendly);
-		lua_globalfunction(L, "setBlipBright", SetBright);
-		lua_globalfunction(L, "setBlipNumber", SetNumber);
-		lua_globalfunction(L, "setBlipShowCone", SetShowCone);
-		lua_globalfunction(L, "setBlipFlashes", SetFlashes);
-		lua_globalfunction(L, "setBlipFlashesAlternate", SetFlashesAlternate);
-		lua_globalfunction(L, "setBlipAsShortRange", SetAsShortRange);
-		lua_globalfunction(L, "setBlipPriority", SetPriority);
-		lua_globalfunction(L, "setBlipRotation", SetRotation);
-		lua_globalfunction(L, "setBlipGxtName", SetGxtName);
-		lua_globalfunction(L, "setBlipName", SetName);
-		lua_globalfunction(L, "setBlipPulse", SetPulse);
-		lua_globalfunction(L, "setBlipAsMissionCreator", SetAsMissionCreator);
-		lua_globalfunction(L, "setBlipTickVisible", SetTickVisible);
-		lua_globalfunction(L, "setBlipHeadingIndicatorVisible", SetHeadingIndicatorVisible);
-		lua_globalfunction(L, "setBlipOutlineIndicatorVisible", SetOutlineIndicatorVisible);
-		lua_globalfunction(L, "setBlipFriendIndicatorVisible", SetFriendIndicatorVisible);
-		lua_globalfunction(L, "setBlipCrewIndicatorVisible", SetCrewIndicatorVisible);
-		lua_globalfunction(L, "setBlipCategory", SetCategory);
-		lua_globalfunction(L, "setBlipAsHighDetail", SetAsHighDetail);
-		lua_globalfunction(L, "setBlipShrinked", SetShrinked);
-		lua_globalfunction(L, "fadeBlip", Fade);
-#endif
-		lua_globalfunction(L, "isBlipGlobal", IsGlobal);
-		lua_globalfunction(L, "getBlipTarget", GetTarget);
-		lua_globalfunction(L, "isBlipAttached", IsAttached);
-		lua_globalfunction(L, "getBlipAttachedTo", AttachedTo);
-		lua_globalfunction(L, "getBlipType", GetBlipType);
-		/*lua_globalfunction(L, "setBlipSprite", SetSprite);
-		lua_globalfunction(L, "setBlipColor", SetColor);
-		lua_globalfunction(L, "setBlipRoute", SetRoute);
-		lua_globalfunction(L, "setBlipRouteColor", SetRouteColor);*/
 
 		lua_beginclass(L, ClassName, WorldObject::ClassName);
 		{
@@ -170,54 +84,54 @@ namespace lua::Class
 			lua_classfunction(L, "setShrinked", SetShrinked);
 			lua_classfunction(L, "fade", Fade);
 
-			lua_classvariable(L, "display", "setDisplay", "getDisplay");
-			lua_classvariable(L, "scaleXY", "setScaleXY", "getScaleXY");
-			lua_classvariable(L, "sprite", "setSprite", "getSprite");
-			lua_classvariable(L, "color", "setColor", "getColor");
-			lua_classvariable(L, "secondaryColor", "setSecondaryColor", "getSecondaryColor");
-			lua_classvariable(L, "alpha", "setAlpha", "getAlpha");
-			lua_classvariable(L, "flashTimer", "setFlashTimer", "getFlashTimer");
-			lua_classvariable(L, "flashInterval", "setFlashInterval", "getFlashInterval");
-			lua_classvariable(L, "asFriendly", "setAsFriendly", "getAsFriendly");
-			lua_classvariable(L, "route", "setRoute", "getRoute");
-			lua_classvariable(L, "bright", "setBright", "getBright");
-			lua_classvariable(L, "number", "setNumber", "getNumber");
-			lua_classvariable(L, "showCone", "setShowCone", "getShowCone");
-			lua_classvariable(L, "flashes", "setFlashes", "getFlashes");
-			lua_classvariable(L, "flashesAlternate", "setFlashesAlternate", "getFlashesAlternate");
-			lua_classvariable(L, "asShortRange", "setAsShortRange", "getAsShortRange");
-			lua_classvariable(L, "priority", "setPriority", "getPriority");
-			lua_classvariable(L, "rotation", "setRotation", "getRotation");
-			lua_classvariable(L, "gxtName", "setGxtName", "getGxtName");
-			lua_classvariable(L, "name", "setName", "getName");
-			lua_classvariable(L, "routeColor", "setRouteColor", "getRouteColor");
-			lua_classvariable(L, "pulse", "setPulse", "getPulse");
-			lua_classvariable(L, "asMissionCreator", "setAsMissionCreator", "getAsMissionCreator");
-			lua_classvariable(L, "tickVisible", "setTickVisible", "getTickVisible");
-			lua_classvariable(L, "headingIndicatorVisible", "setHeadingIndicatorVisible", "getHeadingIndicatorVisible");
-			lua_classvariable(L, "outlineIndicatorVisible", "setOutlineIndicatorVisible", "getOutlineIndicatorVisible");
-			lua_classvariable(L, "friendIndicatorVisible", "setFriendIndicatorVisible", "getFriendIndicatorVisible");
-			lua_classvariable(L, "crewIndicatorVisible", "setCrewIndicatorVisible", "getCrewIndicatorVisible");
-			lua_classvariable(L, "category", "setCategory", "getCategory");
-			lua_classvariable(L, "asHighDetail", "setAsHighDetail", "getAsHighDetail");
-			lua_classvariable(L, "shrinked", "setShrinked", "getShrinked");
+			lua_classvariable(L, "display", SetDisplay, GetDisplay);
+			lua_classvariable(L, "scaleXY", SetScaleXY, GetScaleXY);
+			lua_classvariable(L, "sprite", SetSprite, GetSprite);
+			lua_classvariable(L, "color", SetColor, GetColor);
+			lua_classvariable(L, "secondaryColor", SetSecondaryColor, GetSecondaryColor);
+			lua_classvariable(L, "alpha", SetAlpha, GetAlpha);
+			lua_classvariable(L, "flashTimer", SetFlashTimer, GetFlashTimer);
+			lua_classvariable(L, "flashInterval", SetFlashInterval, GetFlashInterval);
+			lua_classvariable(L, "asFriendly", SetAsFriendly, GetAsFriendly);
+			lua_classvariable(L, "route", SetRoute, GetRoute);
+			lua_classvariable(L, "bright", SetBright, GetBright);
+			lua_classvariable(L, "number", SetNumber, GetNumber);
+			lua_classvariable(L, "showCone", SetShowCone, GetShowCone);
+			lua_classvariable(L, "flashes", SetFlashes, GetFlashes);
+			lua_classvariable(L, "flashesAlternate", SetFlashesAlternate, GetFlashesAlternate);
+			lua_classvariable(L, "asShortRange", SetAsShortRange, GetAsShortRange);
+			lua_classvariable(L, "priority", SetPriority, GetPriority);
+			lua_classvariable(L, "rotation", SetRotation, GetRotation);
+			lua_classvariable(L, "gxtName", SetGxtName, GetGxtName);
+			lua_classvariable(L, "name", SetName, GetName);
+			lua_classvariable(L, "routeColor", SetRouteColor, GetRouteColor);
+			lua_classvariable(L, "pulse", SetPulse, GetPulse);
+			lua_classvariable(L, "asMissionCreator", SetAsMissionCreator, GetAsMissionCreator);
+			lua_classvariable(L, "tickVisible", SetTickVisible, GetTickVisible);
+			lua_classvariable(L, "headingIndicatorVisible", SetHeadingIndicatorVisible, GetHeadingIndicatorVisible);
+			lua_classvariable(L, "outlineIndicatorVisible", SetOutlineIndicatorVisible, GetOutlineIndicatorVisible);
+			lua_classvariable(L, "friendIndicatorVisible", SetFriendIndicatorVisible, GetFriendIndicatorVisible);
+			lua_classvariable(L, "crewIndicatorVisible", SetCrewIndicatorVisible, GetCrewIndicatorVisible);
+			lua_classvariable(L, "category", SetCategory, GetCategory);
+			lua_classvariable(L, "asHighDetail", SetAsHighDetail, GetAsHighDetail);
+			lua_classvariable(L, "shrinked", SetShrinked, GetShrinked);
 #endif
 
-			/*lua_classfunction(L, "setSprite", SetSprite);
-			lua_classfunction(L, "setColor", SetColor);
-			lua_classfunction(L, "setRoute", SetRoute);
-			lua_classfunction(L, "setRouteColor", SetRouteColor);*/
+			/*lua_classfunction(L, SetSprite, SetSprite);
+			lua_classfunction(L, SetColor, SetColor);
+			lua_classfunction(L, SetRoute, SetRoute);
+			lua_classfunction(L, SetRouteColor, SetRouteColor);*/
 
 
-			lua_classvariable(L, "global", nullptr, "isGlobal");
-			lua_classvariable(L, "target", nullptr, "getTarget");
-			lua_classvariable(L, "attached", nullptr, "isAttached");
-			lua_classvariable(L, "attachedTo", nullptr, "getAttachedTo");
-			lua_classvariable(L, "blipType", nullptr, "getBlipType");
-			/*lua_classvariable(L, "sprite", "setSprite", nullptr);
-			lua_classvariable(L, "color", "setColor", nullptr);
-			lua_classvariable(L, "route", "setRoute", nullptr);
-			lua_classvariable(L, "routeColor", "setRouteColor", nullptr);*/
+			lua_classvariable(L, "global", nullptr, IsGlobal);
+			lua_classvariable(L, "target", nullptr, GetTarget);
+			lua_classvariable(L, "attached", nullptr, IsAttached);
+			lua_classvariable(L, "attachedTo", nullptr, AttachedTo);
+			lua_classvariable(L, "blipType", nullptr, GetBlipType);
+			/*lua_classvariable(L, "sprite", SetSprite, nullptr);
+			lua_classvariable(L, "color", SetColor, nullptr);
+			lua_classvariable(L, "route", SetRoute, nullptr);
+			lua_classvariable(L, "routeColor", SetRouteColor, nullptr);*/
 		}
 		lua_endclass(L);
 

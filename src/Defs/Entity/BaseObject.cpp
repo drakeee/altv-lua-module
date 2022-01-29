@@ -5,15 +5,7 @@ namespace lua::Class
 	const char* BaseObject::ClassName = "BaseObject";
 	void BaseObject::Init(lua_State* L)
 	{
-
 		DEBUG_INFO("BaseObject::Init");
-
-		lua_globalfunction(L, "getEntityType", GetType);
-		lua_globalfunction(L, "hasEntityMetaData", HasMetaData);
-		lua_globalfunction(L, "getEntityMetaData", GetMetaData);
-		lua_globalfunction(L, "setEntityMetaData", SetMetaData);
-		lua_globalfunction(L, "deleteEntityMetaData", DeleteMetaData);
-		lua_globalfunction(L, "destroyEntity", Destroy);
 
 		lua_beginclass(L, ClassName);
 		{
@@ -24,7 +16,7 @@ namespace lua::Class
 			lua_classfunction(L, "deleteMetaData", DeleteMetaData);
 			lua_classfunction(L, "destroy", Destroy);
 
-			lua_classvariable(L, "type", nullptr, "getType");
+			lua_classvariable(L, "type", nullptr, GetType);
 		}
 		lua_endclass(L);
 

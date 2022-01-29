@@ -7,34 +7,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("Entity::Init");
 
-		lua_globalfunction(L, "getEntityID", GetID);
-
-		lua_globalfunction(L, "getEntityNetworkOwner", GetNetworkOwner);
-
-		lua_globalfunction(L, "getEntityModel", GetModel);
-
-		lua_globalfunction(L, "setEntityRotation", SetRotation);
-		lua_globalfunction(L, "getEntityRotation", GetRotation);
-
-		lua_globalfunction(L, "getEntityVisible", GetVisible);
-		lua_globalfunction(L, "hasEntitySyncedMetaData", HasSyncedMetaData);
-		lua_globalfunction(L, "getEntitySyncedMetaData", GetSyncedMetaData);
-		lua_globalfunction(L, "hasEntityStreamSyncedMetaData", HasStreamSyncedMetaData);
-		lua_globalfunction(L, "getEntityStreamSyncedMetaData", GetStreamSyncedMetaData);
-
-#ifdef ALT_SERVER_API
-		lua_globalfunction(L, "setEntityNetworkOwner", SetNetworkOwner);
-
-		lua_globalfunction(L, "setEntitySyncedMetaData", SetSyncedMetaData);
-		lua_globalfunction(L, "deleteEntitySyncedMetaData", DeleteSyncedMetaData);
-		lua_globalfunction(L, "setEntityStreamSyncedMetaData", SetStreamSyncedMetaData);
-		lua_globalfunction(L, "deleteEntityStreamSyncedMetaData", DeleteStreamSyncedMetaData);
-		lua_globalfunction(L, "setEntityVisible", SetVisible);
-#else
-		lua_globalfunction(L, "getEntityByScriptID", GetEntityByScriptGuid);
-		lua_globalfunction(L, "getEntityScriptID", GetScriptGuid);
-#endif
-
 		lua_beginclass(L, ClassName, WorldObject::ClassName);
 		{
 			lua_classmeta(L, "__pairs", pairs);
@@ -67,17 +39,17 @@ namespace lua::Class
 			lua_classfunction(L, "getScriptID", GetScriptGuid);
 #endif
 
-			lua_classvariable(L, "id", nullptr, "getId");
-			lua_classvariable(L, "model", nullptr, "getModel");
-			lua_classvariable(L, "rot", "setRotation", "getRotation");
-			lua_classvariable(L, "rotation", "setRotation", "getRotation");
-			lua_classvariable(L, "all", nullptr, "getAll");
+			lua_classvariable(L, "id", nullptr, GetID);
+			lua_classvariable(L, "model", nullptr, GetModel);
+			lua_classvariable(L, "rot", SetRotation, GetRotation);
+			lua_classvariable(L, "rotation", SetRotation, GetRotation);
+			lua_classvariable(L, "all", nullptr, ipairs);
 
 #ifdef ALT_SERVER_API
-			lua_classvariable(L, "networkOwner", "setNetworkOwner", "getNetworkOwner");
+			lua_classvariable(L, "networkOwner", SetNetworkOwner, GetNetworkOwner);
 #else
-			lua_classvariable(L, "networkOwner", nullptr, "getNetworkOwner");
-			lua_classvariable(L, "scriptID", nullptr, "getScriptID");
+			lua_classvariable(L, "networkOwner", nullptr, GetNetworkOwner);
+			lua_classvariable(L, "scriptID", nullptr, GetScriptGuid);
 #endif
 		}
 		lua_endclass(L);

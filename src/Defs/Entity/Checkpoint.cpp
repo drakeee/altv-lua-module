@@ -7,12 +7,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("Checkpoint::Init");
 
-		lua_globalfunction(L, "createCheckpoint", Create);
-		lua_globalfunction(L, "getCheckpointType", GetCheckpointType);
-		lua_globalfunction(L, "getCheckpointHeight", GetHeight);
-		lua_globalfunction(L, "getCheckpointRadius", GetRadius);
-		lua_globalfunction(L, "getCheckpointColor", GetColor);
-
 		lua_beginclass(L, ClassName);
 		{
 			lua_classfunction(L, "new", Create);
@@ -21,10 +15,10 @@ namespace lua::Class
 			lua_classfunction(L, "getRadius", GetRadius);
 			lua_classfunction(L, "getColor", GetColor);
 
-			lua_classvariable(L, "checkpointType", nullptr, "getCheckpointType");
-			lua_classvariable(L, "height", nullptr, "getHeight");
-			lua_classvariable(L, "radius", nullptr, "getRadius");
-			lua_classvariable(L, "color", nullptr, "getColor");
+			lua_classvariable(L, "checkpointType", nullptr, GetCheckpointType);
+			lua_classvariable(L, "height", nullptr, GetHeight);
+			lua_classvariable(L, "radius", nullptr, GetRadius);
+			lua_classvariable(L, "color", nullptr, GetColor);
 		}
 		lua_endclass(L);
 

@@ -1890,13 +1890,13 @@ namespace lua::Class
 
 	int Alt::GetVersion(lua_State* L)
 	{
-		lua_pushstring(L, Core->GetVersion().CStr());
+		lua_pushstring(L, Core->GetVersion());
 		return 1;
 	}
 
 	int Alt::GetBranch(lua_State* L)
 	{
-		lua_pushstring(L, Core->GetBranch().CStr());
+		lua_pushstring(L, Core->GetBranch());
 		return 1;
 	}
 

@@ -7,12 +7,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("WorldObject::Init");
 
-		lua_globalfunction(L, "setEntityPosition", SetPosition);
-		lua_globalfunction(L, "getEntityPosition", GetPosition);
-
-		lua_globalfunction(L, "setEntityDimension", SetDimension);
-		lua_globalfunction(L, "getEntityDimension", GetDimension);
-
 		lua_beginclass(L, ClassName, BaseObject::ClassName);
 		{
 			lua_classfunction(L, "setPosition", SetPosition);
@@ -20,9 +14,9 @@ namespace lua::Class
 			lua_classfunction(L, "setDimension", SetDimension);
 			lua_classfunction(L, "getDimension", GetDimension);
 
-			lua_classvariable(L, "pos", "setPosition", "getPosition");
-			lua_classvariable(L, "position", "setPosition", "getPosition");
-			lua_classvariable(L, "dimension", "setDimension", "getDimension");
+			lua_classvariable(L, "pos", SetPosition, GetPosition);
+			lua_classvariable(L, "position", SetPosition, GetPosition);
+			lua_classvariable(L, "dimension", SetDimension, GetDimension);
 		}
 		lua_endclass(L);
 

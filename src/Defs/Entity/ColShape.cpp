@@ -8,17 +8,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("ColShape::Init");
 
-		lua_globalfunction(L, "createColShapeCircle", CreateCircle);
-		lua_globalfunction(L, "createColShapeCube", CreateCube);
-		lua_globalfunction(L, "createColShapeCylinder", CreateCylinder);
-		lua_globalfunction(L, "createColShapeRectangle", CreateRectangle);
-		lua_globalfunction(L, "createColShapeSphere", CreateSphere);
-
-		lua_globalfunction(L, "GetColShapeType", GetColshapeType);
-
-		lua_globalfunction(L, "isEntityInColshape", IsEntityIn);
-		lua_globalfunction(L, "isPointInColshape", IsPointIn);
-
 		lua_beginclass(L, ClassName, WorldObject::ClassName);
 		{
 			lua_classfunction(L, "Circle", CreateCircle);

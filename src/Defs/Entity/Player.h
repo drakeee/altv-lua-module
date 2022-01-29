@@ -72,6 +72,8 @@ namespace lua::Class
 		static int IsCrouching(lua_State* L);
 		static int IsStealthy(lua_State* L);
 
+		static int GetModel(lua_State* L);
+
 #ifdef ALT_SERVER_API
 		static int IsConnected(lua_State* L);
 		static int GetPing(lua_State* L);
@@ -84,7 +86,6 @@ namespace lua::Class
 		static int Spawn(lua_State* L);
 		static int Despawn(lua_State* L);
 		static int SetModel(lua_State* L);
-		static int GetModel(lua_State* L);
 		static int SetArmour(lua_State* L);
 		static int SetMaxArmour(lua_State* L);
 		static int SetCurrentWeapon(lua_State* L);

@@ -10,39 +10,21 @@ REGISTER_LOCAL_EVENT(
 		const alt::CPlayerBeforeConnectEvent* event = static_cast<const alt::CPlayerBeforeConnectEvent*>(ev);
 		lua_State* L = resourceImpl->GetLuaState();
 
-		const alt::ConnectionInfo& connectionInfo = event->GetConnectionInfo();
+		const alt::Ref<alt::IConnectionInfo> connectionInfo = event->GetConnectionInfo();
 		lua_newtable(L);
-		const int t = lua_gettop(L);
+		{
+			lua_setfield(L, -1, "name", connectionInfo->GetName());
+			lua_setfield(L, -1, "socialID", std::to_string(connectionInfo->GetSocialId()));
+			lua_setfield(L, -1, "hwidHash", std::to_string(connectionInfo->GetHwIdHash()));
+			lua_setfield(L, -1, "hwidExHash", std::to_string(connectionInfo->GetHwIdExHash()));
+			lua_setfield(L, -1, "authToken", connectionInfo->GetAuthToken());
+			lua_setfield(L, -1, "isDebug", connectionInfo->GetIsDebug());
+			lua_setfield(L, -1, "branch", connectionInfo->GetBranch());
+			lua_setfield(L, -1, "build", connectionInfo->GetBuild());
+			lua_setfield(L, -1, "cdnUrl", connectionInfo->GetCdnUrl());
+			lua_setfield(L, -1, "passwordHash", connectionInfo->GetPasswordHash());
+		}
 
-		lua_pushstring(L, connectionInfo.name);
-		lua_setfield(L, t, "name");
-
-		lua_pushstring(L, std::to_string(connectionInfo.socialId));
-		lua_setfield(L, t, "socialID");
-
-		lua_pushstring(L, std::to_string(connectionInfo.hwidHash));
-		lua_setfield(L, t, "hwidHash");
-
-		lua_pushstring(L, std::to_string(connectionInfo.hwidExHash));
-		lua_setfield(L, t, "hwidExHash");
-
-		lua_pushstring(L, connectionInfo.authToken);
-		lua_setfield(L, t, "authToken");
-
-		lua_pushboolean(L, connectionInfo.isDebug);
-		lua_setfield(L, t, "isDebug");
-
-		lua_pushstring(L, connectionInfo.branch);
-		lua_setfield(L, t, "branch");
-
-		lua_pushnumber(L, connectionInfo.build);
-		lua_setfield(L, t, "build");
-
-		lua_pushstring(L, connectionInfo.cdnUrl);
-		lua_setfield(L, t, "cdnUrl");
-
-		lua_pushnumber(L, connectionInfo.passwordHash);
-		lua_setfield(L, t, "passwordHash");
 		lua_pushstring(L, event->GetReason());
 
 		return 2;

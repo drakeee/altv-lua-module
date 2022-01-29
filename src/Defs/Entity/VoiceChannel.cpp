@@ -8,16 +8,6 @@ namespace lua::Class
 	{
 		DEBUG_INFO("VoiceChannel::Init");
 
-		lua_globalfunction(L, "createVoiceChannel", Create);
-		lua_globalfunction(L, "isVoiceChannelSpatial", IsSpatial);
-		lua_globalfunction(L, "getVoiceChannelMaxDistance", GetMaxDistance);
-		lua_globalfunction(L, "isPlayerInVoiceChannel", HasPlayer);
-		lua_globalfunction(L, "addPlayerToVoiceChannel", AddPlayer);
-		lua_globalfunction(L, "removePlayerFromVoiceChannel", RemovePlayer);
-		lua_globalfunction(L, "isPlayerMutedInVoiceChannel", IsPlayerMuted);
-		lua_globalfunction(L, "mutePlayerInVoiceChannel", MutePlayer);
-		lua_globalfunction(L, "unmutePlayerInVoiceChannel", UnmutePlayer);
-
 		lua_beginclass(L, ClassName, WorldObject::ClassName);
 		{
 			lua_classfunction(L, "new", Create);
@@ -30,8 +20,8 @@ namespace lua::Class
 			lua_classfunction(L, "mutePlayer", MutePlayer);
 			lua_classfunction(L, "unmutePlayer", UnmutePlayer);
 
-			lua_classvariable(L, "spatial", nullptr, "isSpatial");
-			lua_classvariable(L, "maxDistance", nullptr, "getMaxDistance");
+			lua_classvariable(L, "spatial", nullptr, IsSpatial);
+			lua_classvariable(L, "maxDistance", nullptr, GetMaxDistance);
 		}
 		lua_endclass(L);
 
