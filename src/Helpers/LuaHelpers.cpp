@@ -607,22 +607,14 @@ void lua_setfield(lua_State* L, int index, const char* k, const Vector3fp& vecto
 
 void* lua_checkclass(lua_State* L, int idx, const char* classname)
 {
-	printf("lua_checkclass1\n");
-
 	if (!luaL_getmetafield(L, idx, "__name"))
 		return NULL;
-
-	printf("lua_checkclass2\n");
 
 	if (lua_type(L, -1) != LUA_TSTRING)
 		return NULL;
 
-	printf("lua_checkclass3\n");
-
 	char const* basename = lua_tostring(L, -1);
 	lua_pop(L, 1);
-
-	printf("Shiet: %s - %s\n", basename, classname);
 
 	if (strcmp(basename, classname) != 0)
 		return NULL;
