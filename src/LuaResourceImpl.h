@@ -51,24 +51,7 @@ public:
 	void OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object) override;
 
 	lua_State*	GetLuaState(void) { return this->resourceState; }
-	//bool		RegisterLocalEvent(std::string eventName, int functionReference);
-	//bool		RemoveLocalEvent(std::string eventName, int functionReference);
-	//bool		RegisterRemoteEvent(std::string eventName, int functionReference);
-	//bool		RemoveRemoteEvent(std::string eventName, int functionReference);
 #ifdef ALT_CLIENT_API
-	//bool		RegisterWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
-	//bool		RemoveWebEvent(alt::IWebView* webView, std::string eventName, int functionReference);
-	/*inline const std::vector<int>& GetWebEventReferences(alt::IWebView* webView, std::string eventName)
-	{
-		return this->webEventsReferences[webView][eventName];
-	}*/
-
-	//bool		RegisterWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
-	//bool		RemoveWebSocketEvent(alt::IWebSocketClient* webSocket, std::string eventName, int functionReference);
-	/*inline const std::vector<int>& GetWebSocketEventReferences(alt::IWebSocketClient* webSocket, std::string eventName)
-	{
-		return this->webSocketEventsReferences[webSocket][eventName];
-	}*/
 
 	inline bool IsScriptExists(alt::String path)
 	{
@@ -97,14 +80,6 @@ public:
 	inline ResourceEventManager* GetResourceEventManager() { return this->resourceEventManager; }
 	void		TriggerResourceLocalEvent(std::string eventName, alt::MValueArgs args);
 	void		IncludePath(const char* path);
-	/*inline const std::vector<int>& GetLocalEventReferences(std::string eventName)
-	{
-		return this->localEventsReferences[eventName];
-	}
-	inline const std::vector<int>& GetRemoteEventReferences(std::string eventName)
-	{
-		return this->remoteEventsReferences[eventName];
-	}*/
 	inline bool				AddFunctionRef(const void* ptr, int functionRef)
 	{
 		if (this->IsFunctionRefExists(ptr))
@@ -206,16 +181,8 @@ private:
 	alt::IResource*		resource;
 	std::string			workingPath;
 
-	//EventsReferences			localEventsReferences;
-	//EventsReferences			remoteEventsReferences;
-
 	uint32_t timerIndex = -1;
 	std::map<uint32_t, LuaTimer>	timerReferences;
-
-#ifdef ALT_CLIENT_API
-	//std::map<alt::IWebView*, EventsReferences> webEventsReferences;
-	//std::map<alt::IWebSocketClient*, EventsReferences> webSocketEventsReferences;
-#endif
 
 	std::map<const void*, int>	functionReferences;
 	alt::MValueDict				exportFunction;

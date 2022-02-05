@@ -3,6 +3,7 @@
 #ifdef ALT_CLIENT_API
 #include <events/CKeyboardEvent.h>
 #include <events/CSpawnedEvent.h>
+#include <Events/CWindowFocusChangeEvent.h>
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::KEYBOARD_EVENT,
@@ -61,5 +62,19 @@ REGISTER_LOCAL_EVENT(
 	spawned,
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int { return 0; }
 );
+
+REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::WINDOW_FOCUS_CHANGE,
+	windowFocusChange,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
+	{
+		const alt::CWindowFocusChangeEvent* event = static_cast<const alt::CWindowFocusChangeEvent*>(ev);
+		lua_State* L = resourceImpl->GetLuaState();
+
+		lua_pushboolean(L, event->GetState());
+
+		return 1;
+	}
+)
 
 #endif

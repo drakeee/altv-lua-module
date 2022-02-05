@@ -137,13 +137,3 @@ const std::string LuaScriptRuntime::GetBaseObjectType(alt::IBaseObject::Type bas
 {
 	return this->entityTypes.at(static_cast<int>(baseType));
 }
-
-const std::string LuaScriptRuntime::GetEventType(const alt::CEvent* ev)
-{
-	return this->eventTypes.at(static_cast<int>(ev->GetType()));
-}
-
-const std::string LuaScriptRuntime::GetEventType(alt::CEvent::Type ev)
-{
-	return this->eventTypes.at(static_cast<int>(ev));
-}
