@@ -1938,8 +1938,6 @@ namespace lua::Class
 		auto runtime = &LuaScriptRuntime::Instance();
 		auto resource = runtime->GetResourceImplFromState(L);
 		auto resourceEventManager = resource->GetResourceEventManager();
-		
-		Core->LogInfo("Registered events: " + resource->GetResource()->GetName() + " - " + eventName + " - FunctionRef: " + std::to_string(functionRef));
 
 	#ifdef ALT_SERVER_API
 		lua_pushboolean(L, resourceEventManager->SubscribeLocalEvent(eventName, functionRef));
