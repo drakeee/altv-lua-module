@@ -75,6 +75,6 @@ REGISTER_LOCAL_EVENT(
 
 		return 1;
 	}
-)
+);
 
 #endif
