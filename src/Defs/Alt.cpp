@@ -1258,10 +1258,10 @@ namespace lua::Class
 		args->L = L;
 		args->functionIndex = functionIndex;
 
-		Core->TakeScreenshot([](alt::StringView base64, const void* userData)
+		Core->TakeScreenshot([&args](alt::StringView base64)
 		{
-			auto args = (ScreenshotHelper*)userData;
-			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
+			LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
+
 			L_ASSERT(resourceImpl != nullptr, "lua state not found when executing TakeScreenshot");
 
 			auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
@@ -1273,7 +1273,7 @@ namespace lua::Class
 
 			resourceImpl->RemoveFunctionRef(voidPtr);
 			delete args;
-		}, args);
+		});
 
 		return 0;
 	}
@@ -1299,10 +1299,9 @@ namespace lua::Class
 		args->L = L;
 		args->functionIndex = functionIndex;
 
-		Core->TakeScreenshotGameOnly([](alt::StringView base64, const void* userData)
+		Core->TakeScreenshotGameOnly([&args](alt::StringView base64)
 		{
-			auto args = (ScreenshotHelper*)userData;
-			auto resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
+			LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
 			L_ASSERT(resourceImpl != nullptr, "lua state not found when executing TakeScreenshot");
 
 			auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
