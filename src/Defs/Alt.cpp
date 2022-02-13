@@ -1748,7 +1748,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		Core->SetMinimapComponentPosition(name, alignX, alignY, pos, size)
+		Core->SetMinimapComponentPosition(name, alignX, alignY, pos, size);
 
 		return 0;	
 	}
