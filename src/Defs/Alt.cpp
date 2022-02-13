@@ -1750,7 +1750,7 @@ namespace lua::Class
 
 		Core->SetMinimapComponentPosition(name, alignX, alignY, pos, size)
 
-		return 1;	
+		return 0;	
 	}
 	#endif
 
