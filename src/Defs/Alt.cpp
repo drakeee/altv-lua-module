@@ -184,6 +184,7 @@ namespace lua::Class
 		lua_globalfunction(L, "worldToScreen", WorldToScreen);
 		lua_globalfunction(L, "screenToWorld", ScreenToWorld);
 		lua_globalfunction(L, "getCamPos", GetCamPos);
+		lua_globalfunction(L, "setMinimapComponentPosition", SetMinimapComponentPosition);
 	#endif
 
 		lua_beginclass(L, ClassName);
@@ -1726,6 +1727,31 @@ namespace lua::Class
 		return 1;
 	}
 
+	int Alt::SetMinimapComponentPosition(lua_State* L)
+	{
+		std::string name;
+		char alignX;
+		char alignY;
+		alt::Vector2f pos;
+		alt::Vector2f size;
+		
+		ArgumentReader argReader(L);
+		argReader.ReadString(name);
+		argReader.ReadNumber(alignX);
+		argReader.ReadNumber(alignY);
+		argReader.ReadVector(pos);
+		argReader.ReadVector(size);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		Core->SetMinimapComponentPosition(name, alignX, alignY, pos, size)
+
+		return 0;	
+	}
 	#endif
 
 	int Alt::GetSyncedMetaData(lua_State* L)
