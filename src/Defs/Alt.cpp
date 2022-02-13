@@ -1313,7 +1313,7 @@ namespace lua::Class
 
 			resourceImpl->RemoveFunctionRef(voidPtr);
 			delete args;
-		}, args);
+		});
 
 		return 0;
 	}
