@@ -184,7 +184,9 @@ namespace lua::Class
 		lua_globalfunction(L, "worldToScreen", WorldToScreen);
 		lua_globalfunction(L, "screenToWorld", ScreenToWorld);
 		lua_globalfunction(L, "getCamPos", GetCamPos);
+
 		lua_globalfunction(L, "setMinimapComponentPosition", SetMinimapComponentPosition);
+		lua_globalfunction(L, "setMinimapIsRectangle", SetMinimapIsRectangle);
 	#endif
 
 		lua_beginclass(L, ClassName);
@@ -1750,6 +1752,24 @@ namespace lua::Class
 		Core->SetMinimapComponentPosition(name, alignX, alignY, pos, size);
 
 		return 0;	
+	}
+
+	int Alt::SetMinimapIsRectangle(lua_State* L)
+	{
+		bool toggle;
+		
+		ArgumentReader argReader(L);
+		argReader.ReadBool(toggle);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		Core->SetMinimapIsRectangle(toggle);
+
+		return 0;
 	}
 	#endif
 
