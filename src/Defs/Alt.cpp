@@ -184,6 +184,7 @@ namespace lua::Class
 		lua_globalfunction(L, "worldToScreen", WorldToScreen);
 		lua_globalfunction(L, "screenToWorld", ScreenToWorld);
 		lua_globalfunction(L, "getCamPos", GetCamPos);
+		lua_globalfunction(L, "getScreenResolution", GetScreenResolution);
 
 		lua_globalfunction(L, "setMinimapComponentPosition", SetMinimapComponentPosition);
 		lua_globalfunction(L, "setMinimapIsRectangle", SetMinimapIsRectangle);
@@ -1724,6 +1725,13 @@ namespace lua::Class
 	int Alt::GetCamPos(lua_State* L)
 	{
 		lua_pushvector3(L, Core->GetCamPos());
+
+		return 1;
+	}
+
+	int Alt::GetScreenResolution(lua_State* L)
+	{
+		lua_pushvector2(L, Core->GetScreenResolution());
 
 		return 1;
 	}
