@@ -871,10 +871,12 @@ namespace lua::Class
 
 	int Alt::SetCursorPosition(lua_State* L)
 	{
-		alt::Vector2i position;
+		alt::Vector2f position;
+		bool normalized;
 
 		ArgumentReader argReader(L);
 		argReader.ReadVector(position);
+		argReader.ReadBoolDefault(normalized, false);
 
 		if (argReader.HasAnyError())
 		{
@@ -882,14 +884,25 @@ namespace lua::Class
 			return 0;
 		}
 
-		Core->SetCursorPosition(position);
+		Core->SetCursorPosition(position, normalized);
 
 		return 0;
 	}
 
 	int Alt::GetCursorPosition(lua_State* L)
 	{
-		lua_pushvector2(L, Core->GetCursorPosition());
+		bool normalized;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBoolDefault(normalized, false);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushvector2(L, Core->GetCursorPosition(normalized));
 		return 1;
 	}
 
