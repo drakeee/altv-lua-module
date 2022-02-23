@@ -883,7 +883,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		Core->SetCursorPosition(position);
+		Core->SetCursorPosition(position, normalized);
 
 		return 0;
 	}
