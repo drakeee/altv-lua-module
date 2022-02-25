@@ -167,19 +167,4 @@ REGISTER_LOCAL_EVENT(
 	}
 );
 
-REGISTER_LOCAL_EVENT(
-	alt::CEvent::Type::WINDOW_RESOLUTION_CHANGE,
-	windowResolutionChange,
-	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
-	{
-		const alt::CWindowResolutionChangeEvent* event = static_cast<const alt::CWindowResolutionChangeEvent*>(ev);
-		lua_State* L = resourceImpl->GetLuaState();
-
-		lua_pushbaseobject(L, event->GetOldResolution());
-		lua_pushbaseobject(L, event->GetNewResolution());
-
-		return 1;
-	}
-);
-
 #endif
