@@ -89,7 +89,7 @@ REGISTER_LOCAL_EVENT(
 		lua_pushvector2(L, event->GetOldResolution());
 		lua_pushvector2(L, event->GetNewResolution());
 
-		return 1;
+		return 2;
 	}
 );
 
