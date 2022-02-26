@@ -4,6 +4,7 @@
 #include <events/CKeyboardEvent.h>
 #include <events/CSpawnedEvent.h>
 #include <Events/CWindowFocusChangeEvent.h>
+#include <Events/CWindowResolutionChangeEvent.h>
 
 REGISTER_LOCAL_EVENT(
 	alt::CEvent::Type::KEYBOARD_EVENT,
@@ -74,6 +75,21 @@ REGISTER_LOCAL_EVENT(
 		lua_pushboolean(L, event->GetState());
 
 		return 1;
+	}
+);
+
+REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::WINDOW_RESOLUTION_CHANGE,
+	windowResolutionChange,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
+	{
+		const alt::CWindowResolutionChangeEvent* event = static_cast<const alt::CWindowResolutionChangeEvent*>(ev);
+		lua_State* L = resourceImpl->GetLuaState();
+
+		lua_pushvector2(L, event->GetOldResolution());
+		lua_pushvector2(L, event->GetNewResolution());
+
+		return 2;
 	}
 );
 
