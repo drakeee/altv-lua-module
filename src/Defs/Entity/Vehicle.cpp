@@ -159,6 +159,9 @@ namespace lua::Class
 			lua_classfunction(L, "setTrainLinkedToBackwardId", SetTrainLinkedToBackwardId);
 			lua_classfunction(L, "setTrainLinkedToForwardId", SetTrainLinkedToForwardId);
 
+			lua_classfunction(L, "isBoatAnchorActive", SetBoatAnchorActive);
+			lua_classfunction(L, "setBoatAnchorActive", SetBoatAnchorActive);
+
 			lua_classfunction(L, "setSearchLightTo", SetSearchLight);
 
 			lua_classvariable(L, "modKit", SetModKit, GetModKit);
@@ -2276,6 +2279,43 @@ namespace lua::Class
 			argReader.ReadBaseObject(tempVehicle);
 
 		vehicle->SetTrainLinkedToForwardId(tempVehicle);
+
+		return 0;
+	}
+
+	int Vehicle::IsBoatAnchorActive(lua_State* L)
+	{
+		alt::IVehicle* vehicle;
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(vehicle);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushboolean(vehicle->IsBoatAnchorActive());
+
+		return 1;
+	}
+	
+	int Vehicle::SetBoatAnchorActive(lua_State* L)
+	{
+		alt::IVehicle* vehicle;
+		bool state;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(vehicle);
+		argReader.ReadBool(state);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		vehicle->SetBoatAnchorActive(state);
 
 		return 0;
 	}
