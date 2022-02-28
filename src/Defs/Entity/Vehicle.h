@@ -116,7 +116,10 @@ namespace lua::Class
 		static int SetTrainLinkedToBackwardId(lua_State* L);
 		static int GetTrainLinkedToForwardId(lua_State* L);
 		static int SetTrainLinkedToForwardId(lua_State* L);
-
+		
+		static int IsBoatAnchorActive(lua_State* L);
+		static int SetBoatAnchorActive(lua_State* L);
+		
 		static int SetSearchLight(lua_State* L);
 #else
 		static int GetWheelSpeed(lua_State* L);
