@@ -25,6 +25,12 @@ namespace lua::Class
 			lua_classfunction(L, "setVisible", SetVisible);
 			lua_classfunction(L, "isOverlay", IsOverlay);
 			lua_classfunction(L, "isReady", IsReady);
+			lua_classfunction(L, "setExtraHeader", SetExtraHeader);
+			lua_classfunction(L, "setZoomLevel", SetZoomLevel);
+			lua_classfunction(L, "getSize", GetSize);
+			lua_classfunction(L, "setSize", SetSize);
+			lua_classfunction(L, "getPosition", GetPosition);
+			lua_classfunction(L, "setPosition", SetPosition);
 
 			lua_classvariable(L, "focused", nullptr, IsFocused);
 			lua_classvariable(L, "url", SetUrl, GetUrl);
@@ -352,6 +358,124 @@ namespace lua::Class
 		lua_pushboolean(L, webView->IsReady());
 
 		return 1;
+	}
+
+	int WebView::SetExtraHeader(lua_State* L)
+	{
+		alt::IWebView* webView;
+		std::string name;
+		std::string value;
+		
+		ArgumentReader argReader(L);
+		argReader.ReadUserData(webView);
+		argReader.ReadString(name);
+		argReader.ReadString(value);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		webView->SetExtraHeader(name, value);
+
+		return 0;
+	}
+
+	int WebView::SetZoomLevel(lua_State* L)
+	{
+		alt::IWebView* webView;
+		double zoom;
+
+		ArgumentReader argReader(L);
+		argReader.ReadUserData(webView);
+		argReader.ReadNumber(zoom);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		webView->SetZoomLevel(zoom);
+
+		return 0;
+	}
+
+	int WebView::GetSize(lua_State* L)
+	{
+		alt::IWebView* webView;
+
+		ArgumentReader argReader(L);
+		argReader.ReadUserData(webView);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushvector2(L, webView->GetSize());
+
+		return 1;
+	}
+
+	int WebView::SetSize(lua_State* L)
+	{
+		alt::IWebView* webView;
+		alt::Vector2i size;
+
+		ArgumentReader argReader(L);
+		argReader.ReadUserData(webView);
+		argReader.ReadVector(size);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		webView->SetSize(size);
+
+		return 0;
+	}
+
+	int WebView::GetPosition(lua_State* L)
+	{
+		alt::IWebView* webView;
+
+		ArgumentReader argReader(L);
+		argReader.ReadUserData(webView);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushvector2(L, webView->GetPosition());
+
+		return 1;
+	}
+
+	int WebView::SetPosition(lua_State* L)
+	{
+		alt::IWebView* webView;
+		alt::Vector2i position;
+
+		ArgumentReader argReader(L);
+		argReader.ReadUserData(webView);
+		argReader.ReadVector(position);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		webView->SetPosition(position);
+
+		return 0;
 	}
 }
 #endif
