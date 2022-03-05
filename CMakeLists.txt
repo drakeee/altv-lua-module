@@ -5,6 +5,8 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("altv-lua-module")
 
+include("vendors/cpp-sdk/CMakeLists.txt")
+
 set(PROJECT_MODULE_NAME "lua-module")
 if("${MODULE_TYPE}" STREQUAL "CLIENT")
 	set(PROJECT_MODULE_NAME "lua-client-module")
@@ -40,6 +42,8 @@ add_library(
 	${PROJECT_MODULE_NAME} SHARED
 	${PROJECT_SOURCE_FILES}
 )
+
+add_dependencies(${PROJECT_MODULE_NAME} alt-sdk)
 
 if("${MODULE_TYPE}" STREQUAL "CLIENT")
 	add_library(

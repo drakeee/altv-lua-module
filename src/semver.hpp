@@ -33,13 +33,13 @@ namespace semver {
 		uint8_t major;
 		uint8_t minor;
 		uint8_t patch;
-		uint16_t sdkVersion;
+		char* sdkVersion;
 		branch releaseType = branch::dev;
 
 		constexpr version(std::uint8_t major,
 			std::uint8_t minor,
 			std::uint8_t patch,
-			std::uint16_t sdkVersion,
+			char* sdkVersion,
 			branch releaseType = branch::dev) noexcept
 			: major{ major },
 			minor{ minor },
@@ -52,7 +52,7 @@ namespace semver {
 
 		std::string to_string(void) const {
 			std::ostringstream stringStream;
-			stringStream << std::to_string(major) << "." << std::to_string(minor) << "." << std::to_string(patch) << "." << std::to_string(sdkVersion) << "-" << releaseType;
+			stringStream << std::to_string(major) << "." << std::to_string(minor) << "." << std::to_string(patch) << "." << sdkVersion << "-" << releaseType;
 			return stringStream.str();
 		}
 	};
