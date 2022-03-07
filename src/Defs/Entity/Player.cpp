@@ -1400,7 +1400,7 @@ namespace lua::Class
 		uint8_t texture;
 		uint8_t palette = 2;
 		uint32_t dlc = 0;
-		bool result = false;
+		bool valid;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1418,14 +1418,14 @@ namespace lua::Class
 
 		if(dlc == 0)
 		{
-			result = player->SetClothes(component, drawable, texture, palette);
+			valid = player->SetClothes(component, drawable, texture, palette);
 		}
 		else
 		{
-			result = player->SetDlcClothes(component, drawable, texture, palette, dlc);
+			valid = player->SetDlcClothes(component, drawable, texture, palette, dlc);
 		}
 
-		lua_pushboolean(result);
+		lua_pushboolean(L, valid);
 	
 		return 1;
 	}
@@ -1437,7 +1437,7 @@ namespace lua::Class
 		uint8_t component;
 		uint16_t drawable;
 		uint8_t texture;
-		bool result;
+		bool valid;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1451,9 +1451,9 @@ namespace lua::Class
 			return 0;
 		}
 
-		result = player->SetProps(component, drawable, texture);
+		valid = player->SetProps(component, drawable, texture);
 
-		lua_pushboolean(L, result);
+		lua_pushboolean(L, valid);
 
 		return 1;
 	}
@@ -1543,7 +1543,7 @@ namespace lua::Class
 		uint8_t texture;
 		uint8_t palette;
 		uint8_t dlc;
-		bool result;
+		bool valid;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1559,9 +1559,9 @@ namespace lua::Class
 			return 0;
 		}
 
-		result = player->SetDlcClothes(component, drawable, texture, palette, dlc);
+		valid = player->SetDlcClothes(component, drawable, texture, palette, dlc);
 
-		lua_pushboolean(L, result)
+		lua_pushboolean(L, valid);
 
 		return 1;
 	}
@@ -1600,7 +1600,7 @@ namespace lua::Class
 		uint8_t component;
 		uint16_t drawable;
 		uint8_t texture;
-		bool result;
+		bool valid;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1615,9 +1615,9 @@ namespace lua::Class
 			return 0;
 		}
 
-		result = player->SetDlcProps(component, drawable, texture, dlc);
+		valid = player->SetDlcProps(component, drawable, texture, dlc);
 
-		lua_pushboolean(L, result);
+		lua_pushboolean(L, valid);
 
 		return 1;
 	}
