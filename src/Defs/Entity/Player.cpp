@@ -1400,6 +1400,7 @@ namespace lua::Class
 		uint8_t texture;
 		uint8_t palette = 2;
 		uint32_t dlc = 0;
+		bool result = false;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1417,14 +1418,16 @@ namespace lua::Class
 
 		if(dlc == 0)
 		{
-			player->SetClothes(component, drawable, texture, palette);
+			result = player->SetClothes(component, drawable, texture, palette);
 		}
 		else
 		{
-			player->SetDlcClothes(component, drawable, texture, palette, dlc);
+			result = player->SetDlcClothes(component, drawable, texture, palette, dlc);
 		}
+
+		lua_pushboolean(result);
 	
-		return 0;
+		return 1;
 	}
 
 	int Player::SetProp(lua_State* L)
@@ -1434,6 +1437,7 @@ namespace lua::Class
 		uint8_t component;
 		uint16_t drawable;
 		uint8_t texture;
+		bool result;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1447,9 +1451,11 @@ namespace lua::Class
 			return 0;
 		}
 
-		player->SetProps(component, drawable, texture);
+		result = player->SetProps(component, drawable, texture);
 
-		return 0;
+		lua_pushboolean(L, result);
+
+		return 1;
 	}
 
 	int Player::Kick(lua_State* L)
@@ -1537,6 +1543,7 @@ namespace lua::Class
 		uint8_t texture;
 		uint8_t palette;
 		uint8_t dlc;
+		bool result;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1552,9 +1559,11 @@ namespace lua::Class
 			return 0;
 		}
 
-		player->SetDlcClothes(component, drawable, texture, palette, dlc);
+		result = player->SetDlcClothes(component, drawable, texture, palette, dlc);
 
-		return 0;
+		lua_pushboolean(L, result)
+
+		return 1;
 	}
 
 	int Player::GetDlcProps(lua_State* L)
@@ -1591,6 +1600,7 @@ namespace lua::Class
 		uint8_t component;
 		uint16_t drawable;
 		uint8_t texture;
+		bool result;
 
 		ArgumentReader argReader(L);
 		argReader.ReadBaseObject(player);
@@ -1605,9 +1615,11 @@ namespace lua::Class
 			return 0;
 		}
 
-		player->SetDlcProps(component, drawable, texture, dlc);
+		result = player->SetDlcProps(component, drawable, texture, dlc);
 
-		return 0;
+		lua_pushboolean(L, result);
+
+		return 1;
 	}
 
 	int Player::ClearProps(lua_State* L)
