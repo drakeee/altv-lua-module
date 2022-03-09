@@ -188,6 +188,8 @@ namespace lua::Class
 
 		lua_globalfunction(L, "setMinimapComponentPosition", SetMinimapComponentPosition);
 		lua_globalfunction(L, "setMinimapIsRectangle", SetMinimapIsRectangle);
+
+		lua_globalfunction(L, "getClientConfig", GetClientConfig);
 	#endif
 
 		lua_beginclass(L, ClassName);
@@ -1791,6 +1793,15 @@ namespace lua::Class
 		Core->SetMinimapIsRectangle(toggle);
 
 		return 0;
+	}
+
+	int Alt::GetClientConfig(lua_State* L)
+	{
+		alt::config::Node node = Core->GetClientConfig();
+
+		lua_pushstring(L, node.ToString());
+
+		return 1;
 	}
 	#endif
 

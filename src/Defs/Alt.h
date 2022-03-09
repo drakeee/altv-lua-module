@@ -186,6 +186,8 @@ namespace lua::Class
 
 		static int SetMinimapComponentPosition(lua_State* L);
 		static int SetMinimapIsRectangle(lua_State* L);
+
+		static int GetClientConfig(lua_State* L);
 #endif
 	};
 }
