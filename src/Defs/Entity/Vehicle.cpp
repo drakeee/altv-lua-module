@@ -2295,7 +2295,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushboolean(vehicle->IsBoatAnchorActive());
+		lua_pushboolean(L, vehicle->IsBoatAnchorActive());
 
 		return 1;
 	}
