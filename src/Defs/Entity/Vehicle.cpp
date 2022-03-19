@@ -159,7 +159,7 @@ namespace lua::Class
 			lua_classfunction(L, "setTrainLinkedToBackwardId", SetTrainLinkedToBackwardId);
 			lua_classfunction(L, "setTrainLinkedToForwardId", SetTrainLinkedToForwardId);
 
-			lua_classfunction(L, "isBoatAnchorActive", SetBoatAnchorActive);
+			lua_classfunction(L, "isBoatAnchorActive", IsBoatAnchorActive);
 			lua_classfunction(L, "setBoatAnchorActive", SetBoatAnchorActive);
 
 			lua_classfunction(L, "setSearchLightTo", SetSearchLight);
