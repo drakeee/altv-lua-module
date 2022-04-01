@@ -59,6 +59,7 @@ namespace lua::Class
 
 		lua_globalfunction(L, "export", Export);
 		lua_globalfunction(L, "hash", Hash);
+		lua_globalfunction(L, "hashSHA256", StringToSHA256);
 		lua_globalfunction(L, "isDebug", IsDebug);
 		lua_globalfunction(L, "fileExists", FileExists);
 		lua_globalfunction(L, "fileRead", FileRead);
@@ -1980,6 +1981,24 @@ namespace lua::Class
 		}
 
 		lua_pushnumber(L, Core->Hash(hashKey));
+
+		return 1;
+	}
+
+	int Alt::StringToSHA256(lua_State* L)
+	{
+		std::string hashKey;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(hashKey);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushstring(L, Core->StringToSHA256(hashKey));
 
 		return 1;
 	}
