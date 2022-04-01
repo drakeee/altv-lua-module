@@ -70,6 +70,7 @@ namespace lua::Class
 		static int GetBranch(lua_State* L);
 
 		static int Hash(lua_State* L);
+		static int StringToSHA256(lua_State* L);
 
 		static int GetModuleTime(lua_State* L);
 
