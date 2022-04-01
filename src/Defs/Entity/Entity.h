@@ -41,6 +41,11 @@ namespace lua::Class
 		static int SetStreamSyncedMetaData(lua_State* L);
 		static int DeleteStreamSyncedMetaData(lua_State* L);
 		static int SetVisible(lua_State* L);
+		
+		int IsFrozen(lua_State* L);
+		int SetFrozen(lua_State* L);
+		int HasCollision(lua_State* L);
+		int SetCollision(lua_State* L);
 #else
 		static int GetScriptGuid(lua_State* L);
 		static int GetEntityByScriptGuid(lua_State* L);
