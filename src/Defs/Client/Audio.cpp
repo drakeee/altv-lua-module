@@ -488,6 +488,64 @@ namespace lua::Class
 
         return 1;
     }
+	
+    int Audio::SetPosition(lua_State* L)
+    {
+		alt::IAudio* audio;
+        alt::Vector3f position;
+		
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(audio);
+		argReader.ReadVector(position);
+		
+
+        if (argReader.HasAnyError())
+        {
+            argReader.GetErrorMessages();
+            return 0;
+        }
+		
+        audio->SetPosition(position);
+		
+        return 0;
+    }
+	
+	int Audio::GetPosition(lua_State* L)
+	{
+		alt::IAudio* audio;
+		
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(audio);
+		
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+				
+        lua_pushvector3(L, audio->GetPosition());
+		
+		return 1;
+	}
+
+    int Audio::ResetPosition(lua_State* L)
+    {
+		alt::IAudio* audio;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(audio);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.HasAnyError();
+			return 0;
+		}
+
+		audio->ResetPosition();
+
+		return 0;
+    }
 }
 
 #endif
