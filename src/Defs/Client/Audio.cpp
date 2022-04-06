@@ -30,6 +30,10 @@ namespace lua::Class
 			lua_classvariable(L, "currentTime", nullptr, GetCurrentTime);
 			lua_classvariable(L, "maxTime", nullptr, GetMaxTime);
 			lua_classvariable(L, "playing", nullptr, IsPlaying);
+
+			lua_classfunction(L, "setPosition", SetPosition);
+			lua_classfunction(L, "getPosition", GetPosition);
+			lua_classfunction(L, "resetPosition", ResetPosition);
 		}
 		lua_endclass(L);
 	}
