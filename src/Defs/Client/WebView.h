@@ -27,6 +27,12 @@ namespace lua::Class
         static int SetVisible(lua_State* L);
         static int IsOverlay(lua_State* L);
         static int IsReady(lua_State* L);
+        static int SetExtraHeader(lua_State* L);
+        static int SetZoomLevel(lua_State* L);
+        static int GetSize(lua_State* L);
+        static int SetSize(lua_State* L);
+        static int GetPosition(lua_State* L);
+        static int SetPosition(lua_State* L);
     };
 }
 #endif

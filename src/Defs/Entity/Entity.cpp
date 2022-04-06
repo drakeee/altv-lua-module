@@ -465,6 +465,82 @@ namespace lua::Class
 
 		return 0;
 	}
+
+	int Entity::IsFrozen(lua_State* L)
+	{
+		alt::IEntity* entity;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(entity);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushboolean(L, entity->IsFrozen());
+
+		return 1;
+	}
+	
+	int Entity::SetFrozen(lua_State* L)
+	{
+		alt::IEntity* entity;
+		bool state;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(entity);
+		argReader.ReadBool(state);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		entity->SetFrozen(state);
+
+		return 0;
+	}
+	
+	int Entity::HasCollision(lua_State* L)
+	{
+		alt::IEntity* entity;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(entity);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushboolean(L, entity->HasCollision());
+
+		return 1;
+	}
+	
+	int Entity::SetCollision(lua_State* L)
+	{
+		alt::IEntity* entity;
+		bool state;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBaseObject(entity);
+		argReader.ReadBool(state);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		entity->SetCollision(state);
+
+		return 0;
+	}
 #else
 	int Entity::GetScriptGuid(lua_State* L)
 	{

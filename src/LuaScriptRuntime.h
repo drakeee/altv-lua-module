@@ -76,7 +76,11 @@ private:
 	LuaScriptRuntime();
 	~LuaScriptRuntime() { };
 
+<<<<<<< HEAD
 	const semver::version						version{ 1, 2, 6, alt::ICore::SDK_VERSION, semver::branch::dev };
+=======
+	const semver::version						version{ 1, 2, 5, ALT_SDK_VERSION, semver::branch::dev };
+>>>>>>> dev
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;
 

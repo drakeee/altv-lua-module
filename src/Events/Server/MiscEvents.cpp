@@ -167,4 +167,13 @@ REGISTER_LOCAL_EVENT(
 	}
 );
 
+REGISTER_LOCAL_EVENT(
+	alt::CEvent::Type::SERVER_STARTED,
+	serverStarted,
+	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> int
+	{
+		return 0;
+	}
+);
+
 #endif

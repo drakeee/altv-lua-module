@@ -32,6 +32,7 @@ static const char* preferred_separator = "/";
 
 //Include AltV SDK
 #include <SDK.h>
+#include <version/version.h>
 
 #include <events/CFireEvent.h>
 #include <events/CStartProjectileEvent.h>

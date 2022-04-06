@@ -70,6 +70,7 @@ namespace lua::Class
 		static int GetBranch(lua_State* L);
 
 		static int Hash(lua_State* L);
+		static int StringToSHA256(lua_State* L);
 
 		static int GetModuleTime(lua_State* L);
 
@@ -182,6 +183,7 @@ namespace lua::Class
 		static int WorldToScreen(lua_State* L);
 		static int ScreenToWorld(lua_State* L);
 		static int GetCamPos(lua_State* L);
+		static int GetScreenResolution(lua_State* L);
 
 		static int SetMinimapComponentPosition(lua_State* L);
 		static int SetMinimapIsRectangle(lua_State* L);

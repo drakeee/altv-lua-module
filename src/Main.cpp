@@ -13,6 +13,7 @@ bool isServer = false;
 #endif
 
 #ifdef ALT_SERVER_API
+
 EXPORT bool altMain(alt::ICore* _core)
 {
 	alt::ICore::SetInstance(_core);
@@ -44,7 +45,7 @@ EXPORT const char* GetType()
 }
 #endif
 
-EXPORT uint32_t GetSDKVersion()
+EXPORT const char* GetSDKHash()
 {
-	return alt::ICore::SDK_VERSION;
+	return ALT_SDK_VERSION;
 }

@@ -59,6 +59,7 @@ namespace lua::Class
 
 		lua_globalfunction(L, "export", Export);
 		lua_globalfunction(L, "hash", Hash);
+		lua_globalfunction(L, "hashSHA256", StringToSHA256);
 		lua_globalfunction(L, "isDebug", IsDebug);
 		lua_globalfunction(L, "fileExists", FileExists);
 		lua_globalfunction(L, "fileRead", FileRead);
@@ -184,6 +185,7 @@ namespace lua::Class
 		lua_globalfunction(L, "worldToScreen", WorldToScreen);
 		lua_globalfunction(L, "screenToWorld", ScreenToWorld);
 		lua_globalfunction(L, "getCamPos", GetCamPos);
+		lua_globalfunction(L, "getScreenResolution", GetScreenResolution);
 
 		lua_globalfunction(L, "setMinimapComponentPosition", SetMinimapComponentPosition);
 		lua_globalfunction(L, "setMinimapIsRectangle", SetMinimapIsRectangle);
@@ -870,10 +872,12 @@ namespace lua::Class
 
 	int Alt::SetCursorPosition(lua_State* L)
 	{
-		alt::Vector2i position;
+		alt::Vector2f position;
+		bool normalized;
 
 		ArgumentReader argReader(L);
 		argReader.ReadVector(position);
+		argReader.ReadBoolDefault(normalized, false);
 
 		if (argReader.HasAnyError())
 		{
@@ -881,14 +885,25 @@ namespace lua::Class
 			return 0;
 		}
 
-		Core->SetCursorPosition(position);
+		Core->SetCursorPosition(position, normalized);
 
 		return 0;
 	}
 
 	int Alt::GetCursorPosition(lua_State* L)
 	{
-		lua_pushvector2(L, Core->GetCursorPosition());
+		bool normalized;
+
+		ArgumentReader argReader(L);
+		argReader.ReadBoolDefault(normalized, false);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushvector2(L, Core->GetCursorPosition(normalized));
 		return 1;
 	}
 
@@ -1728,6 +1743,13 @@ namespace lua::Class
 		return 1;
 	}
 
+	int Alt::GetScreenResolution(lua_State* L)
+	{
+		lua_pushvector2(L, Core->GetScreenResolution());
+
+		return 1;
+	}
+
 	int Alt::SetMinimapComponentPosition(lua_State* L)
 	{
 		std::string name;
@@ -1959,6 +1981,24 @@ namespace lua::Class
 		}
 
 		lua_pushnumber(L, Core->Hash(hashKey));
+
+		return 1;
+	}
+
+	int Alt::StringToSHA256(lua_State* L)
+	{
+		std::string hashKey;
+
+		ArgumentReader argReader(L);
+		argReader.ReadString(hashKey);
+
+		if (argReader.HasAnyError())
+		{
+			argReader.GetErrorMessages();
+			return 0;
+		}
+
+		lua_pushstring(L, Core->StringToSHA256(hashKey));
 
 		return 1;
 	}
