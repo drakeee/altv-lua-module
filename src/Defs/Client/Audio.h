@@ -41,6 +41,10 @@ namespace lua::Class
         static int GetMaxTime(lua_State* L); //seconds
         static int Seek(lua_State* L); //seconds
         static int IsPlaying(lua_State* L);
+
+        static int SetPosition(lua_State* L);
+        static int GetPosition(lua_State* L);
+        static int ResetPosition(lua_State* L);
 	};
 }
 
