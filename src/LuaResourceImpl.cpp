@@ -198,7 +198,7 @@ void LuaResourceImpl::IncludePath(const char* path)
 			if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
 				continue;
 
-			std::string moduleDir(modulePath.ToString() + ent->d_name + p_s.ToString() + std::string("?.lua"));
+			std::string moduleDir(modulePath + ent->d_name + p_s + std::string("?.lua"));
 			lua_setpath(this->resourceState, moduleDir.c_str());
 		}
 
