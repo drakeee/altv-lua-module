@@ -185,7 +185,7 @@ void LuaResourceImpl::IncludePath(const char* path)
 		}
 	}
 #else
-	DIR* directory = opendir(modulePath.CStr());
+	DIR* directory = opendir(modulePath.c_str());
 	dirent* ent;
 
 	if(directory != NULL)
