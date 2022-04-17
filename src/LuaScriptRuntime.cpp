@@ -10,7 +10,7 @@ LuaScriptRuntime::LuaScriptRuntime()
 	this->eventManager = &EventManager::Instance();
 
 	//Register all events
-	for each (EventManager::Handler* handler in this->eventManager->GetAllHandlers())
+	for(EventManager::Handler* handler : this->eventManager->GetAllHandlers())
 	{
 		handler->Invoke();
 	}
