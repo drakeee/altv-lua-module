@@ -190,7 +190,7 @@ namespace lua::Class
 		for (size_t i = 0; i < allProtocols.GetSize(); i++)
 		{
 			lua_pushnumber(L, (int)(i + 1));
-			lua_pushstring(L, allProtocols[i].CStr());
+			lua_pushstring(L, allProtocols[i]);
 			lua_rawset(L, -3);
 		}
 

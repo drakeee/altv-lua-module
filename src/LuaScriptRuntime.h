@@ -4,7 +4,7 @@
 #include <version/version.h>
 
 #ifndef NDEBUG
-#define DEBUG_HELPER(x) (alt::String("[Lua] ") + x)
+#define DEBUG_HELPER(x) (std::string("[Lua] ") + x)
 #define DEBUG_INFO(x) Core->LogInfo(DEBUG_HELPER(x))
 #define DEBUG_WARNING(x) Core->LogWarning(DEBUG_HELPER(x))
 #else
@@ -77,7 +77,7 @@ private:
 	LuaScriptRuntime();
 	~LuaScriptRuntime() { };
 
-	const semver::version						version{ 1, 2, 7, ALT_SDK_VERSION, semver::branch::dev };
+	const semver::version						version{ 1, 2, 8, ALT_SDK_VERSION, semver::branch::dev };
 
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;

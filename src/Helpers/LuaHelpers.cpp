@@ -104,7 +104,7 @@ void lua_beginclass(lua_State* L, const char* className, const char* baseClass)
 	else
 	{
 		lua_getclass(L, baseClass);
-		L_ASSERT(lua_istable(L, -1), "lua_beginclass: Implementing \"" + alt::String(className) + "\" class. Error: base class \"" + alt::String(baseClass) + "\" not found.");
+		L_ASSERT(lua_istable(L, -1), std::string() + "lua_beginclass: Implementing \"" + std::string(className) + "\" class. Error: base class \"" + std::string(baseClass) + "\" not found.");
 
 		lua_getfield(L, -1, "__get");
 		lua_getfield(L, -4, "__get");
@@ -263,7 +263,7 @@ void lua_classfunction(lua_State* L, const char* functionName, const char* globa
 	lua_pushstring(L, functionName);
 	lua_getglobal(L, globalFuncName);
 
-	L_ASSERT(lua_isfunction(L, -1), "lua_classfunction: \"" + alt::String(globalFuncName) + "\" global function not found");
+	L_ASSERT(lua_isfunction(L, -1), std::string() + "lua_classfunction: \"" + std::string(globalFuncName) + "\" global function not found");
 
 	lua_rawset(L, -3);
 
@@ -399,7 +399,7 @@ void lua_classvariable(lua_State* L, const char* variableName, const char* setFu
 		lua_pushstring(L, setFunction);
 		lua_rawget(L, -4);
 
-		L_ASSERT(lua_isfunction(L, -1), "lua_classvariable::set: Could not find \"" + alt::String(setFunction) + "\" function in \"" + alt::String(luaL_checkstring(L, 2)) + "\" class");
+		L_ASSERT(lua_isfunction(L, -1), std::string() + "lua_classvariable::set: Could not find \"" + std::string(setFunction) + "\" function in \"" + std::string(luaL_checkstring(L, 2)) + "\" class");
 
 		lua_rawset(L, -3); //__set, __class, class meta
 		lua_pop(L, 1); //__class, class meta
@@ -416,7 +416,7 @@ void lua_classvariable(lua_State* L, const char* variableName, const char* setFu
 		lua_pushstring(L, getFunction);
 		lua_rawget(L, -4);
 
-		L_ASSERT(lua_isfunction(L, -1), "lua_classvariable::get: Could not find \"" + alt::String(getFunction) + "\" function in \"" + alt::String(luaL_checkstring(L, 2)) + "\" class");
+		L_ASSERT(lua_isfunction(L, -1), std::string() + "lua_classvariable::get: Could not find \"" + std::string(getFunction) + "\" function in \"" + std::string(luaL_checkstring(L, 2)) + "\" class");
 
 		lua_rawset(L, -3); //__get, __class, class meta
 		lua_pop(L, 1); //__class, class meta
@@ -467,7 +467,7 @@ void lua_pushuserdata(lua_State* L, const char* className, void* pObject, bool r
 	}
 
 	lua_getclassmt(L, className); //class meta, userdata
-	L_ASSERT(lua_istable(L, -1), "lua_pushuserdata: Couldn't find \"" + alt::String(className) + "\" class");
+	L_ASSERT(lua_istable(L, -1), std::string() + "lua_pushuserdata: Couldn't find \"" + std::string(className) + "\" class");
 
 	lua_setmetatable(L, -2); //apply metatable to userdata
 }
@@ -541,7 +541,7 @@ void lua_pushstring(lua_State* L, const std::string& str)
 	lua_pushstring(L, str.c_str());
 }
 
-void lua_pushstring(lua_State* L, alt::String& str)
+/*void lua_pushstring(lua_State* L, alt::String& str)
 {
 	lua_pushstring(L, str.CStr());
 }
@@ -549,7 +549,7 @@ void lua_pushstring(lua_State* L, alt::String& str)
 void lua_pushstring(lua_State* L, alt::StringView& str)
 {
 	lua_pushstring(L, str.CStr());
-}
+}*/
 
 void lua_setfield(lua_State* L, int index, const char* k, const char* value)
 {
@@ -671,7 +671,7 @@ void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 		lua_pushnumber(L, mValue.As<alt::IMValueDouble>()->Value());
 		break;
 	case alt::IMValue::Type::STRING:
-		lua_pushstring(L, mValue.As<alt::IMValueString>()->Value().CStr());
+		lua_pushstring(L, mValue.As<alt::IMValueString>()->Value().c_str());
 		break;
 	case alt::IMValue::Type::BASE_OBJECT:
 		lua_pushbaseobject(L, mValue.As<alt::IMValueBaseObject>()->Value().Get());
@@ -703,7 +703,7 @@ void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue)
 		lua_newtable(L);
 		for (auto it = dict->Begin(); it; it = dict->Next())
 		{
-			lua_pushstring(L, it->GetKey().CStr());
+			lua_pushstring(L, it->GetKey().c_str());
 			lua_pushmvalue(L, it->GetValue());
 			lua_rawset(L, -3);
 		}
@@ -788,14 +788,14 @@ void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args)
 	}
 }
 
-void lua_pushstringarray(lua_State* L, const alt::Array<alt::StringView>& array)
+void lua_pushstringarray(lua_State* L, const alt::Array<std::string>& array)
 {
 	lua_newtable(L);
 	uint32_t index = 1;
 	for (auto item : array)
 	{
 		lua_pushnumber(L, index);
-		lua_pushstring(L, item.CStr());
+		lua_pushstring(L, item.c_str());
 		lua_rawset(L, -3);
 
 		index++;
@@ -929,7 +929,7 @@ alt::MValue lua_tomvalue(lua_State* L, int idx)
 		mValue = Core->CreateMValueNil();
 		break;
 	default:
-		Core->LogError("ReadMValue: Unexpected Lua type: " + alt::String(lua_typename(L, argType)));
+		Core->LogError(std::string() + "ReadMValue: Unexpected Lua type: " + std::string(lua_typename(L, argType)));
 		break;
 	}
 
@@ -960,7 +960,7 @@ void lua_stacktrace(lua_State* L, const char* stackName)
 {
 	int stackTop = lua_gettop(L);
 
-	Core->LogInfo(" --------- Stack Begins: " + alt::String(stackName) + "---------");
+	Core->LogInfo(std::string() + " --------- Stack Begins: " + std::string(stackName) + "---------");
 	for (int i = stackTop; i >= 1; i--)
 	{
 		int valueType = lua_type(L, i);
@@ -997,7 +997,7 @@ void lua_stacktrace(lua_State* L, const char* stackName)
 			break;
 		}
 	}
-	Core->LogInfo(" --------- Stack Ends: " + alt::String(stackName) + " ---------");
+	Core->LogInfo(std::string() + " --------- Stack Ends: " + std::string(stackName) + " ---------");
 }
 
 void lua_dumptable(lua_State* L, int idx, int level)

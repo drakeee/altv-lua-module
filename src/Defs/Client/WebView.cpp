@@ -56,8 +56,8 @@ namespace lua::Class
 			return 0;
 		}
 
-		alt::StringView type(alt::String("userdata:WebView"));
-		lua_pushstring(L, type.CStr());
+		std::string type{ "userdata:WebView" };
+		lua_pushstring(L, type);
 
 		return 1;
 	}
@@ -260,7 +260,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, webView->GetUrl().CStr());
+		lua_pushstring(L, webView->GetUrl());
 
 		return 1;
 	}

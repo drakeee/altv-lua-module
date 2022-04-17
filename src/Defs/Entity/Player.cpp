@@ -271,9 +271,9 @@ namespace lua::Class
 		LuaScriptRuntime* runtime = &LuaScriptRuntime::Instance();
 		auto vehModels = &VehicleModels::Instance();
 
-		alt::StringView type(alt::String("userdata:") + runtime->GetBaseObjectType(player) + alt::String(":") + player->GetName());
+		std::string type(std::string("userdata:") + runtime->GetBaseObjectType(player) + std::string(":") + player->GetName());
 
-		lua_pushstring(L, type.CStr());
+		lua_pushstring(L, type);
 
 		return 1;
 	}

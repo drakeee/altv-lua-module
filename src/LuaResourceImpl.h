@@ -38,7 +38,7 @@ public:
 	~LuaResourceImpl();
 
 #ifdef ALT_SERVER_API
-	bool MakeClient(alt::IResource::CreationInfo* info, alt::Array<alt::String> files) override;
+	bool MakeClient(alt::IResource::CreationInfo* info, alt::Array<std::string> files) override;
 #endif
 
 	bool Start() override;
@@ -53,25 +53,26 @@ public:
 	lua_State*	GetLuaState(void) { return this->resourceState; }
 #ifdef ALT_CLIENT_API
 
-	inline bool IsScriptExists(alt::String path)
+	inline bool IsScriptExists(std::string path)
 	{
 		auto pkg = resource->GetPackage();
 		return pkg->FileExists(path);
 	}
 
-	inline alt::String GetScript(alt::String path)
+	inline std::string GetScript(std::string path)
 	{
 		auto pkg = resource->GetPackage();
 		if (!pkg->FileExists(path))
 		{
 			Core->LogError(" Client main \"" + path + "\" is not found");
-			return true;
+			return std::string{ "" };
 		}
 
 		auto file = pkg->OpenFile(path);
-		alt::String script{ pkg->GetFileSize(file) };
+		std::string script;
+		script.resize(pkg->GetFileSize(file));
 
-		pkg->ReadFile(file, script.GetData(), script.GetSize());
+		pkg->ReadFile(file, script.data(), script.size());
 		pkg->CloseFile(file);
 
 		return script;

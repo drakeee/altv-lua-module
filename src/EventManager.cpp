@@ -73,7 +73,7 @@ void EventManager::RegisterBaseObject(alt::CEvent::Type eventType, int baseObjec
 
 void EventManager::Emit(const std::string& eventName, alt::MValueArgs& args)
 {
-	for each (alt::IResource* resource in Core->GetAllResources())
+	for(alt::IResource* resource : Core->GetAllResources())
 	{
 		LuaResourceImpl* resourceImpl = dynamic_cast<LuaResourceImpl*>(resource->GetImpl());
 		resourceImpl->GetResourceEventManager()->Emit(eventName, args);
@@ -322,7 +322,7 @@ void ResourceEventManager::Emit(const std::string& eventName, alt::MValueArgs& a
 
 			//Get the error from the top of the stack
 			if (lua_isstring(L, -1))
-				Core->LogError(" Error: " + alt::String(luaL_checkstring(L, -1)));
+				Core->LogError(std::string() + " Error: " + std::string(luaL_checkstring(L, -1)));
 
 			//Core->LogInfo("Error running function: %s" + alt::String(lua_tostring(this->resourceState, -1)));
 		}
@@ -368,7 +368,7 @@ bool ResourceEventManager::ProcessEvents(const alt::CEvent* ev)
 
 			//Get the error from the top of the stack
 			if (lua_isstring(L, -1))
-				Core->LogError(" Error: " + alt::String(luaL_checkstring(L, -1)));
+				Core->LogError(std::string() + " Error: " + std::string(luaL_checkstring(L, -1)));
 		}
 
 		if (lua_isboolean(L, -1))

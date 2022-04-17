@@ -12,7 +12,7 @@ namespace lua::Class
 		{
 			for (auto native : Core->GetAllNatives())
 			{
-				lua_classnative(L, native->GetName().CStr(), InvokeNative, native);
+				lua_classnative(L, native->GetName().c_str(), InvokeNative, native);
 			}
 		}
 		lua_endclass(L);
@@ -97,7 +97,7 @@ namespace lua::Class
 			break;
 		case alt::INative::Type::ARG_STRING:
 		{
-			ctx->Push(*CreatePtr(_strdup(value.As<alt::IMValueString>()->Value().ToString().data()), argType));
+			ctx->Push(*CreatePtr(_strdup(value.As<alt::IMValueString>()->Value().data()), argType));
 			break;
 		}
 		case alt::INative::Type::ARG_STRUCT:

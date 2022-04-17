@@ -54,7 +54,7 @@ REGISTER_LOCAL_EVENT(
 		lua_State* L = resourceImpl->GetLuaState();
 
 		lua_pushbaseobject(L, event->GetTarget().Get());
-		lua_pushstring(L, event->GetReason().CStr());
+		lua_pushstring(L, event->GetReason());
 
 		return 2;
 	}

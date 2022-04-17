@@ -21,7 +21,7 @@ EXPORT bool altMain(alt::ICore* _core)
 
 	auto& runtime = LuaScriptRuntime::Instance();
 	
-	_core->LogInfo(alt::String("Lua server module. Version: v" + alt::String(runtime.GetVersion().to_string())));
+	_core->LogInfo(std::string() + "Lua server module. Version: v" + std::string(runtime.GetVersion().to_string()));
 	_core->RegisterScriptRuntime("lua", &runtime);
 	
 	return true;
@@ -34,7 +34,7 @@ EXPORT alt::IScriptRuntime *CreateScriptRuntime(alt::ICore *_core)
 
     auto runtime = &LuaScriptRuntime::Instance();
 
-	_core->LogInfo(alt::String("Lua client module. Version: v" + alt::String(runtime->GetVersion().to_string())));
+	_core->LogInfo(std::string("Lua client module. Version: v" + std::string(runtime->GetVersion().to_string())));
 
     return runtime;
 }

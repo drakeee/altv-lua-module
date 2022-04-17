@@ -50,7 +50,7 @@ extern alt::ICore* Core;
 extern bool isClient;
 extern bool isServer;
 
-const alt::String p_s(preferred_separator);
+const std::string p_s(preferred_separator);
 
 typedef alt::Vector3f Vector3fp;
 typedef alt::Vector2f Vector2fp;

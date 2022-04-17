@@ -150,7 +150,7 @@ namespace lua::Class
             return 0;
         }
 
-        lua_pushstring(L, audio->GetSource().ToString());
+        lua_pushstring(L, audio->GetSource());
 
         return 1;
     }

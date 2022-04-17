@@ -28,16 +28,16 @@ namespace lua::Class
 		{
 			lua_newtable(L);
 
-			lua_pushstring(L, discord->GetUserID().CStr());
+			lua_pushstring(L, discord->GetUserID());
 			lua_setfield(L, -2, "id");
 
-			lua_pushstring(L, discord->GetUsername().CStr());
+			lua_pushstring(L, discord->GetUsername());
 			lua_setfield(L, -2, "name");
 
-			lua_pushstring(L, discord->GetDiscriminator().CStr());
+			lua_pushstring(L, discord->GetDiscriminator());
 			lua_setfield(L, -2, "discriminator");
 
-			lua_pushstring(L, discord->GetAvatar().CStr());
+			lua_pushstring(L, discord->GetAvatar());
 			lua_setfield(L, -2, "avatar");
 		}
 		else

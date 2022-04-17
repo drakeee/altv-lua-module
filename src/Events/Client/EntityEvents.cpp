@@ -54,7 +54,7 @@ REGISTER_LOCAL_EVENT(
 		const alt::CWebViewEvent* event = static_cast<const alt::CWebViewEvent*>(ev);
 		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
-		return resourceEventManager->GetFunctionReferences(event->GetTarget().Get(), event->GetName().ToString());
+		return resourceEventManager->GetFunctionReferences(event->GetTarget().Get(), const_cast<std::string&>(event->GetName()));
 	}
 );
 
@@ -79,7 +79,7 @@ REGISTER_LOCAL_EVENT(
 		const alt::CWebViewEvent* event = static_cast<const alt::CWebViewEvent*>(ev);
 		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
-		return resourceEventManager->GetFunctionReferences(event->GetTarget().Get(), event->GetName().ToString());
+		return resourceEventManager->GetFunctionReferences(event->GetTarget().Get(), const_cast<std::string&>(event->GetName()));
 	}
 );
 
@@ -104,7 +104,7 @@ REGISTER_LOCAL_EVENT(
 		const alt::CWebViewEvent* event = static_cast<const alt::CWebViewEvent*>(ev);
 		ResourceEventManager* resourceEventManager = resourceImpl->GetResourceEventManager();
 
-		return resourceEventManager->GetFunctionReferences(event->GetTarget().Get(), event->GetName().ToString());
+		return resourceEventManager->GetFunctionReferences(event->GetTarget().Get(), const_cast<std::string&>(event->GetName()));
 	}
 );
 

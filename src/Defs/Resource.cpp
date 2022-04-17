@@ -71,7 +71,7 @@ namespace lua::Class
 
 	int Resource::Call(lua_State* L)
 	{
-		alt::String functionName(lua_tostring(L, lua_upvalueindex(1)));
+		std::string functionName(lua_tostring(L, lua_upvalueindex(1)));
 		alt::IResource* resource;
 		alt::MValueArgs args;
 
@@ -165,8 +165,8 @@ namespace lua::Class
 			return 0;
 		}
 
-		alt::StringView type(alt::String("userdata:Resource:") + resource->GetName());
-		lua_pushstring(L, type.CStr());
+		std::string type(std::string("userdata:Resource:") + resource->GetName());
+		lua_pushstring(L, type);
 
 		return 1;
 	}
@@ -245,7 +245,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, resource->GetType().CStr());
+		lua_pushstring(L, resource->GetType());
 
 		return 1;
 	}
@@ -263,7 +263,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, resource->GetName().CStr());
+		lua_pushstring(L, resource->GetName());
 
 		return 1;
 	}
@@ -281,8 +281,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		alt::String p_s(preferred_separator);
-		lua_pushstring(L, (resource->GetPath() + p_s).CStr());
+		lua_pushstring(L, (resource->GetPath() + p_s));
 
 		return 1;
 	}
@@ -300,7 +299,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, resource->GetMain().CStr());
+		lua_pushstring(L, resource->GetMain());
 
 		return 1;
 	}
@@ -324,7 +323,7 @@ namespace lua::Class
 		for (auto it = resource->GetExports()->Begin(); it; it = resource->GetExports()->Next())
 		{
 			lua_pushnumber(L, index);
-			lua_pushstring(L, it->GetKey().CStr());
+			lua_pushstring(L, it->GetKey());
 			lua_rawset(L, -3);
 
 			index++;
@@ -346,7 +345,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstringarray(L, const_cast<alt::Array<alt::StringView>&&>(resource->GetDependencies()));
+		lua_pushstringarray(L, resource->GetDependencies());
 
 		return 1;
 	}
@@ -364,7 +363,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstringarray(L, const_cast<alt::Array<alt::StringView>&&>(resource->GetDependants()));
+		lua_pushstringarray(L, resource->GetDependants());
 
 		return 1;
 	}

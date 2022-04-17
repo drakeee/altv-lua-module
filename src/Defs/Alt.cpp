@@ -353,7 +353,7 @@ namespace lua::Class
 	#ifdef ALT_SERVER_API
 	int Alt::GetRootDirectory(lua_State* L)
 	{
-		lua_pushstring(L, Core->GetRootDirectory().CStr());
+		lua_pushstring(L, Core->GetRootDirectory());
 		return 1;
 	}
 
@@ -616,15 +616,15 @@ namespace lua::Class
 				return 0;
 			}
 
-			alt::String script{ resourceImpl->GetScript(path) };
-			if (luaL_dostring(L, script.CStr()))
+			std::string script{ resourceImpl->GetScript(path) };
+			if (luaL_dostring(L, script.c_str()))
 			{
 				//Sadly far from perfect
 				Core->LogError(" Unable to script \"" + path + "\"");
 
 				//Get the error from the top of the stack
 				if (lua_isstring(L, -1))
-					Core->LogError(" Error: " + alt::String(luaL_checkstring(L, -1)));
+					Core->LogError(std::string() + " Error: " + std::string(luaL_checkstring(L, -1)));
 
 				return false;
 			}
@@ -1275,7 +1275,7 @@ namespace lua::Class
 		args->L = L;
 		args->functionIndex = functionIndex;
 
-		Core->TakeScreenshot([&args](alt::StringView base64)
+		Core->TakeScreenshot([&args](std::string base64)
 		{
 			LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
 
@@ -1284,7 +1284,7 @@ namespace lua::Class
 			auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
 
 			lua_rawgeti(args->L, LUA_REGISTRYINDEX, args->functionIndex);
-			lua_pushstring(args->L, base64.CStr());
+			lua_pushstring(args->L, base64.c_str());
 
 			lua_call(args->L, 1, 0);
 
@@ -1316,7 +1316,7 @@ namespace lua::Class
 		args->L = L;
 		args->functionIndex = functionIndex;
 
-		Core->TakeScreenshotGameOnly([&args](alt::StringView base64)
+		Core->TakeScreenshotGameOnly([&args](std::string base64)
 		{
 			LuaResourceImpl* resourceImpl = LuaScriptRuntime::Instance().GetResourceImplFromState(args->L);
 			L_ASSERT(resourceImpl != nullptr, "lua state not found when executing TakeScreenshot");
@@ -1324,7 +1324,7 @@ namespace lua::Class
 			auto voidPtr = resourceImpl->GetFunctionRefByID(args->functionIndex);
 
 			lua_rawgeti(args->L, LUA_REGISTRYINDEX, args->functionIndex);
-			lua_pushstring(args->L, base64.CStr());
+			lua_pushstring(args->L, base64.c_str());
 
 			lua_call(args->L, 1, 0);
 
@@ -1932,7 +1932,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		lua_pushstring(L, Core->FileRead(filePath).CStr());
+		lua_pushstring(L, Core->FileRead(filePath));
 
 		return 1;
 	}
@@ -2297,7 +2297,7 @@ namespace lua::Class
 
 			//Get the error from the top of the stack
 			if (lua_isstring(L, -1))
-				Core->LogError(" Error: " + alt::String(luaL_checkstring(L, -1)));
+				Core->LogError(std::string() + " Error: " + std::string(luaL_checkstring(L, -1)));
 
 			//Close virtual machine and point to null pointer
 			//lua_close(L);
@@ -2516,7 +2516,7 @@ namespace lua::Class
 
 		for (int i = 0; i < argReader.GetArgNum(); i++)
 		{
-			message << alt::String(argReader.ToString());
+			message << std::string(argReader.ToString());
 
 			if (i != (argReader.GetArgNum() - 1))
 				message << '\t';

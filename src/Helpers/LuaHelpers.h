@@ -49,8 +49,8 @@ void lua_pushbaseobject(lua_State* L, alt::IBaseObject* baseObject, bool refUser
 void lua_pushbaseobject(lua_State* L, alt::Ref<alt::IBaseObject> baseObject, bool refUserData = true);
 void lua_pushconfig(lua_State* L, alt::config::Node::Dict* nodeDict, bool refUserData = true);
 void lua_pushstring(lua_State* L, const std::string& str);
-void lua_pushstring(lua_State* L, alt::String& str);
-void lua_pushstring(lua_State* L, alt::StringView& str);
+//void lua_pushstring(lua_State* L, alt::String& str);
+//void lua_pushstring(lua_State* L, alt::StringView& str);
 
 template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 void lua_setfield(lua_State* L, int index, const char* k, T value)
@@ -92,7 +92,7 @@ void lua_pushmvalue(lua_State* L, const alt::MValueConst &mValue);
 void lua_pushnode(lua_State* L, alt::config::Node& node);
 void lua_pushmvalueargs(lua_State* L, alt::MValueArgs& args);
 void lua_pushresource(lua_State* L, alt::IResource* resource, bool refUserData = true);
-void lua_pushstringarray(lua_State* L, const alt::Array<alt::StringView>& array);
+void lua_pushstringarray(lua_State* L, const alt::Array<std::string>& array);
 int lua_functionref(lua_State* L, int idx);
 
 int lua_isinteger(lua_State* L, int idx);

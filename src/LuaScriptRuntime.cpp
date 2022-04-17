@@ -24,8 +24,8 @@ LuaScriptRuntime::LuaScriptRuntime()
 #endif
 
 #ifdef ALT_SERVER_API
-	alt::String serverConfigPath = Core->GetRootDirectory() + p_s + "server.cfg";
-	this->serverConfigDict = this->ParseConfig(serverConfigPath.CStr());
+	std::string serverConfigPath{ Core->GetRootDirectory() + p_s + "server.cfg" };
+	this->serverConfigDict = this->ParseConfig(serverConfigPath);
 
 	//Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_START, LuaScriptRuntime::OnResourceStart, this);
 	//Core->SubscribeEvent(alt::CEvent::Type::RESOURCE_STOP, LuaScriptRuntime::OnResourceStop, this);
@@ -43,8 +43,8 @@ bool LuaScriptRuntime::OnResourceStart(const alt::CEvent* e, void* userData)
 	if (event->GetResource()->GetType() == "lua")
 		return true;
 
-	alt::String resourceConfigPath = event->GetResource()->GetPath() + p_s + "resource.cfg";
-	auto resourceNode = runtime->ParseConfig(resourceConfigPath.CStr());
+	std::string resourceConfigPath{ event->GetResource()->GetPath() + p_s + "resource.cfg" };
+	auto resourceNode = runtime->ParseConfig(resourceConfigPath);
 
 	runtime->resourceNodeDictMap[event->GetResource()] = resourceNode;
 	return true;

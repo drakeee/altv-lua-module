@@ -47,9 +47,9 @@ REGISTER_LOCAL_EVENT(
 
 
 		if(isClient)
-			return resourceEventManager->GetRemoteFunctionReferences(event->GetName().ToString());
+			return resourceEventManager->GetRemoteFunctionReferences(const_cast<std::string&>(event->GetName()));
 		else
-			return resourceEventManager->GetLocalFunctionReferences(event->GetName().ToString());
+			return resourceEventManager->GetLocalFunctionReferences(const_cast<std::string&>(event->GetName()));
 	}
 );
 
@@ -73,7 +73,7 @@ REGISTER_LOCAL_EVENT(
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> std::vector<int>
 	{
 		const alt::CClientScriptEvent* event = static_cast<const alt::CClientScriptEvent*>(ev);
-		return resourceImpl->GetResourceEventManager()->GetRemoteFunctionReferences(event->GetName().ToString());
+		return resourceImpl->GetResourceEventManager()->GetRemoteFunctionReferences(const_cast<std::string&>(event->GetName()));
 	}
 );
 #else
@@ -95,7 +95,7 @@ REGISTER_LOCAL_EVENT(
 	[](LuaResourceImpl* resourceImpl, const alt::CEvent* ev) -> std::vector<int>
 	{
 		const alt::CClientScriptEvent* event = static_cast<const alt::CClientScriptEvent*>(ev);
-		return resourceImpl->GetResourceEventManager()->GetLocalFunctionReferences(event->GetName().ToString());
+		return resourceImpl->GetResourceEventManager()->GetLocalFunctionReferences(const_cast<std::string&>(event->GetName()));
 	}
 );
 #endif

@@ -23,9 +23,9 @@ LuaResourceImpl::LuaResourceImpl(LuaScriptRuntime* runtime, alt::IResource* reso
 
 	DEBUG_INFO("LuaResourceImpl::CLuaResourceImpl2");
 
-	this->workingPath.append(resource->GetPath().CStr());
+	this->workingPath.append(resource->GetPath());
 	this->workingPath.append(preferred_separator);
-	this->workingPath.append(resource->GetMain().CStr());
+	this->workingPath.append(resource->GetMain());
 	this->workingPath = this->workingPath.substr(0, this->workingPath.find_last_of("\\/") + 1);
 
 	DEBUG_INFO("LuaResourceImpl::CLuaResourceImpl3");
@@ -73,14 +73,14 @@ LuaResourceImpl::LuaResourceImpl(LuaScriptRuntime* runtime, alt::IResource* reso
 #ifdef ALT_SERVER_API
 	//Set up working path
 	lua_setpath(this->resourceState, (this->workingPath + "?.lua").c_str());
-	lua_setpath(this->resourceState, (resource->GetPath().ToString() + std::string(preferred_separator) + std::string("?.lua")).c_str());
+	lua_setpath(this->resourceState, (resource->GetPath() + std::string(preferred_separator) + std::string("?.lua")).c_str());
 
 	DEBUG_INFO("LuaResourceImpl::CLuaResourceImpl9");
 
-	alt::String modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
+	std::string modulePath = Core->GetRootDirectory() + p_s + "modules" + p_s + MODULE_NAME + p_s + ADDITIONAL_MODULE_FOLDER + p_s;
 
-	this->IncludePath(modulePath.CStr());
-	lua_setpath(this->resourceState, (modulePath + "?.lua").CStr());
+	this->IncludePath(modulePath.c_str());
+	lua_setpath(this->resourceState, (modulePath + "?.lua").c_str());
 #endif
 
 	lua_pushstring(this->resourceState, ADDITIONAL_MODULE_FOLDER);
@@ -91,8 +91,8 @@ LuaResourceImpl::LuaResourceImpl(LuaScriptRuntime* runtime, alt::IResource* reso
 #ifdef ALT_SERVER_API
 	//Parse the resource config here as well because RESOURCE_START event is called after the script is executed
 	{
-		alt::String resourceConfigPath = this->resource->GetPath() + p_s + "resource.cfg";
-		auto resourceNode = runtime->ParseConfig(resourceConfigPath.CStr());
+		std::string resourceConfigPath{ this->resource->GetPath() + p_s + "resource.cfg" };
+		auto resourceNode = runtime->ParseConfig(resourceConfigPath);
 		runtime->resourceNodeDictMap[this->resource] = resourceNode;
 	}
 #endif
@@ -160,10 +160,10 @@ LuaResourceImpl::~LuaResourceImpl()
 
 void LuaResourceImpl::IncludePath(const char* path)
 {
-	alt::String modulePath(path);
+	std::string modulePath(path);
 
 #ifdef _WIN32
-	std::filesystem::path directory(modulePath.CStr());
+	std::filesystem::path directory(modulePath.c_str());
 
 	if (std::filesystem::exists(directory) && std::filesystem::is_directory(directory))
 	{
@@ -178,7 +178,7 @@ void LuaResourceImpl::IncludePath(const char* path)
 				continue;
 			}
 
-			std::string moduleDir((*begin).path().string() + p_s.ToString() + std::string("?.lua"));
+			std::string moduleDir(std::string() + (*begin).path().string() + p_s + std::string("?.lua"));
 			lua_setpath(this->resourceState, moduleDir.c_str());
 
 			++begin;
@@ -213,22 +213,22 @@ bool LuaResourceImpl::Start()
 
 #ifdef ALT_SERVER_API
 	//Add path separator to the end
-	alt::String workingDir(alt::String(resource->GetPath()) + alt::String(preferred_separator));
-	alt::String mainFile = workingDir + resource->GetMain();
+	std::string workingDir(resource->GetPath() + p_s);
+	std::string mainFile{ workingDir + resource->GetMain() };
 
-	DEBUG_INFO(alt::String("LuaResourceImpl::LuaResourceImpl::") + resource->GetMain());
-	DEBUG_INFO(alt::String("ResourcePath: ") + workingDir);
-	DEBUG_INFO(alt::String("MainFile: ") + mainFile);
+	DEBUG_INFO(std::string("LuaResourceImpl::LuaResourceImpl::") + resource->GetMain());
+	DEBUG_INFO(std::string("ResourcePath: ") + workingDir);
+	DEBUG_INFO(std::string("MainFile: ") + mainFile);
 
 	//Try to load file for testing purposes
-	if (luaL_dofile(this->resourceState, mainFile.CStr()))
+	if (luaL_dofile(this->resourceState, mainFile.c_str()))
 	{
 		//Sadly far from perfect
 		Core->LogError(" Unable to load \"" + mainFile + "\"");
 
 		//Get the error from the top of the stack
 		if (lua_isstring(this->resourceState, -1))
-			Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+			Core->LogError(std::string() + " Error: " + std::string(luaL_checkstring(resourceState, -1)));
 
 		return false;
 	}
@@ -237,17 +237,17 @@ bool LuaResourceImpl::Start()
 	this->resource->EnableNatives();
 	auto scope = this->resource->PushNativesScope();
 
-	alt::String mainFile = resource->GetMain();
-	alt::String script{this->GetScript(mainFile)};
+	std::string mainFile{ resource->GetMain() };
+	std::string script{ this->GetScript(mainFile) };
 
-	if (luaL_dostring(this->resourceState, script.CStr()))
+	if (luaL_dostring(this->resourceState, script.c_str()))
 	{
 		//Sadly far from perfect
 		Core->LogError(" Unable to load \"" + mainFile + "\"");
 
 		//Get the error from the top of the stack
 		if (lua_isstring(this->resourceState, -1))
-			Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+			Core->LogError(std::string() + " Error: " + std::string(luaL_checkstring(resourceState, -1)));
 
 		return false;
 	}
@@ -339,7 +339,7 @@ void LuaResourceImpl::OnTick()
 
 				//Get the error from the top of the stack
 				if (lua_isstring(this->resourceState, -1))
-					Core->LogError(" Error: " + alt::String(luaL_checkstring(resourceState, -1)));
+					Core->LogError(std::string() + " Error: " + std::string(luaL_checkstring(resourceState, -1)));
 			}
 
 			timer.second.lastTime = timeNow;
@@ -357,7 +357,7 @@ void LuaResourceImpl::OnTick()
 
 void LuaResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> object)
 {
-	DEBUG_INFO(this->resource->GetName() + alt::String(":LuaResourceImpl::OnCreateBaseObject: ") + std::to_string(static_cast<int>(object->GetType())));
+	DEBUG_INFO(std::string() + this->resource->GetName() + std::string(":LuaResourceImpl::OnCreateBaseObject: ") + std::to_string(static_cast<int>(object->GetType())));
 }
 
 void LuaResourceImpl::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object)
@@ -527,7 +527,7 @@ uint32_t LuaResourceImpl::CreateTimer(uint32_t functionIndex, uint32_t interval,
 }
 
 #ifdef ALT_SERVER_API
-bool LuaResourceImpl::MakeClient(alt::IResource::CreationInfo* info, alt::Array<alt::String> files)
+bool LuaResourceImpl::MakeClient(alt::IResource::CreationInfo* info, alt::Array<std::string> files)
 {
 	//info->type = "js";
 	return true;
