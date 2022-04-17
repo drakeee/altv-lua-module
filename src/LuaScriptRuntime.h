@@ -77,7 +77,8 @@ private:
 	LuaScriptRuntime();
 	~LuaScriptRuntime() { };
 
-	const semver::version						version{ 1, 2, 8, ALT_SDK_VERSION, semver::branch::dev };
+	char* _ALT_SDK_VERSION = ALT_SDK_VERSION;
+	const semver::version						version{ 1, 2, 8, _ALT_SDK_VERSION, semver::branch::dev };
 
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;
