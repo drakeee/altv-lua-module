@@ -78,7 +78,7 @@ private:
 	~LuaScriptRuntime() { };
 
 	char* _ALT_SDK_VERSION = (char*)ALT_SDK_VERSION; //disable annoying warnings in Linux build
-	const semver::version						version{ 1, 2, 8, _ALT_SDK_VERSION, semver::branch::dev };
+	const semver::version						version{ 1, 2, 9, _ALT_SDK_VERSION, semver::branch::dev };
 
 #ifdef ALT_SERVER_API
 	alt::config::Node::Dict						serverConfigDict;

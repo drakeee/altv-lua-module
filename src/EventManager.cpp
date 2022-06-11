@@ -151,6 +151,9 @@ bool ResourceEventManager::SubscribeLocalEvent(std::string& eventName, int funct
 		eventType = alt::CEvent::Type::CLIENT_SCRIPT_EVENT;
 #endif
 
+	if (!Core->IsEventEnabled(eventType))
+		Core->ToggleEvent(eventType, true);
+
 	DEBUG_INFO("SubscribeLocalEvent: " + std::to_string((int)eventType) + " - " + eventName);
 
 	this->resourceEvents[eventType][eventName].push_back(functionReference);
@@ -222,6 +225,10 @@ bool ResourceEventManager::UnsubscribeEvent(const std::string& eventName, int fu
 		return false;
 
 	references.erase(it);
+
+	if (Core->IsEventEnabled(eventType) && (references.size() == 0))
+		Core->ToggleEvent(eventType, false);
+
 	return true;
 }
 
