@@ -104,7 +104,7 @@ namespace lua::Class
 		static int GetCharStat(lua_State* L); //done
 		static int ResetCharStat(lua_State* L); //done
 
-		static int IsSandbox(lua_State* L); //done
+		//static int IsSandbox(lua_State* L); //done
 		static int IsKeyDown(lua_State* L); //done
 		static int IsKeyToggled(lua_State* L); //done
 		static int AreControlsEnabled(lua_State* L); //done
@@ -178,7 +178,7 @@ namespace lua::Class
 
 		static int ToggleRmlDebugger(lua_State* L);
 		static int LoadRmlFontFace(lua_State* L);
-		static int ToggleRmlControl(lua_State* L);
+		static int ToggleRmlControls(lua_State* L);
 
 		static int WorldToScreen(lua_State* L);
 		static int ScreenToWorld(lua_State* L);

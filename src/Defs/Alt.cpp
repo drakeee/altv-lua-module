@@ -110,7 +110,7 @@ namespace lua::Class
 		lua_globalfunction(L, "getCharStat", GetCharStat);
 		lua_globalfunction(L, "resetCharStat", ResetCharStat);
 
-		lua_globalfunction(L, "isSandbox", IsSandbox);
+		//lua_globalfunction(L, "isSandbox", IsSandbox);
 
 		lua_globalfunction(L, "isKeyDown", IsKeyDown);
 		lua_globalfunction(L, "isKeyToggled", IsKeyToggled);
@@ -179,7 +179,7 @@ namespace lua::Class
 
 		lua_globalfunction(L, "copyToClipboard", CopyToClipboard);
 
-		lua_globalfunction(L, "toggleRmlControls", ToggleRmlControl);
+		lua_globalfunction(L, "toggleRmlControls", ToggleRmlControls);
 		lua_globalfunction(L, "loadRmlFont", LoadRmlFontFace);
 
 		lua_globalfunction(L, "worldToScreen", WorldToScreen);
@@ -824,11 +824,11 @@ namespace lua::Class
 		return 1;
 	}
 
-	int Alt::IsSandbox(lua_State* L)
+	/*int Alt::IsSandbox(lua_State* L)
 	{
 		lua_pushboolean(L, Core->IsSandbox());
 		return 1;
-	}
+	}*/
 
 	int Alt::IsKeyDown(lua_State* L)
 	{
@@ -1682,7 +1682,7 @@ namespace lua::Class
 		return 0;
 	}
 
-	int Alt::ToggleRmlControl(lua_State* L)
+	int Alt::ToggleRmlControls(lua_State* L)
 	{
 		bool state;
 
@@ -1695,7 +1695,7 @@ namespace lua::Class
 			return 0;
 		}
 
-		Core->ToggleRmlControl(state);
+		Core->ToggleRmlControls(state);
 
 		return 0;
 	}
