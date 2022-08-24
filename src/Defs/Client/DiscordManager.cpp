@@ -28,7 +28,7 @@ namespace lua::Class
 		{
 			lua_newtable(L);
 
-			lua_pushstring(L, discord->GetUserID());
+			lua_pushstring(L, std::to_string(discord->GetUserID()));
 			lua_setfield(L, -2, "id");
 
 			lua_pushstring(L, discord->GetUsername());
