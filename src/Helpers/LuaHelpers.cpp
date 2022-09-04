@@ -956,6 +956,50 @@ void lua_todict(lua_State* L, int idx)
 	}
 }
 
+void lua_stacktrace_ex(lua_State* L, const char* stackName)
+{
+	int stackTop = lua_gettop(L);
+
+	printf(std::string(" --------- Stack Begins: " + std::string(stackName) + "---------\n").c_str());
+	for (int i = stackTop; i >= 1; i--)
+	{
+		int valueType = lua_type(L, i);
+		int relativePosition = ((i - stackTop) - 1);
+
+		switch (valueType)
+		{
+		case LUA_TSTRING:
+			printf(std::string("\tAbsolute: " + std::to_string(i) + " ~~ Relative: " + std::to_string(relativePosition) + " ~~\t Value: '" + luaL_checkstring(L, i) + "'\n").c_str());
+			break;
+		case LUA_TBOOLEAN:
+			printf(std::string("\tAbsolute: " + std::to_string(i) + " ~~ Relative: " + std::to_string(relativePosition) + " ~~\t Value: '" + (lua_toboolean(L, i) ? ("true") : ("false")) + "'\n").c_str());
+			break;
+		case LUA_TNUMBER:
+			printf(std::string("\tAbsolute: " + std::to_string(i) + " ~~ Relative: " + std::to_string(relativePosition) + " ~~\t Value: '" + std::to_string(luaL_checknumber(L, i)) + "'\n").c_str());
+			break;
+		case LUA_TTABLE:
+			printf(std::string("\tAbsolute: " + std::to_string(i) + " ~~ Relative: " + std::to_string(relativePosition) + " ~~\t Value '" + lua_typename(L, valueType) + "'\n").c_str());
+			printf("\t{\n");
+
+			lua_dumptable(L, i, 2);
+
+			printf("\t}\n");
+			/*lua_pushnil(L);
+			while (lua_next(L, i) != 0)
+			{
+			printf("%s => %s", lua_tostring(L, -2), lua_tostring(L, -1\n));
+			lua_pop(L, 1);
+			}*/
+
+			break;
+		default:
+			printf(std::string("\tAbsolute: " + std::to_string(i) + " ~~ Relative: " + std::to_string(relativePosition) + " ~~\t Value type: " + lua_typename(L, valueType) + "\n").c_str());
+			break;
+		}
+	}
+	printf(std::string(" --------- Stack Ends: " + std::string(stackName) + " ---------\n").c_str());
+}
+
 void lua_stacktrace(lua_State* L, const char* stackName)
 {
 	int stackTop = lua_gettop(L);

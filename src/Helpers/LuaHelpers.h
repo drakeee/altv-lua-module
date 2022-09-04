@@ -101,6 +101,7 @@ alt::MValue lua_tomvalue(lua_State* L, int indx);
 alt::IBaseObject* lua_tobaseobject(lua_State* L, int idx);
 //void lua_toentity(lua_State* L, alt::IEntity* entity);
 
+void lua_stacktrace_ex(lua_State* L, const char* stackName = "Unknown");
 void lua_stacktrace(lua_State* L, const char* stackName = "Unknown");
 void lua_dumptable(lua_State* L, int idx, int level = 0);
 void lua_getdebuginfo(lua_State* L, lua_Debug& debugInfo);
